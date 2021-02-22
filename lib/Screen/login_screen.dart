@@ -1,4 +1,5 @@
 import 'package:Capstone/Model/constant.dart';
+import 'package:Capstone/Screen/forgot_password_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../Controller/firebase_controller.dart';
@@ -84,6 +85,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: con.login,
                     ),
                   ),
+                  FlatButton(
+                    onPressed: con.resetPassword,
+                    child: Text(
+                      'Forgot Password?',
+                      style: TextStyle(
+                        fontSize: 15.0,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -153,5 +163,9 @@ class _Controller {
     Navigator.pop(state.context); //dispose dialog
     Navigator.pushNamed(state.context, HomeScreen.routeName,
         arguments: {Constant.ARG_USER: user});
+  }
+
+  void resetPassword() async {
+    Navigator.pushNamed(state.context, ForgotPasswordScreen.routeName);
   }
 }

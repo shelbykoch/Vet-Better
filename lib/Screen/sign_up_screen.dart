@@ -1,5 +1,8 @@
 //Sign up page view
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import 'app_dialog.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override
@@ -68,18 +71,19 @@ class SignUpScreenState extends State<SignUpScreen> {
 
 class _Controller {
   SignUpScreenState state;
-
   _Controller(this.state);
+  String email;
+  String password;
 
   String validateEmail(String value) {
     if (value == null || !value.contains('.') || !value.contains('@'))
-      return 'Enter a valid Email address';
+      return 'Enter a valid email address';
     else
       return null;
   }
 
   void saveEmail(String value) {
-    //state.user.email = value;
+    this.email = value;
   }
 
   String validatePassword(String value) {
@@ -90,7 +94,7 @@ class _Controller {
   }
 
   void savePassword(String value) {
-    //state.user.password = value;
+    this.password = value;
   }
 
   void createAccount() async {
@@ -99,12 +103,12 @@ class _Controller {
     }
 
     state.formKey.currentState.save();
-    /*
+
     //using email/password: sign up an account at Firebase
     try {
-      state.user.uid = await Firebase.createAccount(
-        email: state.user.email,
-        password: state.user.password,
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
       );
     } catch (e) {
       AppDialog.info(
@@ -116,20 +120,13 @@ class _Controller {
       return; //cease account creation
     }
 
-    try {
-      //create user profile
-      Firebase.createProfile(state.user);
-    } on Exception catch (e) {
-      state.user.username = null;
-    }
-
     AppDialog.info(
       context: state.context,
       title: 'Account creation successful!',
       message: 'Your accounted was successfully created with email/password',
-      action: () => Navigator.pop(state.context),
+      action: () =>
+          {Navigator.pop(state.context), Navigator.pop(state.context)},
     );
-    */
     return;
   }
 }

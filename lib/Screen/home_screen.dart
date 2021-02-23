@@ -47,7 +47,34 @@ class _UserHomeState extends State<HomeScreen> {
             ],
           ),
         ),
-        body: Text('Home Screen => ${user.email}'),
+        body: Padding(
+          padding: const EdgeInsets.only(top: 40.0, left: 40.0, right: 40.0),
+          child: Column(
+            children: [
+              SizedBox(
+                width: double.infinity,
+                child: RaisedButton(
+                  child: Text('Personal Information'),
+                  onPressed: con.personalInformation,
+                ),
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: RaisedButton(
+                  child: Text('Medical and Psychiatric History'),
+                  onPressed: con.medicalHistory,
+                ),
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: RaisedButton(
+                  child: Text('Baseline Risk Levels'),
+                  onPressed: con.riskLevels,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -66,4 +93,8 @@ class _Controller {
     Navigator.of(state.context).pop(); //Close app drawer
     Navigator.of(state.context).pop(); //Close home screen
   }
+
+  void personalInformation() {}
+  void medicalHistory() {}
+  void riskLevels() {}
 }

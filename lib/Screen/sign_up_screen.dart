@@ -88,7 +88,7 @@ class _Controller {
 
   String validatePassword(String value) {
     if (value == "" || value.length < 6)
-      return 'Enter a password';
+      return 'Enter a password of at least 6 characters';
     else
       return null;
   }

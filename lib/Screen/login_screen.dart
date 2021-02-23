@@ -17,11 +17,13 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   _Controller con;
+  TextEditingController _passwordTextController;
   BuildContext context;
   var formKey = GlobalKey<FormState>();
 
   _LoginScreenState() {
     con = _Controller(this);
+    _passwordTextController = TextEditingController();
   }
 
   void render(fn) => setState(fn);
@@ -74,6 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     decoration: InputDecoration(
                       hintText: 'Password',
                     ),
+                    controller: _passwordTextController,
                     obscureText: true,
                     validator: con.validatePassword,
                     onSaved: con.savePassword,
@@ -88,7 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   FlatButton(
                     onPressed: con.resetPassword,
                     child: Text(
-                      'Forgot Password?',
+                      'Forgot password?',
                       style: TextStyle(
                         fontSize: 15.0,
                       ),
@@ -152,14 +155,20 @@ class _Controller {
     } catch (e) {
       AppDialog.popProgressBar(state.context);
       AppDialog.info(
-        context: state.context,
-        title: 'Login failed',
-        message: e.message != null ? e.message : e.toString(),
-        action: () => Navigator.pop(state.context),
-      );
+          context: state.context,
+          title: 'Login failed',
+          message: e.message != null ? e.message : e.toString(),
+          action: () => {
+                Navigator.pop(state.context),
+                state.render(() {
+                  state._passwordTextController.clear();
+                })
+              });
       return; //cease login process
     }
 
+    //Clear password so field is blank upon sign out
+    state._passwordTextController.clear();
     Navigator.pop(state.context); //dispose dialog
     Navigator.pushNamed(state.context, HomeScreen.routeName,
         arguments: {Constant.ARG_USER: user});

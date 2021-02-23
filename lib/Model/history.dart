@@ -18,12 +18,12 @@ enum PsychiatricHistory {
 
 class History {
   Map medicalHistory = {
-    MedicalHistory.Diabetes: true,
-    MedicalHistory.Cancer: true,
-    MedicalHistory.HeartDisease: true,
-    MedicalHistory.HighBloodPressure: true,
-    MedicalHistory.CrohnsDisease: true,
-    MedicalHistory.HighCholestoral: true,
+    MedicalHistory.Diabetes: false,
+    MedicalHistory.Cancer: false,
+    MedicalHistory.HeartDisease: false,
+    MedicalHistory.HighBloodPressure: false,
+    MedicalHistory.CrohnsDisease: false,
+    MedicalHistory.HighCholestoral: false,
   };
   Map psychiatricHistory = {
     PsychiatricHistory.Anxiety: false,
@@ -34,10 +34,7 @@ class History {
     PsychiatricHistory.Schizophrenia: false,
     PsychiatricHistory.EatingDisorder: false,
   };
-  History() {
-    this.medicalHistory = Map.of(medicalHistory);
-    this.psychiatricHistory = Map.of(psychiatricHistory);
-  }
+  History();
   History.clone(History h) {
     this.medicalHistory = Map.from(h.medicalHistory);
     this.psychiatricHistory = Map.from(h.psychiatricHistory);

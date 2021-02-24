@@ -26,13 +26,13 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       title: 'Login',
-      initialRoute: PsychHistoryScreen.routeName,
+      initialRoute: MedicalHistoryScreen.routeName,
       routes: {
         LoginScreen.routeName: (context) => LoginScreen(),
         HomeScreen.routeName: (context) => HomeScreen(),
         MedicalHistoryScreen.routeName: (context) => MedicalHistoryScreen(),
         PsychHistoryScreen.routeName: (context) => PsychHistoryScreen(),
-        //PersonalInfoScreen.routeName: (context) => PersonalInfoScreen(),
+        PersonalInfoScreen.routeName: (context) => PersonalInfoScreen(),
       },
     );
   }

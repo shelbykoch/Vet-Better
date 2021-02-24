@@ -8,7 +8,7 @@ class MedicalHistory extends History {
     // Populate list with items
     generateConditionList();
   }
-
+ 
   @override
   void generateConditionList() {
     conditions.add(new Condition("Diabetes", 1));

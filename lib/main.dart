@@ -1,10 +1,11 @@
-import 'package:Capstone/Screen/patienthistory_screen.dart';
 import 'package:Capstone/Screen/personalinfo_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'Model/constant.dart';
 import 'Screen/login_screen.dart';
 import 'Screen/home_screen.dart';
+import 'Screen/medicalhistory_screen.dart';
+import 'Screen/psychhistory_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,12 +26,13 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       title: 'Login',
-      initialRoute: PatientHistoryScreen.routeName,
+      initialRoute: PsychHistoryScreen.routeName,
       routes: {
         LoginScreen.routeName: (context) => LoginScreen(),
         HomeScreen.routeName: (context) => HomeScreen(),
-        PatientHistoryScreen.routeName: (context) => PatientHistoryScreen(),
-        PersonalInfoScreen.routeName: (context) => PersonalInfoScreen(),
+        MedicalHistoryScreen.routeName: (context) => MedicalHistoryScreen(),
+        PsychHistoryScreen.routeName: (context) => PsychHistoryScreen(),
+        //PersonalInfoScreen.routeName: (context) => PersonalInfoScreen(),
       },
     );
   }

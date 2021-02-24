@@ -6,6 +6,7 @@ class Profile {
   static const RELIGION = 'religion';
   static const SEXUALORIENATION = 'sexualOrientation';
   static const MILITARYHISTORY = 'militaryHistory';
+  static const RISKSCORE = 'riskScore';
 
   String name;
   String age;
@@ -13,6 +14,7 @@ class Profile {
   String religion;
   String sexualOrientation;
   String militaryHistory;
+  int riskScore;
 
   Profile({
     this.name,
@@ -21,6 +23,7 @@ class Profile {
     this.religion,
     this.sexualOrientation,
     this.militaryHistory,
+    this.riskScore,
   });
 
   Map<String, dynamic> serialize() {

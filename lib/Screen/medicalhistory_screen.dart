@@ -1,4 +1,5 @@
 import 'package:Capstone/Model/medical_history.dart';
+import 'package:Capstone/Model/profile.dart';
 import 'package:flutter/material.dart';
 
 import 'psychhistory_screen.dart';
@@ -15,6 +16,7 @@ class MedicalHistoryScreen extends StatefulWidget {
 class _MedicalHistoryState extends State<MedicalHistoryScreen> {
   _Controller con;
   BuildContext context;
+  Profile profile = new Profile();
   MedicalHistory history = new MedicalHistory();
 
   @override
@@ -24,6 +26,9 @@ class _MedicalHistoryState extends State<MedicalHistoryScreen> {
   }
 
   Widget build(BuildContext context) {
+    Map arg = ModalRoute.of(context).settings.arguments;
+    profile ??= arg['profile'];
+
     return Scaffold(
       appBar: AppBar(title: Text("Medical History")),
       body: SingleChildScrollView(
@@ -57,7 +62,13 @@ class _MedicalHistoryState extends State<MedicalHistoryScreen> {
                 child: Text("Submit"),
                 onPressed: () {
                   con.updateScore();
-                  Navigator.pushNamed(context, PsychHistoryScreen.routeName);
+                  Navigator.pushNamed(
+                    context,
+                    PsychHistoryScreen.routeName,
+                    arguments: {
+                      'profile': profile,
+                    },
+                  );
                 }),
           ],
         ),
@@ -70,6 +81,7 @@ class _Controller {
   _MedicalHistoryState _state;
   _Controller(this._state);
   MedicalHistory history = new MedicalHistory();
+  //Profile profile = new Profile();
 
   void updateCondition(int i) {
     print(
@@ -82,6 +94,7 @@ class _Controller {
   void updateScore() {
     int score;
     score = history.getScore();
-    print('Score: $score');
+    _state.profile.riskScore = score;
+    print('Score: ${_state.profile.riskScore}');
   }
 }

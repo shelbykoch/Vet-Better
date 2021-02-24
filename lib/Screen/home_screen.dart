@@ -31,7 +31,7 @@ class _UserHomeState extends State<HomeScreen> {
     return WillPopScope(
       onWillPop: () => Future.value(false), //Disable android system back button
       child: Scaffold(
-        appBar: AppBar(title: Text('Sad App')),
+        appBar: AppBar(title: Text('Unnamed App')),
         drawer: Drawer(
           child: ListView(
             children: [

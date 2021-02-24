@@ -53,8 +53,9 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Padding(
                 padding: const EdgeInsets.only(top: 40.0),
                 child: Text(
-                  'The Sad App',
-                  style: TextStyle(fontFamily: 'FiraCode', fontSize: 50.0),
+                  'UNNAMED.',
+                  style:
+                      TextStyle(fontFamily: 'Times New Roman', fontSize: 50.0),
                 ),
               ),
             ),

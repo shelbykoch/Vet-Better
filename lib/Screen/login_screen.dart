@@ -114,11 +114,7 @@ class _Controller {
   String password;
 
   void createAccount() {
-    Navigator.push(
-        state.context,
-        MaterialPageRoute(
-          builder: (context) => SignUpScreen(),
-        ));
+    Navigator.pushNamed(state.context, SignUpScreen.routeName);
   }
 
   String validateEmail(String value) {

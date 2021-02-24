@@ -54,22 +54,29 @@ class _UserHomeState extends State<HomeScreen> {
               SizedBox(
                 width: double.infinity,
                 child: RaisedButton(
-                  child: Text('Personal Information'),
-                  onPressed: con.personalInformation,
+                  child: Text('Personal information'),
+                  onPressed: con.personalRoute,
                 ),
               ),
               SizedBox(
                 width: double.infinity,
                 child: RaisedButton(
-                  child: Text('Medical and Psychiatric History'),
-                  onPressed: con.medicalHistory,
+                  child: Text('Patient history'),
+                  onPressed: con.patientRoute,
                 ),
               ),
               SizedBox(
                 width: double.infinity,
                 child: RaisedButton(
-                  child: Text('Baseline Risk Levels'),
-                  onPressed: con.riskLevels,
+                  child: Text('Baseline risk'),
+                  onPressed: con.riskRoute,
+                ),
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: RaisedButton(
+                  child: Text('Mitigation strategies'),
+                  onPressed: con.mitigationRoute,
                 ),
               ),
             ],
@@ -94,7 +101,16 @@ class _Controller {
     Navigator.of(state.context).pop(); //Close home screen
   }
 
-  void personalInformation() {}
-  void medicalHistory() {}
-  void riskLevels() {}
+  void personalRoute() {
+    //Navigator.pushNamed(state.context, PersonalInfoScreen.routeName);
+  }
+  void patientRoute() {
+    //Navigator.pushNamed(state.context, PatientHistoryScreen.routeName);
+  }
+  void riskRoute() {
+    //Navigator.pushNamed(state.context, RiskScreen.routeName);
+  }
+  void mitigationRoute() {
+    //Navigator.pushNamed(state.context, MitigationScreen.routeName);
+  }
 }

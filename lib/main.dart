@@ -1,4 +1,5 @@
 import 'package:Capstone/Screen/forgot_password_screen.dart';
+import 'package:Capstone/Screen/sign_up_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'Model/constant.dart';
@@ -29,6 +30,13 @@ class MyApp extends StatelessWidget {
         LoginScreen.routeName: (context) => LoginScreen(),
         HomeScreen.routeName: (context) => HomeScreen(),
         ForgotPasswordScreen.routeName: (context) => ForgotPasswordScreen(),
+        SignUpScreen.routeName: (context) => SignUpScreen(),
+        /*
+        PersonalInfoScreen.routeName: (context) => PersonalInfoScreen(),
+        PatientHistoryScreen.routeName: (context) => PatientHistoryScreen(),
+        MitigationScreen.routeName: (context) => MitigationScreen(),
+        RiskScreen.routeName: (context) => RiskScreen(),
+        */
       },
     );
   }

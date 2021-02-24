@@ -1,10 +1,10 @@
 //Sign up page view
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import 'app_dialog.dart';
 
 class SignUpScreen extends StatefulWidget {
+  static const routeName = '/signUpScreen';
   @override
   State<StatefulWidget> createState() {
     return SignUpScreenState();

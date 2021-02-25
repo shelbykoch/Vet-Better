@@ -1,7 +1,6 @@
-import 'package:Capstone/Model/profile.dart';
+import 'package:Capstone/Model/personalInfo.dart';
 import 'package:Capstone/Model/psychiatric_history.dart';
 import 'package:flutter/material.dart';
-import 'medicalhistory_screen.dart';
 
 class PsychHistoryScreen extends StatefulWidget {
   static const routeName = '/psychInfoScreen';
@@ -14,7 +13,7 @@ class PsychHistoryScreen extends StatefulWidget {
 
 class _PsychHistoryState extends State<PsychHistoryScreen> {
   _Controller con;
-  Profile profile;
+  PersonalInfo personalInfo;
   BuildContext context;
   PsychiatricHistory history = new PsychiatricHistory();
 
@@ -26,7 +25,7 @@ class _PsychHistoryState extends State<PsychHistoryScreen> {
 
   Widget build(BuildContext context) {
     Map arg = ModalRoute.of(context).settings.arguments;
-    profile ??= arg['profile'];
+    personalInfo ??= arg['personalInfo'];
     return Scaffold(
       appBar: AppBar(title: Text("Psychiatric History")),
       body: SingleChildScrollView(
@@ -62,7 +61,7 @@ class _PsychHistoryState extends State<PsychHistoryScreen> {
                 con.updateScore();
                 Navigator.pushNamed(context, PsychHistoryScreen.routeName,
                     arguments: {
-                      'profile': profile,
+                      'personalInfo': personalInfo,
                     });
               },
             ),
@@ -77,7 +76,7 @@ class _Controller {
   _PsychHistoryState _state;
   _Controller(this._state);
   PsychiatricHistory history = new PsychiatricHistory();
-  Profile profile = new Profile();
+  PersonalInfo profile = new PersonalInfo();
 
   void updateCondition(int i) {
     print(
@@ -89,9 +88,9 @@ class _Controller {
 
   void updateScore() {
     int score;
-    print('Score from previous page: ${_state.profile.riskScore}');
+    print('Score from previous page: ${_state.personalInfo.riskScore}');
     score = history.getScore();
-    _state.profile.riskScore += score;
-    print('UpdatedScore: ${_state.profile.riskScore}');
+    _state.personalInfo.riskScore += score;
+    print('Updated Score: ${_state.personalInfo.riskScore}');
   }
 }

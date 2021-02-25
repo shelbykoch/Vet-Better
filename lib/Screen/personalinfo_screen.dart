@@ -1,4 +1,7 @@
+import 'package:Capstone/Model/personalInfo.dart';
 import 'package:flutter/material.dart';
+
+import 'medicalhistory_screen.dart';
 
 class PersonalInfoScreen extends StatefulWidget {
   static const routeName = '/personalInfoScreen';
@@ -11,7 +14,9 @@ class PersonalInfoScreen extends StatefulWidget {
 
 class _PersonalInfoState extends State<PersonalInfoScreen> {
   _Controller con;
+  BuildContext context;
   var formKey = GlobalKey<FormState>();
+  PersonalInfo personalInfo = new PersonalInfo();
 
   @override
   void initState() {
@@ -23,67 +28,48 @@ class _PersonalInfoState extends State<PersonalInfoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    Map arg = ModalRoute.of(context).settings.arguments;
+    personalInfo ??= arg['personalInfo'];
     return Scaffold(
-      appBar: AppBar(title: Text('PersonalInfo Screen')),
+      appBar: AppBar(title: Text('Personal Information')),
       body: Form(
         key: formKey,
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              TextFormField(
-                decoration: InputDecoration(hintText: 'Name'),
-                autocorrect: false,
-                keyboardType: TextInputType.name,
-                validator: con.validatorName,
-                onSaved: con.onSavedName,
-              ),
-              TextFormField(
-                decoration: InputDecoration(hintText: 'Age'),
-                autocorrect: true,
-                keyboardType: TextInputType.number,
-                validator: con.validatorAge,
-                onSaved: con.onSavedAge,
-              ),
-              TextFormField(
-                decoration: InputDecoration(hintText: 'Gender'),
-                autocorrect: true,
-                keyboardType: TextInputType.text,
-                validator: con.validatorGender,
-                onSaved: con.onSavedGender,
-              ),
-              TextFormField(
-                decoration: InputDecoration(hintText: 'Religious Affiliation'),
-                autocorrect: true,
-                keyboardType: TextInputType.text,
-                validator: con.validatorReligion,
-                onSaved: con.onSavedReligion,
-              ),
-              TextFormField(
-                decoration: InputDecoration(hintText: 'Sexual Orientaion'),
-                autocorrect: false,
-                keyboardType: TextInputType.text,
-                validator: con.validatorSexualOrientation,
-                onSaved: con.onSavedSexualOrientation,
-              ),
-              TextFormField(
-                decoration: InputDecoration(hintText: 'Military History'),
-                autocorrect: false,
-                keyboardType: TextInputType.text,
-                validator: con.validatorMilitaryHistory,
-                onSaved: con.onSavedMilitaryHistory,
+              ListView.builder(
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                itemCount: personalInfo.info.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return TextFormField(
+                    decoration: InputDecoration(
+                      hintText: personalInfo.info[index].fieldName,
+                    ),
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return 'Please enter some text';
+                      }
+                      return null;
+                    },
+                  );
+                },
               ),
               SizedBox(
                 height: 100.0,
               ),
               RaisedButton(
-                child: Text(
-                  'Continue',
-                  style: TextStyle(fontSize: 20.0, color: Colors.white),
-                ),
-                color: Colors.blue,
-                onPressed: con.submit,
-              ),
+                  child: Text("Submit"),
+                  onPressed: () {
+                    con.updateScore();
+                    Navigator.pushNamed(
+                      context,
+                      MedicalHistoryScreen.routeName,
+                      arguments: {
+                        'personalInfo': personalInfo,
+                      },
+                    );
+                  }),
             ],
           ),
         ),
@@ -95,89 +81,12 @@ class _PersonalInfoState extends State<PersonalInfoScreen> {
 class _Controller {
   _PersonalInfoState _state;
   _Controller(this._state);
-  String name;
-  String age;
-  String gender;
-  String religion;
-  String sexualOrientation;
-  String militaryHistory;
+  PersonalInfo personalInfo = new PersonalInfo();
 
-  String validatorName(String value) {
-    if (value == null) {
-      return 'please enter your name';
-    } else {
-      return null;
-    }
-  }
-
-  void onSavedName(String value) {
-    this.name = value;
-  }
-
-  String validatorAge(String value) {
-    if (value == null) {
-      return 'please enter your age';
-    } else {
-      return null;
-    }
-  }
-
-  void onSavedAge(String value) {
-    this.age = value;
-  }
-
-  String validatorGender(String value) {
-    if (value == null) {
-      return 'please enter your gender';
-    } else {
-      return null;
-    }
-  }
-
-  void onSavedGender(String value) {
-    this.gender = value;
-  }
-
-  String validatorReligion(String value) {
-    if (value == null) {
-      return 'please enter your religion';
-    } else {
-      return null;
-    }
-  }
-
-  void onSavedReligion(String value) {
-    this.religion = value;
-  }
-
-  String validatorSexualOrientation(String value) {
-    if (value == null) {
-      return 'please enter your gender';
-    } else {
-      return null;
-    }
-  }
-
-  void onSavedSexualOrientation(String value) {
-    this.sexualOrientation = value;
-  }
-
-  String validatorMilitaryHistory(String value) {
-    if (value == null) {
-      return 'please enter your military history';
-    } else {
-      return null;
-    }
-  }
-
-  void onSavedMilitaryHistory(String value) {
-    this.militaryHistory = value;
-  }
-
-  void submit() {
-    if (!_state.formKey.currentState.validate()) {
-      return;
-    }
-    _state.formKey.currentState.save();
+  void updateScore() {
+    int score;
+    score = personalInfo.getScore();
+    _state.personalInfo.riskScore = score;
+    print('Score: ${_state.personalInfo.riskScore}');
   }
 }

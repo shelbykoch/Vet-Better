@@ -1,3 +1,5 @@
+import 'package:Capstone/Screen/mitigation_factors_screen.dart';
+import 'package:Capstone/Screen/risk_factors_screen.dart';
 import 'package:Capstone/Screen/forgot_password_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -28,7 +30,9 @@ class MyApp extends StatelessWidget {
       routes: {
         LoginScreen.routeName: (context) => LoginScreen(),
         HomeScreen.routeName: (context) => HomeScreen(),
-        ForgotPasswordScreen.routeName: (context) => ForgotPasswordScreen(),
+        RiskScreen.routeName: (context) => RiskScreen(),
+        MitigationScreen.routeName: (context) => MitigationScreen(),
+		ForgotPasswordScreen.routeName: (context) => ForgotPasswordScreen(),
       },
     );
   }

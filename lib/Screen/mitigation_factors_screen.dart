@@ -3,7 +3,7 @@ import 'package:Capstone/views/mydialog.dart';
 import 'package:flutter/material.dart';
 
 class MitigationScreen extends StatefulWidget {
-  static const routeName = 'riskScreen';
+  static const routeName = 'mitigationScren';
   @override
   State<StatefulWidget> createState() {
     return _MitigationState();

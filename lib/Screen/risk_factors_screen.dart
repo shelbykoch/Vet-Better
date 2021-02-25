@@ -1,3 +1,5 @@
+import 'package:Capstone/Model/risk_factors.dart';
+import 'package:Capstone/Model/factor.dart';
 import 'package:Capstone/views/mydialog.dart';
 import 'package:flutter/material.dart';
 
@@ -11,27 +13,8 @@ class RiskScreen extends StatefulWidget {
 
 class _RiskState extends State<RiskScreen> {
   _Controller con;
-  List<String> riskFactors = [
-    "Factor1",
-    "Factor2",
-    "Factor3",
-    "Factor4",
-    "Factor5",
-    "Factor6"
-  ];
-
-  List<int> midPoints = [1, 1, 1, 1, 1, 1];
-
-  List<String> riskDescriptions = [
-    "Description1",
-    "Description2",
-    "Description3",
-    "Description4",
-    "Description5",
-    "Description6"
-  ];
-
   var formKey = GlobalKey<FormState>();
+  //RiskFactors riskFactors = new RiskFactors();
 
   @override
   void initState() {
@@ -57,20 +40,20 @@ class _RiskState extends State<RiskScreen> {
           onPressed: con.continueButton,
         ),
         body: ListView.builder(
-          itemCount: riskFactors.length,
+          itemCount: con.riskFactors.factors.length,
           itemBuilder: (BuildContext context, index) => Container(
-            color: con.selections[index] == false
+            color: con.riskFactors.factors[index].isSelected == false
                 ? Colors.grey[800]
                 : Colors.blue[800],
             child: ListTile(
-              trailing: con.selections[index] == false
+              trailing: con.riskFactors.factors[index].isSelected == false
                   ? Icon(Icons.check_box_outline_blank)
                   : Icon(Icons.check_box),
-              title: Text(riskFactors[index]),
+              title: Text(con.riskFactors.factors[index].name),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text('${riskDescriptions[index]}'),
+                  Text('${con.riskFactors.factors[index].description}'),
                 ],
               ),
               onTap: () => con.onTap(index),
@@ -85,28 +68,20 @@ class _RiskState extends State<RiskScreen> {
 class _Controller {
   _RiskState _state;
   _Controller(this._state);
-  List<bool> selections = [
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-  ];
+  RiskFactors riskFactors = new RiskFactors(); //get list of risk factors
 
   void onTap(int index) async {
-    selections[index] ? selections[index] = false : selections[index] = true;
-    _state.render(() {});
+    riskFactors.factors[index].isSelected =
+        !riskFactors.factors[index].isSelected;
+    _state.render(() {}); //render changes on screen
   }
 
   void continueButton() async {
     int sum = 0;
-    for (bool i in selections) {
-      if (i == true) {
-        sum++;
-      }
-    }
+    sum = riskFactors.getScore();
+
     MyDialog.info(
+      //display sum of risk factors in popup (temp)
       context: _state.context,
       title: 'Risk Score',
       content: 'Your risk score is $sum.',

@@ -1,8 +1,9 @@
+import 'package:Capstone/Model/mitigation_factors.dart';
 import 'package:Capstone/views/mydialog.dart';
 import 'package:flutter/material.dart';
 
 class MitigationScreen extends StatefulWidget {
-  static const routeName = 'mitigationScreen';
+  static const routeName = 'riskScreen';
   @override
   State<StatefulWidget> createState() {
     return _MitigationState();
@@ -11,26 +12,6 @@ class MitigationScreen extends StatefulWidget {
 
 class _MitigationState extends State<MitigationScreen> {
   _Controller con;
-  List<String> mitFactors = [
-    "Factor1",
-    "Factor2",
-    "Factor3",
-    "Factor4",
-    "Factor5",
-    "Factor6"
-  ];
-
-  List<int> mitPoints = [1, 1, 1, 1, 1, 1];
-
-  List<String> mitDescriptions = [
-    "Description1",
-    "Description2",
-    "Description3",
-    "Description4",
-    "Description5",
-    "Description6"
-  ];
-
   var formKey = GlobalKey<FormState>();
 
   @override
@@ -57,20 +38,20 @@ class _MitigationState extends State<MitigationScreen> {
           onPressed: con.continueButton,
         ),
         body: ListView.builder(
-          itemCount: mitFactors.length,
+          itemCount: con.mitigationFactors.factors.length,
           itemBuilder: (BuildContext context, index) => Container(
-            color: con.selections[index] == false
+            color: con.mitigationFactors.factors[index].isSelected == false
                 ? Colors.grey[800]
                 : Colors.blue[800],
             child: ListTile(
-              trailing: con.selections[index] == false
+              trailing: con.mitigationFactors.factors[index].isSelected == false
                   ? Icon(Icons.check_box_outline_blank)
                   : Icon(Icons.check_box),
-              title: Text(mitFactors[index]),
+              title: Text(con.mitigationFactors.factors[index].name),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text('${mitDescriptions[index]}'),
+                  Text('${con.mitigationFactors.factors[index].description}'),
                 ],
               ),
               onTap: () => con.onTap(index),
@@ -85,28 +66,21 @@ class _MitigationState extends State<MitigationScreen> {
 class _Controller {
   _MitigationState _state;
   _Controller(this._state);
-  List<bool> selections = [
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-  ];
+  MitigationFactors mitigationFactors =
+      new MitigationFactors(); //get list of mitigation factors
 
   void onTap(int index) async {
-    selections[index] ? selections[index] = false : selections[index] = true;
-    _state.render(() {});
+    mitigationFactors.factors[index].isSelected =
+        !mitigationFactors.factors[index].isSelected;
+    _state.render(() {}); //render changes on screen
   }
 
   void continueButton() async {
     int sum = 0;
-    for (bool i in selections) {
-      if (i == true) {
-        sum++;
-      }
-    }
+    sum = mitigationFactors.getScore();
+
     MyDialog.info(
+      //display popup message (temporary)
       context: _state.context,
       title: 'Mitigation Score',
       content: 'Your mitigation score is $sum.',

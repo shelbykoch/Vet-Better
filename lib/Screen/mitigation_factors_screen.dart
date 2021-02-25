@@ -26,36 +26,33 @@ class _MitigationState extends State<MitigationScreen> {
   Widget build(BuildContext context) {
     Map arg = ModalRoute.of(context).settings.arguments;
 
-    return WillPopScope(
-      onWillPop: () => Future.value(false),
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Mitigation Factors'),
-        ),
-        floatingActionButton: FloatingActionButton.extended(
-          icon: Icon(Icons.save),
-          label: Text("Save"),
-          onPressed: con.continueButton,
-        ),
-        body: ListView.builder(
-          itemCount: con.mitigationFactors.factors.length,
-          itemBuilder: (BuildContext context, index) => Container(
-            color: con.mitigationFactors.factors[index].isSelected == false
-                ? Colors.grey[800]
-                : Colors.blue[800],
-            child: ListTile(
-              trailing: con.mitigationFactors.factors[index].isSelected == false
-                  ? Icon(Icons.check_box_outline_blank)
-                  : Icon(Icons.check_box),
-              title: Text(con.mitigationFactors.factors[index].name),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text('${con.mitigationFactors.factors[index].description}'),
-                ],
-              ),
-              onTap: () => con.onTap(index),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Mitigation Factors'),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        icon: Icon(Icons.save),
+        label: Text("Save"),
+        onPressed: con.continueButton,
+      ),
+      body: ListView.builder(
+        itemCount: con.mitigationFactors.factors.length,
+        itemBuilder: (BuildContext context, index) => Container(
+          color: con.mitigationFactors.factors[index].isSelected == false
+              ? Colors.grey[800]
+              : Colors.blue[800],
+          child: ListTile(
+            trailing: con.mitigationFactors.factors[index].isSelected == false
+                ? Icon(Icons.check_box_outline_blank)
+                : Icon(Icons.check_box),
+            title: Text(con.mitigationFactors.factors[index].name),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text('${con.mitigationFactors.factors[index].description}'),
+              ],
             ),
+            onTap: () => con.onTap(index),
           ),
         ),
       ),

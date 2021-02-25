@@ -28,36 +28,33 @@ class _RiskState extends State<RiskScreen> {
   Widget build(BuildContext context) {
     Map arg = ModalRoute.of(context).settings.arguments;
 
-    return WillPopScope(
-      onWillPop: () => Future.value(false),
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Risk Factors'),
-        ),
-        floatingActionButton: FloatingActionButton.extended(
-          icon: Icon(Icons.save),
-          label: Text("Save"),
-          onPressed: con.continueButton,
-        ),
-        body: ListView.builder(
-          itemCount: con.riskFactors.factors.length,
-          itemBuilder: (BuildContext context, index) => Container(
-            color: con.riskFactors.factors[index].isSelected == false
-                ? Colors.grey[800]
-                : Colors.blue[800],
-            child: ListTile(
-              trailing: con.riskFactors.factors[index].isSelected == false
-                  ? Icon(Icons.check_box_outline_blank)
-                  : Icon(Icons.check_box),
-              title: Text(con.riskFactors.factors[index].name),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text('${con.riskFactors.factors[index].description}'),
-                ],
-              ),
-              onTap: () => con.onTap(index),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Risk Factors'),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        icon: Icon(Icons.save),
+        label: Text("Save"),
+        onPressed: con.continueButton,
+      ),
+      body: ListView.builder(
+        itemCount: con.riskFactors.factors.length,
+        itemBuilder: (BuildContext context, index) => Container(
+          color: con.riskFactors.factors[index].isSelected == false
+              ? Colors.grey[800]
+              : Colors.blue[800],
+          child: ListTile(
+            trailing: con.riskFactors.factors[index].isSelected == false
+                ? Icon(Icons.check_box_outline_blank)
+                : Icon(Icons.check_box),
+            title: Text(con.riskFactors.factors[index].name),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text('${con.riskFactors.factors[index].description}'),
+              ],
             ),
+            onTap: () => con.onTap(index),
           ),
         ),
       ),

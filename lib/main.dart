@@ -6,6 +6,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'Model/constant.dart';
 import 'Screen/login_screen.dart';
 import 'Screen/home_screen.dart';
+import 'Screen/medicalhistory_screen.dart';
+import 'Screen/psychhistory_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,6 +35,9 @@ class MyApp extends StatelessWidget {
         RiskScreen.routeName: (context) => RiskScreen(),
         MitigationScreen.routeName: (context) => MitigationScreen(),
 		ForgotPasswordScreen.routeName: (context) => ForgotPasswordScreen(),
+		MedicalHistoryScreen.routeName: (context) => MedicalHistoryScreen(),
+        PsychHistoryScreen.routeName: (context) => PsychHistoryScreen(),
+        PersonalInfoScreen.routeName: (context) => PersonalInfoScreen(),
       },
     );
   }

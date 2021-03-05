@@ -19,9 +19,11 @@ class _LoginScreenState extends State<LoginScreen> {
   _Controller con;
   BuildContext context;
   var formKey = GlobalKey<FormState>();
+  TextEditingController _textContoller;
 
   _LoginScreenState() {
     con = _Controller(this);
+    _textContoller = new TextEditingController();
   }
 
   void render(fn) => setState(fn);
@@ -78,6 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     obscureText: true,
                     validator: con.validatePassword,
                     onSaved: con.savePassword,
+                    controller: _textContoller,
                   ),
                   SizedBox(
                     width: double.infinity,
@@ -153,15 +156,18 @@ class _Controller {
     } catch (e) {
       AppDialog.popProgressBar(state.context);
       AppDialog.info(
-        context: state.context,
-        title: 'Login failed',
-        message: e.message != null ? e.message : e.toString(),
-        action: () => Navigator.pop(state.context),
-      );
+          context: state.context,
+          title: 'Login failed',
+          message: e.message != null ? e.message : e.toString(),
+          action: () => {
+                Navigator.pop(state.context),
+                state._textContoller.clear(),
+              });
       return; //cease login process
     }
 
     Navigator.pop(state.context); //dispose dialog
+    state._textContoller.clear();
     Navigator.pushNamed(state.context, HomeScreen.routeName,
         arguments: {Constant.ARG_USER: user});
   }

@@ -1,6 +1,11 @@
-abstract class Profile {
-  String userId;
-  List info;
-  void generateInfoList();
-  int getScore();
+class Profile {
+  //---------------PROPERTIES--------------------//
+  //General user info
+  String email;
+  String uid;
+
+  //-----------------CONST IDENTIFIERS----------//
+  static const PROFILES = 'profiles';
+  static const EMAIL = 'email';
+  static const UID = 'uid';
 }

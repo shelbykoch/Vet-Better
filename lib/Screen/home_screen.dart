@@ -1,10 +1,8 @@
 import 'package:Capstone/Model/constant.dart';
-import 'package:Capstone/Model/personalInfo.dart';
-import 'package:Capstone/Screen/medicalhistory_screen.dart';
-import 'package:Capstone/Screen/mitigation_factors_screen.dart';
-import 'package:Capstone/Screen/personalinfo_screen.dart';
-import 'package:Capstone/Screen/psychhistory_screen.dart';
-import 'package:Capstone/Screen/risk_factors_screen.dart';
+import 'package:Capstone/Model/factor.dart';
+import 'package:Capstone/Model/personal_Info.dart';
+import 'package:Capstone/Screen/factor_screen.dart';
+import 'package:Capstone/Screen/personal_info_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../Controller/firebase_controller.dart';
@@ -21,13 +19,11 @@ class HomeScreen extends StatefulWidget {
 class _UserHomeState extends State<HomeScreen> {
   _Controller con;
   User user;
-  PersonalInfo personalInfo;
 
   @override
   void initState() {
     super.initState();
     con = _Controller(this);
-    personalInfo = new PersonalInfo();
   }
 
   void render(fn) => setState(fn);
@@ -69,28 +65,30 @@ class _UserHomeState extends State<HomeScreen> {
               width: double.infinity,
               child: RaisedButton(
                 child: Text('Medical history'),
-                onPressed: con.medicalHistoryRoute,
+                onPressed: () =>
+                    con.factorRoute(ListType.MedicalHistory, "Medical History"),
               ),
             ),
             SizedBox(
               width: double.infinity,
               child: RaisedButton(
-                child: Text('Psychiatric history'),
-                onPressed: con.psychiatricHistoryRoute,
-              ),
+                  child: Text('Psychiatric history'),
+                  onPressed: () => con.factorRoute(
+                      ListType.PsychHistory, "Psychiatric History")),
             ),
             SizedBox(
               width: double.infinity,
               child: RaisedButton(
-                child: Text('Baseline risk'),
-                onPressed: con.riskRoute,
-              ),
+                  child: Text('Baseline risk'),
+                  onPressed: () =>
+                      con.factorRoute(ListType.RiskFactors, "Risk Factors")),
             ),
             SizedBox(
               width: double.infinity,
               child: RaisedButton(
                 child: Text('Mitigation strategies'),
-                onPressed: con.mitigationStrategiesRoute,
+                onPressed: () => con.factorRoute(
+                    ListType.MitigationFactors, "Mitigation Factors"),
               ),
             ),
           ]),
@@ -101,35 +99,36 @@ class _UserHomeState extends State<HomeScreen> {
 }
 
 class _Controller {
-  _UserHomeState state;
-  _Controller(this.state);
+  _UserHomeState _state;
+  _Controller(this._state);
 
-  void mitigationStrategiesRoute() {
-    Navigator.pushNamed(state.context, MitigationScreen.routeName);
+//------------------------HOME SCREEN ROUTING---------------------------//
+
+  void factorRoute(ListType listType, String title) async {
+    //Request risk factors from database.
+    //If Firebase doesn't find the collection then an new version is returned
+    List<Factor> factors =
+        await FirebaseController.getFactorList(_state.user.email, listType);
+    Navigator.pushNamed(_state.context, FactorScreen.routeName, arguments: {
+      Constant.ARG_FACTORS: factors,
+      Constant.ARG_FACTOR_TITLE: title,
+    });
   }
 
-  void riskRoute() {
-    Navigator.pushNamed(state.context, RiskScreen.routeName);
+  void personalInfoRoute() async {
+    //First we will load the personal info associated with the account to pass to the screen
+    //if it doesn't exist in the database we will created a new one and append
+    //the email then pass to the screen
+    PersonalInfo info =
+        await FirebaseController.getPersonalInfo(_state.user.email);
+    Navigator.pushNamed(_state.context, PersonalInfoScreen.routeName,
+        arguments: {
+          Constant.ARG_USER: _state.user,
+          Constant.ARG_PERSONAL_INFO: info
+        });
   }
 
-  void psychiatricHistoryRoute() {
-    Navigator.pushNamed(
-      state.context,
-      PsychHistoryScreen.routeName,
-      arguments: {
-        'personalInfo': state.personalInfo,
-      },
-    );
-  }
-
-  void medicalHistoryRoute() {
-    Navigator.pushNamed(state.context, MedicalHistoryScreen.routeName,
-        arguments: {'personalInfo': state.personalInfo});
-  }
-
-  void personalInfoRoute() {
-    Navigator.pushNamed(state.context, PersonalInfoScreen.routeName);
-  }
+  //------------------------APP TRAY ROUTING--------------------------//
 
   void signOut() async {
     try {
@@ -137,7 +136,7 @@ class _Controller {
     } catch (e) {
       //do nothing
     }
-    Navigator.of(state.context).pop(); //Close app drawer
-    Navigator.of(state.context).pop(); //Close home screen
+    Navigator.of(_state.context).pop(); //Close app drawer
+    Navigator.of(_state.context).pop(); //Close home screen
   }
 }

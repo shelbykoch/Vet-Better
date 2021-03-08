@@ -96,9 +96,9 @@ class _UserHomeState extends State<HomeScreen> {
             SizedBox(
               width: double.infinity,
               child: RaisedButton(
-                  child: Text('Medication'),
-                  onPressed: con.medicationInfoRoute,
-                  ),
+                child: Text('Medication'),
+                onPressed: con.medicationInfoRoute,
+              ),
             ),
           ]),
         ),
@@ -143,6 +143,10 @@ class _Controller {
     //the email then pass to the screen
     Medication medication =
         await FirebaseController.getMedicationInfo(_state.user.email);
+    print("user email:");
+    print(_state.user.email);
+    print("context:");
+    print(_state.context);
     Navigator.pushNamed(_state.context, MyMedicationScreen.routeName,
         arguments: {
           Constant.ARG_USER: _state.user,
@@ -150,16 +154,15 @@ class _Controller {
         });
   }
 
-    //------------------------APP TRAY ROUTING--------------------------//
+  //------------------------APP TRAY ROUTING--------------------------//
 
-    void signOut() async {
-      try {
-        await FirebaseController.signOut();
-      } catch (e) {
-        //do nothing
-      }
-      Navigator.of(_state.context).pop(); //Close app drawer
-      Navigator.of(_state.context).pop(); //Close home screen
+  void signOut() async {
+    try {
+      await FirebaseController.signOut();
+    } catch (e) {
+      //do nothing
     }
+    Navigator.of(_state.context).pop(); //Close app drawer
+    Navigator.of(_state.context).pop(); //Close home screen
   }
-
+}

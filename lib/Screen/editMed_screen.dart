@@ -6,7 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class EditMedScreen extends StatefulWidget {
-  static const routeName = '/EditMedScreen';
+  static const routeName = '/editMedScreen';
 
   @override
   State<StatefulWidget> createState() {
@@ -18,8 +18,8 @@ class _EditMedState extends State<EditMedScreen> {
   _Controller con;
   BuildContext context;
   Medication medication = new Medication();
-  var formKey = GlobalKey<FormState>();
   User user;
+  var formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -30,9 +30,10 @@ class _EditMedState extends State<EditMedScreen> {
   void render(fn) => setState(fn);
 
   Widget build(BuildContext context) {
-    Map arg = ModalRoute.of(context).settings.arguments;
-    medication ??= arg[Constant.ARG_MEDICATION_INFO];
-    user ??= arg[Constant.ARG_USER];
+    Map args = ModalRoute.of(context).settings.arguments;
+    user ??= args[Constant.ARG_USER];
+    medication ??= args[Constant.ARG_MEDICATION_INFO];
+
     return Scaffold(
       appBar: AppBar(title: Text("Add Medication")),
       body: SingleChildScrollView(
@@ -49,8 +50,8 @@ class _EditMedState extends State<EditMedScreen> {
                       ),
                       initialValue: medication.medName,
                       autocorrect: true,
-                      validator: con.validatorMedName,
-                      onSaved: con.onSavedMedName,
+                      // validator: con.validatorMedName,
+                      // onSaved: con.onSavedMedName,
                     ),
                     SizedBox(
                   width: double.infinity,
@@ -87,15 +88,15 @@ class _Controller {
     Navigator.of(_state.context).pop();
   } 
 
-  String validatorMedName(String value) {
-    if (value.length < 2) {
-      return 'min 2 chars';
-    } else
-      return null;
-  }
-  void onSavedMedName(String value) {
-  _state.medication.medName = value;
-  }
+  // String validatorMedName(String value) {
+  //   if (value.length < 2) {
+  //     return 'min 2 chars';
+  //   } else
+  //     return null;
+  // }
+  // void onSavedMedName(String value) {
+  // _state.medication.medName = value;
+  // }
 }
 
 

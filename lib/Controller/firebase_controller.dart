@@ -101,12 +101,10 @@ class FirebaseController {
   }
 
   static Future<Medication> getMedicationInfo(String email) async {
-    print("made it to firebase_controller");
     QuerySnapshot query = await FirebaseFirestore.instance
         .collection(Medication.COLLECTION)
         .where(Medication.EMAIL, isEqualTo: email)
         .get();
-    print("after QuerySnapShot");
     if (query != null && query.size > 0) {
       return Medication.deserialize(query.docs[0].data(), query.docs[0].id);
     } else {

@@ -1,13 +1,14 @@
 import 'package:Capstone/Controller/firebase_controller.dart';
 import 'package:Capstone/Model/constant.dart';
 import 'package:Capstone/Model/medication.dart';
+import 'package:Capstone/Screen/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'editMed_screen.dart';
 
 class MyMedicationScreen extends StatefulWidget {
-  static const routeName = '/MyMedicationScreen';
+  static const routeName = 'homeScreen/myMedicationScreen';
 
   @override
   State<StatefulWidget> createState() {
@@ -20,7 +21,6 @@ class _MyMedicationState extends State<MyMedicationScreen> {
   BuildContext context;
   Medication medication = new Medication();
   User user;
-  final navigatorKey = GlobalKey<NavigatorState>();
 
   @override
   void initState() {
@@ -28,6 +28,9 @@ class _MyMedicationState extends State<MyMedicationScreen> {
     con = _Controller(this);
   }
 
+  void render(fn) => setState(fn);
+
+  @override
   Widget build(BuildContext context) {
     Map args = ModalRoute.of(context).settings.arguments;
     user ??= args[Constant.ARG_USER];
@@ -53,7 +56,7 @@ class _MyMedicationState extends State<MyMedicationScreen> {
                     itemBuilder: (BuildContext context, int index) {
                       return RaisedButton(
                         child: Text(medication.medications[index].name),
-                        onPressed: () => con.medicationInfoRoute,
+                        onPressed: con.medicationInfoRoute,
                       );
                     })
           ],
@@ -73,13 +76,14 @@ class _Controller {
   }
 
   void medicationInfoRoute() async {
-    //First we will load the medication info associated with the account to pass to the screen
-    //if it doesn't exist in the database we will created a new one and append
-    //the email then pass to the screen
-    print("made it to medicationInfoRoute");
+    // First we will load the medication info associated with the account to pass to the screen
+    // if it doesn't exist in the database we will created a new one and append
+    // the email then pass to the screen
     Medication medication =
         await FirebaseController.getMedicationInfo(_state.user.email);
-    print("made it past await call");
+    print("user email:");
+    print(_state.user.email);
+    print(_state.context);
     Navigator.pushNamed(_state.context, EditMedScreen.routeName, arguments: {
       Constant.ARG_USER: _state.user,
       Constant.ARG_MEDICATION_INFO: medication,

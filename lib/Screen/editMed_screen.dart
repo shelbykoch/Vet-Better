@@ -1,5 +1,8 @@
+import 'package:Capstone/Controller/firebase_controller.dart';
+import 'package:Capstone/Model/constant.dart';
 import 'package:Capstone/Model/medication.dart';
-import 'package:Capstone/Model/personalInfo.dart';
+import 'package:Capstone/Model/personal_Info.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class EditMedScreen extends StatefulWidget {
@@ -16,7 +19,7 @@ class _EditMedState extends State<EditMedScreen> {
   BuildContext context;
   Medication medication = new Medication();
   var formKey = GlobalKey<FormState>();
-  //PersonalInfo personalInfo;
+  User user;
 
   @override
   void initState() {
@@ -24,29 +27,42 @@ class _EditMedState extends State<EditMedScreen> {
     con = _Controller(this);
   }
 
-  Widget build(BuildContext context) {
-    // Map arg = ModalRoute.of(context).settings.arguments;
-    // medication ??= arg['medication'];
+  void render(fn) => setState(fn);
 
+  Widget build(BuildContext context) {
+    Map arg = ModalRoute.of(context).settings.arguments;
+    medication ??= arg[Constant.ARG_MEDICATION_INFO];
+    user ??= arg[Constant.ARG_USER];
     return Scaffold(
-      appBar: AppBar(title: Text("Edit Medication")),
+      appBar: AppBar(title: Text("Add Medication")),
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            Form (
+            Form(
               key: formKey,
               child: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              TextFormField(
-                decoration: InputDecoration(
-                  hintText: 'Medication Name',
+                child: Column(
+                  children: <Widget>[
+                    TextFormField(
+                      decoration: InputDecoration(
+                        hintText: 'Medication Name',
+                      ),
+                      initialValue: medication.medName,
+                      autocorrect: true,
+                      validator: con.validatorMedName,
+                      onSaved: con.onSavedMedName,
+                    ),
+                    SizedBox(
+                  width: double.infinity,
+                  child: RaisedButton(
+                      child: Text("Save"),
+                      onPressed: () {
+                        con.save();
+                      },
+                  ),
+                    ),
+                  ],
                 ),
-                initialValue: medication.medName,
-                autocorrect: true,
-              ),
-              ],
-            ),
               ),
             ),
           ],
@@ -59,5 +75,27 @@ class _EditMedState extends State<EditMedScreen> {
 class _Controller {
   _EditMedState _state;
   _Controller(this._state);
-  Medication medication;
+
+ 
+  void save() async {
+    if (!_state.formKey.currentState.validate()) return; //If invalid, return
+    _state.formKey.currentState.save();
+
+    try {
+      await FirebaseController.updateMedicationInfo(_state.medication);
+    } catch (e) {}
+    Navigator.of(_state.context).pop();
+  } 
+
+  String validatorMedName(String value) {
+    if (value.length < 2) {
+      return 'min 2 chars';
+    } else
+      return null;
+  }
+  void onSavedMedName(String value) {
+  _state.medication.medName = value;
+  }
 }
+
+

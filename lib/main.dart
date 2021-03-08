@@ -1,4 +1,6 @@
+import 'package:Capstone/Screen/editMed_screen.dart';
 import 'package:Capstone/Screen/forgot_password_screen.dart';
+import 'package:Capstone/Screen/myMedication_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'Model/constant.dart';
@@ -33,6 +35,8 @@ class MyApp extends StatelessWidget {
         ForgotPasswordScreen.routeName: (context) => ForgotPasswordScreen(),
         FactorScreen.routeName: (context) => FactorScreen(),
         PersonalInfoScreen.routeName: (context) => PersonalInfoScreen(),
+        MyMedicationScreen.routeName: (context) => MyMedicationScreen(),
+        EditMedScreen.routeName: (context) => EditMedScreen(),
       },
     );
   }

@@ -1,6 +1,7 @@
 //Firebase connection class
 import 'dart:async';
 import 'package:Capstone/Model/factor.dart';
+import 'package:Capstone/Model/medication.dart';
 import 'package:Capstone/Model/personal_Info.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -88,5 +89,28 @@ class FirebaseController {
         .collection(Factor.COLLECTION)
         .add(factor.serialize());
     return ref.id;
+  }
+
+  //-----------------MEDICATION INFORMATION------------------//
+
+  static Future<void> updateMedicationInfo(Medication info) async {
+    await FirebaseFirestore.instance
+        .collection(Medication.COLLECTION)
+        .doc(info.docId)
+        .set(info.serialize());
+  }
+
+  static Future<Medication> getMedicationInfo(String email) async {
+    print("made it to firebase_controller");
+    QuerySnapshot query = await FirebaseFirestore.instance
+        .collection(Medication.COLLECTION)
+        .where(Medication.EMAIL, isEqualTo: email)
+        .get();
+    print("after QuerySnapShot");
+    if (query != null && query.size > 0) {
+      return Medication.deserialize(query.docs[0].data(), query.docs[0].id);
+    } else {
+      return new Medication.withEmail(email);
+    }
   }
 }

@@ -1,7 +1,9 @@
 import 'package:Capstone/Model/constant.dart';
 import 'package:Capstone/Model/factor.dart';
+import 'package:Capstone/Model/medication.dart';
 import 'package:Capstone/Model/personal_Info.dart';
 import 'package:Capstone/Screen/factor_screen.dart';
+import 'package:Capstone/Screen/myMedication_screen.dart';
 import 'package:Capstone/Screen/personal_info_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -91,6 +93,13 @@ class _UserHomeState extends State<HomeScreen> {
                     ListType.MitigationFactors, "Mitigation Factors"),
               ),
             ),
+            SizedBox(
+              width: double.infinity,
+              child: RaisedButton(
+                  child: Text('Medication'),
+                  onPressed: con.medicationInfoRoute,
+                  ),
+            ),
           ]),
         ),
       ),
@@ -128,15 +137,29 @@ class _Controller {
         });
   }
 
-  //------------------------APP TRAY ROUTING--------------------------//
-
-  void signOut() async {
-    try {
-      await FirebaseController.signOut();
-    } catch (e) {
-      //do nothing
-    }
-    Navigator.of(_state.context).pop(); //Close app drawer
-    Navigator.of(_state.context).pop(); //Close home screen
+  void medicationInfoRoute() async {
+    //First we will load the medication info associated with the account to pass to the screen
+    //if it doesn't exist in the database we will created a new one and append
+    //the email then pass to the screen
+    Medication medication =
+        await FirebaseController.getMedicationInfo(_state.user.email);
+    Navigator.pushNamed(_state.context, MyMedicationScreen.routeName,
+        arguments: {
+          Constant.ARG_USER: _state.user,
+          Constant.ARG_MEDICATION_INFO: medication,
+        });
   }
-}
+
+    //------------------------APP TRAY ROUTING--------------------------//
+
+    void signOut() async {
+      try {
+        await FirebaseController.signOut();
+      } catch (e) {
+        //do nothing
+      }
+      Navigator.of(_state.context).pop(); //Close app drawer
+      Navigator.of(_state.context).pop(); //Close home screen
+    }
+  }
+

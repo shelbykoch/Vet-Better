@@ -1,4 +1,11 @@
+<<<<<<< Updated upstream
+=======
+import 'package:Capstone/Screen/coping_strategies_screen.dart';
+import 'package:Capstone/Screen/mitigation_factors_screen.dart';
+import 'package:Capstone/Screen/risk_factors_screen.dart';
+>>>>>>> Stashed changes
 import 'package:Capstone/Screen/forgot_password_screen.dart';
+import 'package:Capstone/Screen/warning_signs_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'Model/constant.dart';
@@ -33,6 +40,8 @@ class MyApp extends StatelessWidget {
         ForgotPasswordScreen.routeName: (context) => ForgotPasswordScreen(),
         FactorScreen.routeName: (context) => FactorScreen(),
         PersonalInfoScreen.routeName: (context) => PersonalInfoScreen(),
+        WarningSignsScreen.routeName: (context) => WarningSignsScreen(),
+        CopingStratScreen.routeName: (context) => CopingStratScreen(),
       },
     );
   }

@@ -1,8 +1,19 @@
 import 'package:Capstone/Model/constant.dart';
+<<<<<<< Updated upstream
 import 'package:Capstone/Model/factor.dart';
 import 'package:Capstone/Model/personal_Info.dart';
 import 'package:Capstone/Screen/factor_screen.dart';
 import 'package:Capstone/Screen/personal_info_screen.dart';
+=======
+import 'package:Capstone/Model/personalInfo.dart';
+import 'package:Capstone/Screen/coping_strategies_screen.dart';
+import 'package:Capstone/Screen/medicalhistory_screen.dart';
+import 'package:Capstone/Screen/mitigation_factors_screen.dart';
+import 'package:Capstone/Screen/personalinfo_screen.dart';
+import 'package:Capstone/Screen/psychhistory_screen.dart';
+import 'package:Capstone/Screen/risk_factors_screen.dart';
+import 'package:Capstone/Screen/warning_signs_screen.dart';
+>>>>>>> Stashed changes
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../Controller/firebase_controller.dart';
@@ -91,6 +102,20 @@ class _UserHomeState extends State<HomeScreen> {
                     ListType.MitigationFactors, "Mitigation Factors"),
               ),
             ),
+            SizedBox(
+              width: double.infinity,
+              child: RaisedButton(
+                child: Text('Warning Signs'),
+                onPressed: con.warningSignsRoute,
+              ),
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: RaisedButton(
+                child: Text('Coping Strategies'),
+                onPressed: con.copingStrategiesRoute,
+              ),
+            ),
           ]),
         ),
       ),
@@ -129,6 +154,14 @@ class _Controller {
   }
 
   //------------------------APP TRAY ROUTING--------------------------//
+
+  void warningSignsRoute() {
+    Navigator.pushNamed(state.context, WarningSignsScreen.routeName);
+  }
+
+  void copingStrategiesRoute() {
+    Navigator.pushNamed(state.context, CopingStratScreen.routeName);
+  }
 
   void signOut() async {
     try {

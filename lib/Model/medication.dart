@@ -4,21 +4,15 @@ class Medication {
   static const MEDNAME = 'medName';
   static const MEDCOUNT = 'medCount';
   static const DOSEAMT = 'doseAmt';
-  static const ISSCHEDULED = 'isScheduled';
   static const TIMESDAILY = 'timesDaily';
-  static const MEDICATIONS = 'medications';
-  static const TIMEOFDAY = 'timeOfDay';
 
   // Field names and values
   String docId;
   String email;
   String medName;
-  int medCount;
-  int doseAmt; // in mg
-  bool isScheduled; // scheduled vs as needed
-  int timesDaily; // how many doses per day
-  List<dynamic> medications;
-  DateTime timeOfDay;
+  String medCount;
+  String doseAmt; // in mg
+  String timesDaily; // how many doses per day
 
   Medication({
     this.docId,
@@ -26,20 +20,11 @@ class Medication {
     this.medName,
     medCount = 0,
     this.doseAmt,
-    isScheduled,
     this.timesDaily,
-    this.medications,
-    this.timeOfDay,
-  }) {
-    this.medications ??= [];
-  }
+  });
 
   Medication.withEmail(String email) {
     this.email = email;
-  }
-
-  void generateMedList() {
-    medications.add(new Medication());
   }
 
   Map<String, dynamic> serialize() {
@@ -48,10 +33,7 @@ class Medication {
       MEDNAME: medName,
       MEDCOUNT: medCount,
       DOSEAMT: doseAmt,
-      ISSCHEDULED: isScheduled,
       TIMESDAILY: timesDaily,
-      MEDICATIONS: medications,
-      TIMEOFDAY: timeOfDay,
     };
   }
 
@@ -62,9 +44,6 @@ class Medication {
         medName: data[Medication.MEDNAME],
         medCount: data[Medication.MEDCOUNT],
         doseAmt: data[Medication.DOSEAMT],
-        isScheduled: data[Medication.ISSCHEDULED],
-        timesDaily: data[Medication.TIMESDAILY],
-        medications: data[Medication.MEDICATIONS],
-        timeOfDay: data[Medication.TIMEOFDAY]);
+        timesDaily: data[Medication.TIMESDAILY]);
   }
 }

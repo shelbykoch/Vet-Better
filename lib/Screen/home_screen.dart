@@ -141,12 +141,8 @@ class _Controller {
     //First we will load the medication info associated with the account to pass to the screen
     //if it doesn't exist in the database we will created a new one and append
     //the email then pass to the screen
-    Medication medication =
+    List<Medication> medication =
         await FirebaseController.getMedicationInfo(_state.user.email);
-    print("user email:");
-    print(_state.user.email);
-    print("context:");
-    print(_state.context);
     Navigator.pushNamed(_state.context, MyMedicationScreen.routeName,
         arguments: {
           Constant.ARG_USER: _state.user,

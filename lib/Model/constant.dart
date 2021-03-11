@@ -10,6 +10,6 @@ class Constant {
   static const ARG_FACTOR_TITLE = 'factorTitle';
 
   //Medication screen
-  static const ARG_MEDICATION_INFO = 'medicationInfo';
+  static const ARG_MEDICATION_INFO = 'medicationList';
 
 }

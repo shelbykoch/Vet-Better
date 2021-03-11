@@ -1,5 +1,6 @@
 //Firebase connection class
 import 'dart:async';
+import 'package:Capstone/Model/appointment.dart';
 import 'package:Capstone/Model/factor.dart';
 import 'package:Capstone/Model/personal_Info.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -87,6 +88,42 @@ class FirebaseController {
     DocumentReference ref = await FirebaseFirestore.instance
         .collection(Factor.COLLECTION)
         .add(factor.serialize());
+    return ref.id;
+  }
+
+  //-------------------APPOINTMENTS-----------------------------//
+
+  static Future<List<Appointment>> getAppointmentList(String email) async {
+    QuerySnapshot query = await FirebaseFirestore.instance
+        .collection(Appointment.COLLECTION)
+        .where(Appointment.EMAIL, isEqualTo: email)
+        .orderBy(Appointment.DATE_TIME, descending: true)
+        .get();
+
+    List<Appointment> result;
+    if (query != null && query.size != 0) {
+      result = new List<Appointment>();
+      for (var doc in query.docs) {
+        result.add(Appointment.deserialize(doc.data(), doc.id));
+      }
+      return result;
+    } else {
+      //returns empty list if user has not appointments in the database
+      return new List<Appointment>();
+    }
+  }
+
+  static Future<void> updateAppointment(Appointment appointment) async {
+    await FirebaseFirestore.instance
+        .collection(Appointment.COLLECTION)
+        .doc(appointment.docID)
+        .set(appointment.serialize());
+  }
+
+  static Future<String> addAppointment(Appointment appointment) async {
+    DocumentReference ref = await FirebaseFirestore.instance
+        .collection(Appointment.COLLECTION)
+        .add(appointment.serialize());
     return ref.id;
   }
 }

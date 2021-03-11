@@ -8,4 +8,8 @@ class Constant {
   //Factors screen
   static const ARG_FACTORS = 'factors';
   static const ARG_FACTOR_TITLE = 'factorTitle';
+
+  //Calendar and Appointment screens
+  static const ARG_APPOINTMENT = 'appointment'; //Single appt to view or edit
+  static const ARG_APPOINTMENTS = 'appointments'; //list of appts for
 }

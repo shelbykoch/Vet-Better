@@ -1,3 +1,5 @@
+import 'package:Capstone/Screen/appointment_screen.dart';
+import 'package:Capstone/Screen/calendar_screen.dart';
 import 'package:Capstone/Screen/forgot_password_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -33,6 +35,8 @@ class MyApp extends StatelessWidget {
         ForgotPasswordScreen.routeName: (context) => ForgotPasswordScreen(),
         FactorScreen.routeName: (context) => FactorScreen(),
         PersonalInfoScreen.routeName: (context) => PersonalInfoScreen(),
+        CalendarScreen.routeName: (conext) => CalendarScreen(),
+        AppointmentScreen.routeName: (context) => AppointmentScreen(),
       },
     );
   }

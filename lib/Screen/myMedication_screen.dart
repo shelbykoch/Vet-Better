@@ -32,7 +32,7 @@ class _MyMedicationState extends State<MyMedicationScreen> {
   Widget build(BuildContext context) {
     Map args = ModalRoute.of(context).settings.arguments;
     user ??= args[Constant.ARG_USER];
-    medication ??= args['medicationList'];
+    medication ??= args[Constant.ARG_MEDICATION_INFO];
 
     return Scaffold(
       appBar: AppBar(title: Text("My Medication")),
@@ -78,12 +78,11 @@ class _Controller {
     // First we will load the medication info associated with the account to pass to the screen
     // if it doesn't exist in the database we will created a new one and append
     // the email then pass to the screen
-    List<Medication> medication = new List<Medication>();
-    medication = await FirebaseController.getMedicationInfo(_state.user.email);
+    List<Medication> medication = await FirebaseController.getMedicationList(_state.user.email);
     Navigator.pushNamed(_state.context, EditMedScreen.routeName, arguments: {
       Constant.ARG_USER: _state.user,
       Constant.ARG_MEDICATION_INFO: medication,
     });
-
+    print(_state.user);
   }
 }

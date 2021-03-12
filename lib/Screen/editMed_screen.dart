@@ -32,7 +32,7 @@ class _EditMedState extends State<EditMedScreen> {
   Widget build(BuildContext context) {
     Map args = ModalRoute.of(context).settings.arguments;
     user ??= args[Constant.ARG_USER];
-    medication ??= args["medicationList"];
+    medication ??= args[Constant.ARG_MEDICATION_INFO];
 
     return Scaffold(
       appBar: AppBar(title: Text("Add Medication")),
@@ -95,21 +95,17 @@ class _EditMedState extends State<EditMedScreen> {
 class _Controller {
   _EditMedState _state;
   _Controller(this._state);
-  
 
   void save() async {
     if (!_state.formKey.currentState.validate()) return; //If invalid, return
     _state.formKey.currentState.save();
 
     try {
-      await FirebaseController.updateMedicationInfo(_state.medicationInfo);
-    } catch (e) {}
-
-    Navigator.pushNamed(_state.context, MyMedicationScreen.routeName,
-        arguments: {
-          Constant.ARG_USER: _state.user,
-          Constant.ARG_MEDICATION_INFO: _state.medication,
-        });
+      await FirebaseController.addMedication(_state.medicationInfo);
+    } catch (e) {
+      print("e: ${e}");
+    }
+    Navigator.of(_state.context).pop();
   }
 
   void saveMedName(String value) {

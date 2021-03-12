@@ -142,12 +142,17 @@ class _Controller {
     //if it doesn't exist in the database we will created a new one and append
     //the email then pass to the screen
     List<Medication> medication =
-        await FirebaseController.getMedicationInfo(_state.user.email);
+        await FirebaseController.getMedicationList(_state.user.email);
     Navigator.pushNamed(_state.context, MyMedicationScreen.routeName,
         arguments: {
           Constant.ARG_USER: _state.user,
           Constant.ARG_MEDICATION_INFO: medication,
         });
+    print(medication[0].toString());
+    // print(medication[1].toString());
+    // print(medication[2].toString());
+
+
   }
 
   //------------------------APP TRAY ROUTING--------------------------//

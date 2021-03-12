@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 class Medication {
   static const COLLECTION = 'medicationInfo';
   static const EMAIL = 'email';
@@ -23,7 +25,7 @@ class Medication {
     this.timesDaily,
   });
 
-  Medication.withEmail(String email) {
+  Medication.withEmail(@required String email) {
     this.email = email;
   }
 
@@ -45,5 +47,10 @@ class Medication {
         medCount: data[Medication.MEDCOUNT],
         doseAmt: data[Medication.DOSEAMT],
         timesDaily: data[Medication.TIMESDAILY]);
+  }
+
+    @override
+  String toString() {
+    return 'Medication: {medName: ${medName}}';
   }
 }

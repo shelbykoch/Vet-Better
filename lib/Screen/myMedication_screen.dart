@@ -17,7 +17,7 @@ class MyMedicationScreen extends StatefulWidget {
 
 class _MyMedicationState extends State<MyMedicationScreen> {
   _Controller con;
-  List<Medication> medication = new List<Medication>();
+  List<Medication> medication;
   User user;
 
   @override
@@ -78,7 +78,8 @@ class _Controller {
     // First we will load the medication info associated with the account to pass to the screen
     // if it doesn't exist in the database we will created a new one and append
     // the email then pass to the screen
-    List<Medication> medication = await FirebaseController.getMedicationList(_state.user.email);
+    List<Medication> medication =
+        await FirebaseController.getMedicationList(_state.user.email);
     Navigator.pushNamed(_state.context, EditMedScreen.routeName, arguments: {
       Constant.ARG_USER: _state.user,
       Constant.ARG_MEDICATION_INFO: medication,

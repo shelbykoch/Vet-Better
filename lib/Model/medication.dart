@@ -31,7 +31,7 @@ class Medication {
 
   Map<String, dynamic> serialize() {
     return <String, dynamic>{
-      EMAIL: email,
+      EMAIL: this.email,
       MEDNAME: medName,
       MEDCOUNT: medCount,
       DOSEAMT: doseAmt,

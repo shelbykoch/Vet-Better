@@ -148,7 +148,7 @@ class _Controller {
           Constant.ARG_USER: _state.user,
           Constant.ARG_MEDICATION_INFO: medication,
         });
-    print(medication[0].toString());
+    // print(medication[0].toString());
     // print(medication[1].toString());
     // print(medication[2].toString());
 

@@ -94,6 +94,7 @@ class FirebaseController {
   //-----------------MEDICATION INFORMATION------------------//
 
   static Future<String> addMedication(Medication info) async {
+
     DocumentReference ref = await FirebaseFirestore.instance
         .collection(Medication.COLLECTION)
         .add(info.serialize());

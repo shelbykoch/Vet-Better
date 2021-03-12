@@ -53,7 +53,7 @@ class _EditMedState extends State<EditMedScreen> {
                     ),
                     TextFormField(
                       decoration: InputDecoration(
-                        hintText: 'Dosage Amount',
+                        hintText: 'Dosage Amount (in mg)',
                       ),
                       autocorrect: true,
                       onSaved: con.saveDoseAmt,
@@ -99,7 +99,8 @@ class _Controller {
   void save() async {
     if (!_state.formKey.currentState.validate()) return; //If invalid, return
     _state.formKey.currentState.save();
-
+    print("Email: ${_state.user.email}");
+    _state.medicationInfo.email = _state.user.email;
     try {
       await FirebaseController.addMedication(_state.medicationInfo);
     } catch (e) {

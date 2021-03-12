@@ -9,6 +9,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+
+
+
 class FirebaseController {
 //-------------------------ACCOUNT------------------------//
 
@@ -94,7 +97,6 @@ class FirebaseController {
   //-----------------MEDICATION INFORMATION------------------//
 
   static Future<String> addMedication(Medication info) async {
-
     DocumentReference ref = await FirebaseFirestore.instance
         .collection(Medication.COLLECTION)
         .add(info.serialize());
@@ -106,6 +108,20 @@ class FirebaseController {
         .collection(Medication.COLLECTION)
         .doc(info.docId)
         .set(info.serialize());
+  }
+
+  static Future<void> getMedicationInfo(String email, Medication info) async {
+    print(info);
+    QuerySnapshot query = await FirebaseFirestore.instance
+        .collection(Medication.COLLECTION)
+        .where(Medication.EMAIL, isEqualTo: email)
+        .get();
+
+    if (query != null && query.size > 0) {
+      return PersonalInfo.deserialize(query.docs[0].data(), query.docs[0].id);
+    } else {
+      return new PersonalInfo.withEmail(email);
+    }
   }
 
   static Future<List<Medication>> getMedicationList(String email) async {
@@ -125,4 +141,34 @@ class FirebaseController {
       return null;
     }
   }
+
+  //----------------Notifications------------------//
+//  static Future<void> getNoticiationToken() {
+//  FirebaseMessaging.getInstance().getToken()
+//     .addOnCompleteListener(new OnCompleteListener<String>() {
+//         @Override
+//         public void onComplete(@NonNull Task<String> task) {
+//           if (!task.isSuccessful()) {
+//             Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+//             return;
+//           }
+
+//           // Get new FCM registration token
+//           String token = task.getResult();
+
+//           // Log and toast
+//           String msg = getString(R.string.msg_token_fmt, token);
+//           Log.d(TAG, msg);
+//           Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+//         }
+//     });
+//  }
+
+  // Notification to take medication in the Morning
+
+
+  // Notiication to take medication in the Afternoon
+
+  // Notification to take medication in the Evening
+
 }

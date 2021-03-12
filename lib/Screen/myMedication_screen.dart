@@ -32,34 +32,37 @@ class _MyMedicationState extends State<MyMedicationScreen> {
   Widget build(BuildContext context) {
     Map args = ModalRoute.of(context).settings.arguments;
     user ??= args[Constant.ARG_USER];
-    medication ??= args[Constant.ARG_MEDICATION_INFO];
+    medication ??= args[Constant.ARG_MEDICATION_LIST];
 
     return Scaffold(
       appBar: AppBar(title: Text("My Medication")),
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            medication.length == 0
-                ? Text('Add Medications to your list')
-                : ListView.builder(
+            if (medication.length == 0)
+              Text('Add Medications to your list')
+            else
+              Card(
+                color: Colors.grey[800],
+                child: ListView.builder(
                     scrollDirection: Axis.vertical,
                     shrinkWrap: true,
                     itemCount: medication.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return RaisedButton(
-                        child: Text(medication[index].medName),
-                        onPressed: con.medicationInfoRoute,
+                      return ListTile(
+                        title: Text(medication[index].medName),
+                        onTap: () => con.medicationInfoRoute(index),
+                        trailing: Icon(Icons.arrow_forward),
+                        subtitle: Text(
+                            "${medication[index].doseAmt}mg, ${medication[index].timesDaily} times daily"),
                       );
                     }),
+              ),
             SizedBox(height: 20.0),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Text('Add New Medication'),
-            ),
             Align(
               alignment: Alignment.bottomRight,
               child: FloatingActionButton(
-                onPressed: con.medicationInfoRoute,
+                onPressed: () => con.addMedicationInfoRoute(),
                 child: Icon(Icons.add),
               ),
             ),
@@ -74,16 +77,27 @@ class _Controller {
   _MyMedicationState _state;
   _Controller(this._state);
 
-  void medicationInfoRoute() async {
+void medicationInfoRoute(int index) async {
     // First we will load the medication info associated with the account to pass to the screen
     // if it doesn't exist in the database we will created a new one and append
     // the email then pass to the screen
-    List<Medication> medication =
+    List<Medication> medicationList =
         await FirebaseController.getMedicationList(_state.user.email);
     Navigator.pushNamed(_state.context, EditMedScreen.routeName, arguments: {
       Constant.ARG_USER: _state.user,
-      Constant.ARG_MEDICATION_INFO: medication,
+      Constant.ARG_MEDICATION_INFO: medicationList[index],
     });
-    print(_state.user);
+  }
+
+  void addMedicationInfoRoute() async {
+    // First we will load the medication info associated with the account to pass to the screen
+    // if it doesn't exist in the database we will created a new one and append
+    // the email then pass to the screen
+    List<Medication> medicationList =
+        await FirebaseController.getMedicationList(_state.user.email);
+    Navigator.pushNamed(_state.context, EditMedScreen.routeName, arguments: {
+      Constant.ARG_USER: _state.user,
+      Constant.ARG_MEDICATION_LIST: medicationList,
+    });
   }
 }

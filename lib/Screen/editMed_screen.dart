@@ -17,7 +17,7 @@ class EditMedScreen extends StatefulWidget {
 class _EditMedState extends State<EditMedScreen> {
   _Controller con;
   User user;
-  Medication medicationInfo = new Medication();
+  Medication medicationInfo;
   List<Medication> medication;
   var formKey = GlobalKey<FormState>();
 
@@ -32,8 +32,8 @@ class _EditMedState extends State<EditMedScreen> {
   Widget build(BuildContext context) {
     Map args = ModalRoute.of(context).settings.arguments;
     user ??= args[Constant.ARG_USER];
-    medication ??= args[Constant.ARG_MEDICATION_INFO];
-
+    medication ??= args[Constant.ARG_MEDICATION_LIST];
+    medicationInfo ??= args[Constant.ARG_MEDICATION_INFO];
     return Scaffold(
       appBar: AppBar(title: Text("Add Medication")),
       body: SingleChildScrollView(
@@ -45,6 +45,9 @@ class _EditMedState extends State<EditMedScreen> {
                 child: Column(
                   children: <Widget>[
                     TextFormField(
+                      initialValue: medicationInfo == null
+                      ? 'Medication Name'
+                      : medicationInfo.medName,
                       decoration: InputDecoration(
                         hintText: 'Medication Name',
                       ),
@@ -55,22 +58,31 @@ class _EditMedState extends State<EditMedScreen> {
                       decoration: InputDecoration(
                         hintText: 'Dosage Amount (in mg)',
                       ),
+                      initialValue: medicationInfo == null
+                      ? 'Dosage Amount (in mg)'
+                      : medicationInfo.doseAmt,
                       autocorrect: true,
                       onSaved: con.saveDoseAmt,
                     ),
                     TextFormField(
                       decoration: InputDecoration(
-                        hintText: 'Pills per Day',
+                        hintText: 'Number of Times Daily',
                       ),
+                      initialValue: medicationInfo == null
+                      ? 'Number of Times Daily'
+                      : medicationInfo.timesDaily,
                       autocorrect: true,
-                      onSaved: con.saveMedCount,
+                      onSaved: con.saveTimesDaily,
                     ),
                     TextFormField(
                       decoration: InputDecoration(
-                        hintText: 'Number of Times Daily',
+                        hintText: 'Refill Date (mm-dd-yyyy)',
                       ),
+                      initialValue: medicationInfo == null
+                      ? 'Refill Date (mm-dd-yyyy)'
+                      : medicationInfo.refillDate,
                       autocorrect: true,
-                      onSaved: con.saveTimesDaily,
+                      onSaved: con.saveRefillDate,
                     ),
                     SizedBox(
                       width: double.infinity,
@@ -99,13 +111,10 @@ class _Controller {
   void save() async {
     if (!_state.formKey.currentState.validate()) return; //If invalid, return
     _state.formKey.currentState.save();
-    print("Email: ${_state.user.email}");
     _state.medicationInfo.email = _state.user.email;
     try {
       await FirebaseController.addMedication(_state.medicationInfo);
-    } catch (e) {
-      print("e: ${e}");
-    }
+    } catch (e) {}
     Navigator.of(_state.context).pop();
   }
 
@@ -117,11 +126,11 @@ class _Controller {
     _state.medicationInfo.doseAmt = value;
   }
 
-  void saveMedCount(String value) {
-    _state.medicationInfo.medCount = value;
-  }
-
   void saveTimesDaily(String value) {
     _state.medicationInfo.timesDaily = value;
+  }
+
+  void saveRefillDate(String value) {
+    _state.medicationInfo.refillDate = value;
   }
 }

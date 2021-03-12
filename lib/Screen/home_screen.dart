@@ -9,6 +9,10 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../Controller/firebase_controller.dart';
 import '../Model/constant.dart';
+//import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
+
+
+
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/homeScreen';
@@ -146,12 +150,8 @@ class _Controller {
     Navigator.pushNamed(_state.context, MyMedicationScreen.routeName,
         arguments: {
           Constant.ARG_USER: _state.user,
-          Constant.ARG_MEDICATION_INFO: medication,
+          Constant.ARG_MEDICATION_LIST: medication,
         });
-    // print(medication[0].toString());
-    // print(medication[1].toString());
-    // print(medication[2].toString());
-
 
   }
 

@@ -1,5 +1,7 @@
 import 'package:Capstone/Controller/firebase_controller.dart';
 import 'package:Capstone/Model/appointment.dart';
+import 'package:Capstone/Model/constant.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
@@ -17,19 +19,28 @@ class AppointmentScreen extends StatefulWidget {
 class _AppointmentScreenState extends State<AppointmentScreen> {
   _Controller con;
   BuildContext context;
-  Appointment _appointment = Appointment();
+  Appointment _appointment;
+  User _user;
   var formKey = GlobalKey<FormState>();
-  TextEditingController _dateTimeController = TextEditingController();
+  TextEditingController _dateTimeController;
 
   _AppointmentScreenState() {
     con = _Controller(this);
-    _appointment.email = "test@uco.edu";
   }
 
   void render(fn) => setState(fn);
 
   @override
   Widget build(BuildContext context) {
+    Map arg = ModalRoute.of(context).settings.arguments;
+    _user ??= arg[Constant.ARG_USER];
+    _appointment =
+        arg[Constant.ARG_APPOINTMENT] ?? Appointment.withEmail(_user.email);
+    _dateTimeController = TextEditingController(
+        text: _appointment.dateTime != null
+            ? DateFormat.yMd().add_jm().format(_appointment.dateTime)
+            : "");
+
     this.context = context;
     return Scaffold(
       appBar: AppBar(
@@ -64,6 +75,8 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                 ),
                 autocorrect: false,
                 validator: con.validateTitle,
+                initialValue:
+                    _appointment.title != null ? _appointment.title : "",
               ),
               TextFormField(
                 //initialValue: record.title,
@@ -72,6 +85,8 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                 ),
                 autocorrect: false,
                 validator: con.validateLocation,
+                initialValue:
+                    _appointment.location != null ? _appointment.location : "",
               ),
               TextFormField(
                 //initialValue: record.title,

@@ -28,10 +28,12 @@ dependencies:
   cloud_firestore: ^0.16.0
   font_awesome_flutter: ^8.11.0
   firebase_storage: ^7.0.0
-  flutter_calendar_carousel: ^1.5.3
+  table_calendar: ^2.3.3
   flutter_datetime_picker: ^1.5.0
   intl: ^0.16.0
   cloud_firestore_platform_interface: ^3.0.2
+  dots_indicator: ^1.2.0
+
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

@@ -126,4 +126,11 @@ class FirebaseController {
         .add(appointment.serialize());
     return ref.id;
   }
+
+  static Future<void> deleteAppointment(String docID) async {
+    await FirebaseFirestore.instance
+        .collection(Appointment.COLLECTION)
+        .doc(docID)
+        .delete();
+  }
 }

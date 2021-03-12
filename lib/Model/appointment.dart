@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class Appointment {
   String docID; //Firebase DocID
@@ -15,7 +16,7 @@ class Appointment {
     this.dateTime,
   });
 
-  Appointment.withEmail(String) {
+  Appointment.withEmail(String email) {
     this.email = email;
   }
 
@@ -53,18 +54,10 @@ class Appointment {
         dateTime: date);
   }
 
-  //The calendar we are using requires a specific object
-  //type called an event to display an appointment.
-  //This function will convert an appointment into
-  //that event object for display
-  Map<DateTime, List<dynamic>> convertToEvent() {
-    List<dynamic> info = List<dynamic>();
-    //Add all info about appointment
-    info.add(docID);
-    info.add(email);
-    info.add(title);
-    info.add(location);
-    return <DateTime, List<dynamic>>{dateTime: info};
+  String getTimeandLocation() {
+    return DateFormat.jm().format(this.dateTime).toString() +
+        '\n' +
+        this.location;
   }
 
   static const EMAIL = 'email';

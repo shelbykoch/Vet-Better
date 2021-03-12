@@ -1,12 +1,15 @@
+import 'package:Capstone/Model/appointment.dart';
 import 'package:Capstone/Model/constant.dart';
 import 'package:Capstone/Model/factor.dart';
 import 'package:Capstone/Model/personal_Info.dart';
+import 'package:Capstone/Screen/appointment_screen.dart';
 import 'package:Capstone/Screen/factor_screen.dart';
 import 'package:Capstone/Screen/personal_info_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../Controller/firebase_controller.dart';
 import '../Model/constant.dart';
+import 'calendar_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/homeScreen';
@@ -53,45 +56,61 @@ class _UserHomeState extends State<HomeScreen> {
         ),
         body: Padding(
           padding: const EdgeInsets.only(top: 20.0, left: 40.0, right: 40.0),
-          child: ListView(children: <Widget>[
-            SizedBox(
-              width: double.infinity,
-              child: RaisedButton(
-                child: Text('Personal information'),
-                onPressed: con.personalInfoRoute,
+          child: ListView(
+            children: <Widget>[
+              SizedBox(
+                width: double.infinity,
+                child: RaisedButton(
+                  child: Text('Personal information'),
+                  onPressed: con.personalInfoRoute,
+                ),
               ),
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: RaisedButton(
-                child: Text('Medical history'),
-                onPressed: () =>
-                    con.factorRoute(ListType.MedicalHistory, "Medical History"),
-              ),
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: RaisedButton(
-                  child: Text('Psychiatric history'),
+              SizedBox(
+                width: double.infinity,
+                child: RaisedButton(
+                  child: Text('Medical history'),
                   onPressed: () => con.factorRoute(
-                      ListType.PsychHistory, "Psychiatric History")),
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: RaisedButton(
-                  child: Text('Baseline risk'),
-                  onPressed: () =>
-                      con.factorRoute(ListType.RiskFactors, "Risk Factors")),
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: RaisedButton(
-                child: Text('Mitigation strategies'),
-                onPressed: () => con.factorRoute(
-                    ListType.MitigationFactors, "Mitigation Factors"),
+                      ListType.MedicalHistory, "Medical History"),
+                ),
               ),
-            ),
-          ]),
+              SizedBox(
+                width: double.infinity,
+                child: RaisedButton(
+                    child: Text('Psychiatric history'),
+                    onPressed: () => con.factorRoute(
+                        ListType.PsychHistory, "Psychiatric History")),
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: RaisedButton(
+                    child: Text('Baseline risk'),
+                    onPressed: () =>
+                        con.factorRoute(ListType.RiskFactors, "Risk Factors")),
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: RaisedButton(
+                  child: Text('Mitigation strategies'),
+                  onPressed: () => con.factorRoute(
+                      ListType.MitigationFactors, "Mitigation Factors"),
+                ),
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: RaisedButton(
+                  child: Text('Calendar'),
+                  onPressed: () => con.calendarRoute(),
+                ),
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: RaisedButton(
+                  child: Text('Appointment'),
+                  onPressed: () => con.appointmentRoute(),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -125,6 +144,24 @@ class _Controller {
         arguments: {
           Constant.ARG_USER: _state.user,
           Constant.ARG_PERSONAL_INFO: info
+        });
+  }
+
+  void calendarRoute() async {
+    //Map<DateTime, List<dynamic>> function call made here to Firebase to get appointments
+    List<Appointment> appointments =
+        await FirebaseController.getAppointmentList(_state.user.email);
+
+    Navigator.pushNamed(_state.context, CalendarScreen.routeName, arguments: {
+      Constant.ARG_USER: _state.user,
+      Constant.ARG_APPOINTMENTS: appointments,
+    });
+  }
+
+  void appointmentRoute() async {
+    Navigator.pushNamed(_state.context, AppointmentScreen.routeName,
+        arguments: {
+          Constant.ARG_USER: _state.user,
         });
   }
 

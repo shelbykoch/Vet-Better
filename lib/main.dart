@@ -8,6 +8,7 @@ import 'Screen/login_screen.dart';
 import 'Screen/home_screen.dart';
 import 'Screen/factor_screen.dart';
 import 'Screen/personal_info_screen.dart';
+import 'Screen/calendar_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

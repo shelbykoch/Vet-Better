@@ -111,7 +111,6 @@ class FirebaseController {
   }
 
   static Future<void> getMedicationInfo(String email, Medication info) async {
-    print(info);
     QuerySnapshot query = await FirebaseFirestore.instance
         .collection(Medication.COLLECTION)
         .where(Medication.EMAIL, isEqualTo: email)
@@ -125,7 +124,6 @@ class FirebaseController {
   }
 
   static Future<List<Medication>> getMedicationList(String email) async {
-    print(email);
     QuerySnapshot query = await FirebaseFirestore.instance
         .collection(Medication.COLLECTION)
         .where(Medication.EMAIL, isEqualTo: email)

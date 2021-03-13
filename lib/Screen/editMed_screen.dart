@@ -1,7 +1,6 @@
 import 'package:Capstone/Controller/firebase_controller.dart';
 import 'package:Capstone/Model/constant.dart';
 import 'package:Capstone/Model/medication.dart';
-import 'package:Capstone/Screen/myMedication_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +17,7 @@ class _EditMedState extends State<EditMedScreen> {
   _Controller con;
   User user;
   Medication medicationInfo;
-  List<Medication> medication;
+
   var formKey = GlobalKey<FormState>();
 
   @override
@@ -32,8 +31,11 @@ class _EditMedState extends State<EditMedScreen> {
   Widget build(BuildContext context) {
     Map args = ModalRoute.of(context).settings.arguments;
     user ??= args[Constant.ARG_USER];
-    medication ??= args[Constant.ARG_MEDICATION_LIST];
     medicationInfo ??= args[Constant.ARG_MEDICATION_INFO];
+    // if (medicationInfo != null) {
+    //   print(medicationInfo.medName);
+    //   print(medicationInfo.docId);
+    // }
     if (medicationInfo == null) medicationInfo = new Medication();
     return Scaffold(
       appBar: AppBar(title: Text("Add Medication")),
@@ -132,10 +134,15 @@ class _Controller {
     _state.formKey.currentState.save();
     _state.medicationInfo.email = _state.user.email;
     try {
-      await FirebaseController.addMedication(_state.medicationInfo);
-     
+      if (_state.medicationInfo.docId == null) {
+        await FirebaseController.addMedication(_state.medicationInfo);
+      } else
+        await FirebaseController.updateMedicationInfo(_state.medicationInfo);
+     List<Medication> medicationList =
+        await FirebaseController.getMedicationList(_state.user.email); 
+      _state.setState(() {});
+      Navigator.of(_state.context).pop();
     } catch (e) {}
-    Navigator.of(_state.context).pop( _state.setState(() {}));
   }
 
   void saveMedName(String value) {

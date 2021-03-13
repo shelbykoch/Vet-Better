@@ -17,9 +17,10 @@ enum SeverityLevel { moderate, severe }
 
 class _FactorEditState extends State<FactorEditScreen> {
   _Controller con;
-  BuildContext context;
   User user;
   Factor factor;
+  List<Factor> factors;
+  int index;
   String title;
   SeverityLevel _character = SeverityLevel.moderate;
   var formKey = GlobalKey<FormState>();
@@ -36,7 +37,9 @@ class _FactorEditState extends State<FactorEditScreen> {
   Widget build(BuildContext context) {
     Map arg = ModalRoute.of(context).settings.arguments;
     user ??= arg[Constant.ARG_USER];
-    factor ??= arg[Constant.ARG_FACTORS];
+    factor ??= arg[Constant.ARG_FACTOR];
+    factors ??= arg[Constant.ARG_FACTORS];
+    index ??= arg['index'];
     title ??= arg[Constant.ARG_FACTOR_TITLE];
 
     return Scaffold(
@@ -61,6 +64,7 @@ class _FactorEditState extends State<FactorEditScreen> {
                     hintText: 'Title',
                   ),
                   autocorrect: true,
+                  initialValue: factor.name,
                   validator: con.validatorName,
                   onSaved: con.onSavedName,
                 ),
@@ -69,6 +73,7 @@ class _FactorEditState extends State<FactorEditScreen> {
                     hintText: 'Description',
                   ),
                   autocorrect: true,
+                  initialValue: factor.description,
                   onSaved: con.onSavedDescription,
                 ),
                 ListTile(
@@ -136,12 +141,13 @@ class _Controller {
       description: description,
       score: score,
       listType: listType,
-      isSelected: false,
+      isSelected: true,
     );
+    _state.factors[_state.index] = f;
     try {
       await FirebaseController.updateFactor(f);
     } catch (e) {}
-    //Navigator.of(_state.context).pop();
+    Navigator.pop(_state.context);
   }
 
   String validatorName(String value) {

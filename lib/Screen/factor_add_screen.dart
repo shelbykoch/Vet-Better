@@ -17,9 +17,9 @@ enum SeverityLevel { moderate, severe }
 
 class _FactorAddState extends State<FactorAddScreen> {
   _Controller con;
-  BuildContext context;
   User user;
   String title;
+  List<Factor> factors;
   SeverityLevel _character = SeverityLevel.moderate;
   var formKey = GlobalKey<FormState>();
 
@@ -35,6 +35,7 @@ class _FactorAddState extends State<FactorAddScreen> {
   Widget build(BuildContext context) {
     Map arg = ModalRoute.of(context).settings.arguments;
     user ??= arg[Constant.ARG_USER];
+    factors ??= arg[Constant.ARG_FACTORS];
     title ??= arg[Constant.ARG_FACTOR_TITLE];
 
     return Scaffold(
@@ -137,6 +138,7 @@ class _Controller {
       email: _state.user.email,
       isSelected: true,
     );
+    _state.factors.add(f);
     try {
       await FirebaseController.addFactor(f);
     } catch (e) {
@@ -146,6 +148,7 @@ class _Controller {
         content: e.message ?? e.toString(),
       );
     }
+    Navigator.pop(_state.context);
   }
 
   String validatorName(String value) {

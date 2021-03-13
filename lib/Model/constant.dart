@@ -7,5 +7,6 @@ class Constant {
 
   //Factors screen
   static const ARG_FACTORS = 'factors';
+  static const ARG_FACTOR = 'factor';
   static const ARG_FACTOR_TITLE = 'factorTitle';
 }

@@ -1,6 +1,7 @@
 import 'package:Capstone/Controller/firebase_controller.dart';
 import 'package:Capstone/Model/constant.dart';
 import 'package:Capstone/Model/factor.dart';
+import 'package:Capstone/views/mydialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'factor_add_screen.dart';
@@ -18,9 +19,9 @@ class FactorScreen extends StatefulWidget {
 class _FactorState extends State<FactorScreen> {
   _Controller con;
   User user;
-  BuildContext context;
   List<Factor> factors;
   String title;
+  int delIndex;
 
   @override
   void initState() {
@@ -42,6 +43,7 @@ class _FactorState extends State<FactorScreen> {
           ? AppBar(
               title: Text(title),
               actions: <Widget>[
+                IconButton(icon: Icon(Icons.delete), onPressed: con.delete),
                 IconButton(
                   icon: Icon(Icons.add_box),
                   onPressed: con.add,
@@ -49,31 +51,35 @@ class _FactorState extends State<FactorScreen> {
               ],
             )
           : AppBar(title: Text(title.toString())),
-      body: Padding(
-        padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-        child: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              SizedBox(height: 20.0),
-              Text("Please select all that apply"),
-              SizedBox(height: 20.0),
-              ListView.builder(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                itemCount: factors.length,
-                itemBuilder: (BuildContext context, index) => Container(
-                  color: factors[index].isSelected == false
-                      ? Colors.grey[800]
-                      : Color.fromRGBO(77, 225, 225, 90),
-                  child: factors[index].description == ""
-                      ? con.noDescription(factors[index], index)
-                      : con.withDescription(factors[index], index),
+      body: factors.length == 0
+          ? Text(
+              ' \n Welcome! \n \n Tap the + button above to add your first factor.',
+              style: TextStyle(fontSize: 30.0),
+              textAlign: TextAlign.center,
+            )
+          : Padding(
+              padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(height: 20.0),
+                    Text("Please select all that apply"),
+                    SizedBox(height: 20.0),
+                    ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      itemCount: factors.length,
+                      itemBuilder: (BuildContext context, index) => Container(
+                        color: con.getColor(index),
+                        child: factors[index].description == ""
+                            ? con.noDescription(factors[index], index)
+                            : con.withDescription(factors[index], index),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 }
@@ -81,6 +87,7 @@ class _FactorState extends State<FactorScreen> {
 class _Controller {
   _FactorState _state;
   _Controller(this._state);
+  int delIndex;
 
   void add() async {
     await Navigator.pushNamed(_state.context, FactorAddScreen.routeName,
@@ -89,14 +96,59 @@ class _Controller {
           Constant.ARG_FACTORS: _state.factors,
           Constant.ARG_FACTOR_TITLE: _state.title,
         });
+    _state.render(() {});
+  }
+
+  void edit(int index) async {
+    await Navigator.pushNamed(_state.context, FactorEditScreen.routeName,
+        arguments: {
+          'index': index,
+          Constant.ARG_USER: _state.user,
+          Constant.ARG_FACTOR: _state.factors[index],
+          Constant.ARG_FACTORS: _state.factors,
+          Constant.ARG_FACTOR_TITLE: _state.factors[index].name,
+        });
+    _state.render(() {});
+  }
+
+  void delete() async {
+    try {
+      Factor factor = _state.factors[delIndex];
+      await FirebaseController.deleteFactor(factor);
+      _state.factors.removeAt(delIndex);
+      _state.render(() {
+        delIndex = null;
+      });
+    } catch (e) {
+      MyDialog.info(
+        context: _state.context,
+        title: 'Delete error',
+        content: e.message ?? e.toString(),
+      );
+    }
   }
 
   void updateFactor(int index) async {
+    if (delIndex != null) {
+      //cancel delete mode
+      _state.render(() => delIndex = null);
+      return;
+    }
     _state.factors[index].isSelected = !_state.factors[index].isSelected;
     _state.render(() {}); //render changes on screen
     try {
       await FirebaseController.updateFactor(_state.factors[index]);
     } catch (e) {}
+  }
+
+  void onLongPress(int index) {
+    if (_state.factors[index].listType == ListType.CopingStrategies ||
+        _state.factors[index].listType == ListType.WarningSigns) {
+      _state.render(() {
+        delIndex = (delIndex == index ? null : index);
+      });
+    } else
+      return;
   }
 
   //For factors with a description, we will render a subtitle
@@ -125,6 +177,7 @@ class _Controller {
               ],
             ),
       onTap: () => updateFactor(index),
+      onLongPress: () => onLongPress(index),
     );
   }
 
@@ -153,15 +206,18 @@ class _Controller {
               ],
             ),
       onTap: () => updateFactor(index),
+      onLongPress: () => onLongPress(index),
     );
   }
 
-  void edit(int index) async {
-    await Navigator.pushNamed(_state.context, FactorEditScreen.routeName,
-        arguments: {
-          Constant.ARG_USER: _state.user,
-          Constant.ARG_FACTORS: _state.factors[index],
-          Constant.ARG_FACTOR_TITLE: _state.factors[index].name,
-        });
+  Color getColor(index) {
+    Color result;
+    if (delIndex != null && delIndex == index) {
+      result = Colors.red[200];
+    } else if (_state.factors[index].isSelected == false) {
+      result = Colors.grey[800];
+    } else
+      result = Color.fromRGBO(77, 225, 225, 90);
+    return result;
   }
 }

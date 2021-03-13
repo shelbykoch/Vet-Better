@@ -136,6 +136,7 @@ class _Controller {
               .routeName, //nothing in warninig signs or coping strategists list navigate to add screen
           arguments: {
             Constant.ARG_USER: _state.user,
+            Constant.ARG_FACTORS: factors,
             Constant.ARG_FACTOR_TITLE: title,
           });
     } else {

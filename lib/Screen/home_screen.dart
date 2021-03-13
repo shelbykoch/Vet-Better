@@ -11,9 +11,6 @@ import '../Controller/firebase_controller.dart';
 import '../Model/constant.dart';
 //import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
 
-
-
-
 class HomeScreen extends StatefulWidget {
   static const routeName = '/homeScreen';
   @override
@@ -152,7 +149,6 @@ class _Controller {
           Constant.ARG_USER: _state.user,
           Constant.ARG_MEDICATION_LIST: medication,
         });
-
   }
 
   //------------------------APP TRAY ROUTING--------------------------//

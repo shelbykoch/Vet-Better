@@ -34,6 +34,7 @@ class _EditMedState extends State<EditMedScreen> {
     user ??= args[Constant.ARG_USER];
     medication ??= args[Constant.ARG_MEDICATION_LIST];
     medicationInfo ??= args[Constant.ARG_MEDICATION_INFO];
+    if (medicationInfo == null) medicationInfo = new Medication();
     return Scaffold(
       appBar: AppBar(title: Text("Add Medication")),
       body: SingleChildScrollView(
@@ -46,8 +47,8 @@ class _EditMedState extends State<EditMedScreen> {
                   children: <Widget>[
                     TextFormField(
                       initialValue: medicationInfo == null
-                      ? 'Medication Name'
-                      : medicationInfo.medName,
+                          ? null
+                          : medicationInfo.medName,
                       decoration: InputDecoration(
                         hintText: 'Medication Name',
                       ),
@@ -59,8 +60,8 @@ class _EditMedState extends State<EditMedScreen> {
                         hintText: 'Dosage Amount (in mg)',
                       ),
                       initialValue: medicationInfo == null
-                      ? 'Dosage Amount (in mg)'
-                      : medicationInfo.doseAmt,
+                          ? null
+                          : medicationInfo.doseAmt,
                       autocorrect: true,
                       onSaved: con.saveDoseAmt,
                     ),
@@ -69,8 +70,8 @@ class _EditMedState extends State<EditMedScreen> {
                         hintText: 'Number of Times Daily',
                       ),
                       initialValue: medicationInfo == null
-                      ? 'Number of Times Daily'
-                      : medicationInfo.timesDaily,
+                          ? null
+                          : medicationInfo.timesDaily,
                       autocorrect: true,
                       onSaved: con.saveTimesDaily,
                     ),
@@ -79,35 +80,36 @@ class _EditMedState extends State<EditMedScreen> {
                         hintText: 'Refill Date (mm-dd-yyyy)',
                       ),
                       initialValue: medicationInfo == null
-                      ? 'Refill Date (mm-dd-yyyy)'
-                      : medicationInfo.refillDate,
+                          ? null
+                          : medicationInfo.refillDate,
                       autocorrect: true,
                       onSaved: con.saveRefillDate,
                     ),
-                //     TextFormField(
-                // //initialValue: record.title,
-                // decoration: InputDecoration(
-                //   labelText: 'Date & Time',
-                // ),
-                // //controller: _dateController,
-                // autocorrect: false,
-                // controller: _dateTimeController,
-                // readOnly: true,
-                // onTap: () {
-                //   DatePicker.showDateTimePicker(context, showTitleActions: true,
-                //       onConfirm: (date) {
-                //     _appointment.dateTime = date;
-                //     _dateTimeController.text =
-                //         DateFormat.yMd().add_jm().format(date);
-                //   }, currentTime: DateTime(2021, 03, 12, 09, 00, 00));
-                //  },
-                // ),
+                    //     TextFormField(
+                    // //initialValue: record.title,
+                    // decoration: InputDecoration(
+                    //   labelText: 'Date & Time',
+                    // ),
+                    // //controller: _dateController,
+                    // autocorrect: false,
+                    // controller: _dateTimeController,
+                    // readOnly: true,
+                    // onTap: () {
+                    //   DatePicker.showDateTimePicker(context, showTitleActions: true,
+                    //       onConfirm: (date) {
+                    //     _appointment.dateTime = date;
+                    //     _dateTimeController.text =
+                    //         DateFormat.yMd().add_jm().format(date);
+                    //   }, currentTime: DateTime(2021, 03, 12, 09, 00, 00));
+                    //  },
+                    // ),
                     SizedBox(
                       width: double.infinity,
                       child: RaisedButton(
                         child: Text("Save"),
                         onPressed: () {
                           con.save();
+                          setState(() {});
                         },
                       ),
                     ),

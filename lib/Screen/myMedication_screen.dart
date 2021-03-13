@@ -39,10 +39,9 @@ class _MyMedicationState extends State<MyMedicationScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            if (medication.length == 0)
-              Text('Add Medications to your list')
-            else
-              Card(
+            medication == null
+            ? Text('Add Medications to your list')
+            : Card(
                 color: Colors.grey[800],
                 child: ListView.builder(
                     scrollDirection: Axis.vertical,

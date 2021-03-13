@@ -84,6 +84,24 @@ class _EditMedState extends State<EditMedScreen> {
                       autocorrect: true,
                       onSaved: con.saveRefillDate,
                     ),
+                //     TextFormField(
+                // //initialValue: record.title,
+                // decoration: InputDecoration(
+                //   labelText: 'Date & Time',
+                // ),
+                // //controller: _dateController,
+                // autocorrect: false,
+                // controller: _dateTimeController,
+                // readOnly: true,
+                // onTap: () {
+                //   DatePicker.showDateTimePicker(context, showTitleActions: true,
+                //       onConfirm: (date) {
+                //     _appointment.dateTime = date;
+                //     _dateTimeController.text =
+                //         DateFormat.yMd().add_jm().format(date);
+                //   }, currentTime: DateTime(2021, 03, 12, 09, 00, 00));
+                //  },
+                // ),
                     SizedBox(
                       width: double.infinity,
                       child: RaisedButton(

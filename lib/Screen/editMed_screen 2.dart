@@ -1,9 +1,10 @@
 import 'package:Capstone/Controller/firebase_controller.dart';
 import 'package:Capstone/Model/constant.dart';
 import 'package:Capstone/Model/medication.dart';
-import 'package:Capstone/Screen/myMedication_screen.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class EditMedScreen extends StatefulWidget {
   static const routeName = '/editMedScreen';
@@ -16,6 +17,7 @@ class EditMedScreen extends StatefulWidget {
 
 class _EditMedState extends State<EditMedScreen> {
   _Controller con;
+  TextEditingController _dateTimeController;
   User user;
   Medication medicationInfo;
   List<Medication> medication;
@@ -34,7 +36,10 @@ class _EditMedState extends State<EditMedScreen> {
     user ??= args[Constant.ARG_USER];
     medication ??= args[Constant.ARG_MEDICATION_LIST];
     medicationInfo ??= args[Constant.ARG_MEDICATION_INFO];
-    if (medicationInfo == null) medicationInfo = new Medication();
+    _dateTimeController = TextEditingController(
+        text: medicationInfo.refillDate != null
+            ? DateFormat.yMd().add_jm().format(medicationInfo.refillDate)
+            : "");
     return Scaffold(
       appBar: AppBar(title: Text("Add Medication")),
       body: SingleChildScrollView(
@@ -47,8 +52,8 @@ class _EditMedState extends State<EditMedScreen> {
                   children: <Widget>[
                     TextFormField(
                       initialValue: medicationInfo == null
-                          ? null
-                          : medicationInfo.medName,
+                      ? 'Medication Name'
+                      : medicationInfo.medName,
                       decoration: InputDecoration(
                         hintText: 'Medication Name',
                       ),
@@ -60,8 +65,8 @@ class _EditMedState extends State<EditMedScreen> {
                         hintText: 'Dosage Amount (in mg)',
                       ),
                       initialValue: medicationInfo == null
-                          ? null
-                          : medicationInfo.doseAmt,
+                      ? 'Dosage Amount (in mg)'
+                      : medicationInfo.doseAmt,
                       autocorrect: true,
                       onSaved: con.saveDoseAmt,
                     ),
@@ -70,39 +75,40 @@ class _EditMedState extends State<EditMedScreen> {
                         hintText: 'Number of Times Daily',
                       ),
                       initialValue: medicationInfo == null
-                          ? null
-                          : medicationInfo.timesDaily,
+                      ? 'Number of Times Daily'
+                      : medicationInfo.timesDaily,
                       autocorrect: true,
                       onSaved: con.saveTimesDaily,
                     ),
                     TextFormField(
                       decoration: InputDecoration(
-                        hintText: 'Refill Date (mm-dd-yyyy)',
+                        hintText: 'Number of Refills Remaining',
                       ),
                       initialValue: medicationInfo == null
-                          ? null
-                          : medicationInfo.refillDate,
+                      ? 'Number of Refills Remaining'
+                      : medicationInfo.refillsLeft,
                       autocorrect: true,
-                      onSaved: con.saveRefillDate,
+                      onSaved: con.saveRefillsLeft,
                     ),
-                    //     TextFormField(
-                    // //initialValue: record.title,
-                    // decoration: InputDecoration(
-                    //   labelText: 'Date & Time',
-                    // ),
-                    // //controller: _dateController,
-                    // autocorrect: false,
-                    // controller: _dateTimeController,
-                    // readOnly: true,
-                    // onTap: () {
-                    //   DatePicker.showDateTimePicker(context, showTitleActions: true,
-                    //       onConfirm: (date) {
-                    //     _appointment.dateTime = date;
-                    //     _dateTimeController.text =
-                    //         DateFormat.yMd().add_jm().format(date);
-                    //   }, currentTime: DateTime(2021, 03, 12, 09, 00, 00));
-                    //  },
-                    // ),
+                    TextFormField(
+                      initialValue: medicationInfo == null
+                      ? 'Refill Date'
+                      : medicationInfo.refillDate,
+                      decoration: InputDecoration(
+                        hintText: 'Refill Date',
+                      ),
+                      autocorrect: false,
+                      controller: _dateTimeController,
+                      readOnly: true,
+                      onTap: () {
+                        DatePicker.showDateTimePicker(context, showTitleActions: true,
+                            onConfirm: (date) {
+                          medicationInfo.refillDate = date;
+                          _dateTimeController.text =
+                              DateFormat.yMd().add_jm().format(date);
+                        }, currentTime: DateTime(2021, 03, 12, 09, 00, 00));
+                      },
+                    ),      
                     SizedBox(
                       width: double.infinity,
                       child: RaisedButton(
@@ -133,9 +139,8 @@ class _Controller {
     _state.medicationInfo.email = _state.user.email;
     try {
       await FirebaseController.addMedication(_state.medicationInfo);
-     
     } catch (e) {}
-    Navigator.of(_state.context).pop( _state.setState(() {}));
+    Navigator.of(_state.context).pop();
   }
 
   void saveMedName(String value) {
@@ -150,7 +155,11 @@ class _Controller {
     _state.medicationInfo.timesDaily = value;
   }
 
-  void saveRefillDate(String value) {
+  void saveRefillDate(DateTime value) {
     _state.medicationInfo.refillDate = value;
+  }
+
+   void saveRefillsLeft(String value) {
+    _state.medicationInfo.refillsLeft = value;
   }
 }

@@ -33,15 +33,16 @@ class _MyMedicationState extends State<MyMedicationScreen> {
     Map args = ModalRoute.of(context).settings.arguments;
     user ??= args[Constant.ARG_USER];
     medication ??= args[Constant.ARG_MEDICATION_LIST];
-    setState(() {});
+
     return Scaffold(
       appBar: AppBar(title: Text("My Medication")),
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            medication == null
-            ? Text('Add Medications to your list')
-            : Card(
+            if (medication.length == 0)
+              Text('Add Medications to your list')
+            else
+              Card(
                 color: Colors.grey[800],
                 child: ListView.builder(
                     scrollDirection: Axis.vertical,

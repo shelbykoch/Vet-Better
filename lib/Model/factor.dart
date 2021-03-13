@@ -1,7 +1,14 @@
 //This enum is used to determine which screen the factor will be diplayed on
 import 'package:Capstone/Controller/firebase_controller.dart';
 
-enum ListType { MedicalHistory, PsychHistory, RiskFactors, MitigationFactors }
+enum ListType {
+  MedicalHistory,
+  PsychHistory,
+  RiskFactors,
+  MitigationFactors,
+  CopingStrategies,
+  WarningSigns
+}
 
 class Factor {
   String docID; //Firebase DocID
@@ -86,6 +93,12 @@ class Factor {
       case ListType.MitigationFactors:
         result = _getMitigationFactors(email);
         break;
+      case ListType.CopingStrategies:
+        result = _getCopingStrategies(email);
+        break;
+      case ListType.WarningSigns:
+        result = _getWarningSigns(email);
+        break;
       default:
         result = _getMedicalHistory(email);
     }
@@ -163,6 +176,18 @@ class Factor {
     factors.add(new Factor.standard(email, "Social Isolation", 2, listType,
         "Do you feel socially isolated from others?"));
 
+    return factors;
+  }
+
+  static List<Factor> _getCopingStrategies(String email) {
+    List<Factor> factors = new List<Factor>();
+    ListType listType = ListType.CopingStrategies;
+    return factors;
+  }
+
+  static List<Factor> _getWarningSigns(String email) {
+    List<Factor> factors = new List<Factor>();
+    ListType listType = ListType.WarningSigns;
     return factors;
   }
 }

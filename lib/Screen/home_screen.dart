@@ -1,19 +1,9 @@
 import 'package:Capstone/Model/constant.dart';
-<<<<<<< Updated upstream
 import 'package:Capstone/Model/factor.dart';
 import 'package:Capstone/Model/personal_Info.dart';
+import 'package:Capstone/Screen/factor_add_screen.dart';
 import 'package:Capstone/Screen/factor_screen.dart';
 import 'package:Capstone/Screen/personal_info_screen.dart';
-=======
-import 'package:Capstone/Model/personalInfo.dart';
-import 'package:Capstone/Screen/coping_strategies_screen.dart';
-import 'package:Capstone/Screen/medicalhistory_screen.dart';
-import 'package:Capstone/Screen/mitigation_factors_screen.dart';
-import 'package:Capstone/Screen/personalinfo_screen.dart';
-import 'package:Capstone/Screen/psychhistory_screen.dart';
-import 'package:Capstone/Screen/risk_factors_screen.dart';
-import 'package:Capstone/Screen/warning_signs_screen.dart';
->>>>>>> Stashed changes
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../Controller/firebase_controller.dart';
@@ -106,14 +96,16 @@ class _UserHomeState extends State<HomeScreen> {
               width: double.infinity,
               child: RaisedButton(
                 child: Text('Warning Signs'),
-                onPressed: con.warningSignsRoute,
+                onPressed: () =>
+                    con.factorRoute(ListType.WarningSigns, "Warning Signs"),
               ),
             ),
             SizedBox(
               width: double.infinity,
               child: RaisedButton(
                 child: Text('Coping Strategies'),
-                onPressed: con.copingStrategiesRoute,
+                onPressed: () => con.factorRoute(
+                    ListType.CopingStrategies, "Coping Strategies"),
               ),
             ),
           ]),
@@ -134,10 +126,23 @@ class _Controller {
     //If Firebase doesn't find the collection then an new version is returned
     List<Factor> factors =
         await FirebaseController.getFactorList(_state.user.email, listType);
-    Navigator.pushNamed(_state.context, FactorScreen.routeName, arguments: {
-      Constant.ARG_FACTORS: factors,
-      Constant.ARG_FACTOR_TITLE: title,
-    });
+
+    if (factors.length == 0 &&
+        (listType == ListType.CopingStrategies ||
+            listType == ListType.WarningSigns)) {
+      Navigator.pushNamed(
+          _state.context,
+          FactorAddScreen
+              .routeName, //nothing in warninig signs or coping strategists list navigate to add screen
+          arguments: {
+            Constant.ARG_FACTOR_TITLE: title,
+          });
+    } else {
+      Navigator.pushNamed(_state.context, FactorScreen.routeName, arguments: {
+        Constant.ARG_FACTORS: factors,
+        Constant.ARG_FACTOR_TITLE: title,
+      });
+    }
   }
 
   void personalInfoRoute() async {
@@ -154,14 +159,6 @@ class _Controller {
   }
 
   //------------------------APP TRAY ROUTING--------------------------//
-
-  void warningSignsRoute() {
-    Navigator.pushNamed(state.context, WarningSignsScreen.routeName);
-  }
-
-  void copingStrategiesRoute() {
-    Navigator.pushNamed(state.context, CopingStratScreen.routeName);
-  }
 
   void signOut() async {
     try {

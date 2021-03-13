@@ -3,6 +3,9 @@ import 'package:Capstone/Model/constant.dart';
 import 'package:Capstone/Model/factor.dart';
 import 'package:flutter/material.dart';
 
+import 'factor_add_screen.dart';
+import 'factor_edit_screen.dart';
+
 class FactorScreen extends StatefulWidget {
   static const routeName = '/factorScreen';
 
@@ -30,10 +33,20 @@ class _FactorState extends State<FactorScreen> {
     Map arg = ModalRoute.of(context).settings.arguments;
     factors ??= arg[Constant.ARG_FACTORS];
     title ??= arg[Constant.ARG_FACTOR_TITLE];
-    print("Title:" + title);
 
     return Scaffold(
-      appBar: AppBar(title: Text(title.toString())),
+      appBar: factors[0].listType == ListType.WarningSigns ||
+              factors[0].listType == ListType.CopingStrategies
+          ? AppBar(
+              title: Text(title),
+              actions: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.add_box),
+                  onPressed: con.add,
+                )
+              ],
+            )
+          : AppBar(title: Text(title.toString())),
       body: Padding(
         padding: const EdgeInsets.only(left: 20.0, right: 20.0),
         child: SingleChildScrollView(
@@ -67,6 +80,13 @@ class _Controller {
   _FactorState _state;
   _Controller(this._state);
 
+  void add() {
+    Navigator.pushNamed(_state.context, FactorAddScreen.routeName, arguments: {
+      Constant.ARG_FACTORS: _state.factors,
+      Constant.ARG_FACTOR_TITLE: _state.title,
+    });
+  }
+
   void updateFactor(int index) async {
     _state.factors[index].isSelected = !_state.factors[index].isSelected;
     _state.render(() {}); //render changes on screen
@@ -82,12 +102,24 @@ class _Controller {
           ? Icon(Icons.check_box_outline_blank)
           : Icon(Icons.check_box),
       title: Text(factor.name),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text('${factor.description}'),
-        ],
-      ),
+      subtitle: _state.factors[0].listType == ListType.WarningSigns ||
+              _state.factors[0].listType == ListType.CopingStrategies
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text('${factor.description}'),
+                FlatButton(
+                  child: Text('Edit'),
+                  onPressed: () => edit(index),
+                ),
+              ],
+            )
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text('${factor.description}'),
+              ],
+            ),
       onTap: () => updateFactor(index),
     );
   }
@@ -99,7 +131,32 @@ class _Controller {
           ? Icon(Icons.check_box_outline_blank)
           : Icon(Icons.check_box),
       title: Text(factor.name),
+      subtitle: _state.factors[0].listType == ListType.WarningSigns ||
+              _state.factors[0].listType == ListType.CopingStrategies
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                FlatButton(
+                  child: Text('Edit'),
+                  onPressed: () => edit(index),
+                ),
+              ],
+            )
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(""),
+              ],
+            ),
       onTap: () => updateFactor(index),
     );
+  }
+
+  void edit(int index) async {
+    await Navigator.pushNamed(_state.context, FactorEditScreen.routeName,
+        arguments: {
+          Constant.ARG_FACTORS: _state.factors[index],
+          Constant.ARG_FACTOR_TITLE: _state.factors[index].name,
+        });
   }
 }

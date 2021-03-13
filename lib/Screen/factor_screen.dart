@@ -1,8 +1,8 @@
 import 'package:Capstone/Controller/firebase_controller.dart';
 import 'package:Capstone/Model/constant.dart';
 import 'package:Capstone/Model/factor.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import 'factor_add_screen.dart';
 import 'factor_edit_screen.dart';
 
@@ -17,6 +17,7 @@ class FactorScreen extends StatefulWidget {
 
 class _FactorState extends State<FactorScreen> {
   _Controller con;
+  User user;
   BuildContext context;
   List<Factor> factors;
   String title;
@@ -31,6 +32,7 @@ class _FactorState extends State<FactorScreen> {
 
   Widget build(BuildContext context) {
     Map arg = ModalRoute.of(context).settings.arguments;
+    user ??= arg[Constant.ARG_USER];
     factors ??= arg[Constant.ARG_FACTORS];
     title ??= arg[Constant.ARG_FACTOR_TITLE];
 
@@ -80,11 +82,13 @@ class _Controller {
   _FactorState _state;
   _Controller(this._state);
 
-  void add() {
-    Navigator.pushNamed(_state.context, FactorAddScreen.routeName, arguments: {
-      Constant.ARG_FACTORS: _state.factors,
-      Constant.ARG_FACTOR_TITLE: _state.title,
-    });
+  void add() async {
+    await Navigator.pushNamed(_state.context, FactorAddScreen.routeName,
+        arguments: {
+          Constant.ARG_USER: _state.user,
+          Constant.ARG_FACTORS: _state.factors,
+          Constant.ARG_FACTOR_TITLE: _state.title,
+        });
   }
 
   void updateFactor(int index) async {
@@ -155,6 +159,7 @@ class _Controller {
   void edit(int index) async {
     await Navigator.pushNamed(_state.context, FactorEditScreen.routeName,
         arguments: {
+          Constant.ARG_USER: _state.user,
           Constant.ARG_FACTORS: _state.factors[index],
           Constant.ARG_FACTOR_TITLE: _state.factors[index].name,
         });

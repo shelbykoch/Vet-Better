@@ -72,6 +72,7 @@ class FirebaseController {
       }
       return result;
     } else {
+      print("DEFAULT LIST");
       return Factor.getDefaultList(email, listType);
     }
   }

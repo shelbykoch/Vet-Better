@@ -35,6 +35,7 @@ class _FactorEditState extends State<FactorEditScreen> {
   @override
   Widget build(BuildContext context) {
     Map arg = ModalRoute.of(context).settings.arguments;
+    user ??= arg[Constant.ARG_USER];
     factor ??= arg[Constant.ARG_FACTORS];
     title ??= arg[Constant.ARG_FACTOR_TITLE];
 

@@ -34,6 +34,7 @@ class _FactorAddState extends State<FactorAddScreen> {
   @override
   Widget build(BuildContext context) {
     Map arg = ModalRoute.of(context).settings.arguments;
+    user ??= arg[Constant.ARG_USER];
     title ??= arg[Constant.ARG_FACTOR_TITLE];
 
     return Scaffold(
@@ -133,6 +134,7 @@ class _Controller {
       description: description,
       score: score,
       listType: listType,
+      email: _state.user.email,
       isSelected: true,
     );
     try {

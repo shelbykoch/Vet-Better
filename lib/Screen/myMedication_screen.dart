@@ -30,9 +30,11 @@ class _MyMedicationState extends State<MyMedicationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    render(() {});
     Map args = ModalRoute.of(context).settings.arguments;
     user ??= args[Constant.ARG_USER];
     medication ??= args[Constant.ARG_MEDICATION_LIST];
+    
     return Scaffold(
       appBar: AppBar(title: Text("My Medication")),
       body: SingleChildScrollView(

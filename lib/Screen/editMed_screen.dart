@@ -1,6 +1,7 @@
 import 'package:Capstone/Controller/firebase_controller.dart';
 import 'package:Capstone/Model/constant.dart';
 import 'package:Capstone/Model/medication.dart';
+import 'package:Capstone/Screen/myMedication_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -136,12 +137,16 @@ class _Controller {
     try {
       if (_state.medicationInfo.docId == null) {
         await FirebaseController.addMedication(_state.medicationInfo);
-      } else
+      } else {
         await FirebaseController.updateMedicationInfo(_state.medicationInfo);
-     List<Medication> medicationList =
-        await FirebaseController.getMedicationList(_state.user.email); 
-      _state.setState(() {});
-      Navigator.of(_state.context).pop();
+      }
+      List<Medication> medication = 
+            await FirebaseController.getMedicationList(_state.user.email);
+      Navigator.pushNamed(_state.context, MyMedicationScreen.routeName,
+        arguments: {
+          Constant.ARG_USER: _state.user,
+          Constant.ARG_MEDICATION_LIST: medication,
+        });
     } catch (e) {}
   }
 

@@ -1,8 +1,9 @@
-import 'package:Capstone/Model/appointment.dart';
 import 'package:Capstone/Model/constant.dart';
 import 'package:Capstone/Model/factor.dart';
+import 'package:Capstone/Model/medication.dart';
 import 'package:Capstone/Model/personal_Info.dart';
 import 'package:Capstone/Screen/factor_screen.dart';
+import 'package:Capstone/Screen/myMedication_screen.dart';
 import 'package:Capstone/Screen/personal_info_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -72,37 +73,37 @@ class _UserHomeState extends State<HomeScreen> {
                       ListType.MedicalHistory, "Medical History"),
                 ),
               ),
-              SizedBox(
-                width: double.infinity,
-                child: RaisedButton(
-                    child: Text('Psychiatric history'),
-                    onPressed: () => con.factorRoute(
-                        ListType.PsychHistory, "Psychiatric History")),
-              ),
-              SizedBox(
-                width: double.infinity,
-                child: RaisedButton(
-                    child: Text('Baseline risk'),
-                    onPressed: () =>
-                        con.factorRoute(ListType.RiskFactors, "Risk Factors")),
-              ),
-              SizedBox(
-                width: double.infinity,
-                child: RaisedButton(
-                  child: Text('Mitigation strategies'),
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: RaisedButton(
+                  child: Text('Psychiatric history'),
                   onPressed: () => con.factorRoute(
-                      ListType.MitigationFactors, "Mitigation Factors"),
-                ),
+                      ListType.PsychHistory, "Psychiatric History")),
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: RaisedButton(
+                  child: Text('Baseline risk'),
+                  onPressed: () =>
+                      con.factorRoute(ListType.RiskFactors, "Risk Factors")),
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: RaisedButton(
+                child: Text('Mitigation strategies'),
+                onPressed: () => con.factorRoute(
+                    ListType.MitigationFactors, "Mitigation Factors"),
               ),
-              SizedBox(
-                width: double.infinity,
-                child: RaisedButton(
-                  child: Text('Calendar'),
-                  onPressed: () => con.calendarRoute(),
-                ),
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: RaisedButton(
+                child: Text('Medication'),
+                onPressed: con.medicationInfoRoute,
               ),
-            ],
-          ),
+            ),
+          ]),
         ),
       ),
     );
@@ -138,7 +139,6 @@ class _Controller {
           Constant.ARG_PERSONAL_INFO: info
         });
   }
-
   void calendarRoute() async {
     //Map<DateTime, List<dynamic>> function call made here to Firebase to get appointments
     List<Appointment> appointments =
@@ -149,6 +149,20 @@ class _Controller {
       Constant.ARG_APPOINTMENTS: appointments,
     });
   }
+  void medicationInfoRoute() async {
+    //First we will load the medication info associated with the account to pass to the screen
+    //if it doesn't exist in the database we will created a new one and append
+    //the email then pass to the screen
+    List<Medication> medication =
+        await FirebaseController.getMedicationList(_state.user.email);
+    Navigator.pushNamed(_state.context, MyMedicationScreen.routeName,
+        arguments: {
+          Constant.ARG_USER: _state.user,
+          Constant.ARG_MEDICATION_LIST: medication,
+        });
+  }
+
+
 
   //------------------------APP TRAY ROUTING--------------------------//
 

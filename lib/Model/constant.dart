@@ -12,4 +12,8 @@ class Constant {
   //Calendar and Appointment screens
   static const ARG_APPOINTMENT = 'appointment'; //Single appt to view or edit
   static const ARG_APPOINTMENTS = 'appointments'; //list of appts for
+
+  //Medication screen
+  static const ARG_MEDICATION_LIST = 'medicationList';
+  static const ARG_MEDICATION_INFO = 'medicationInfo';
 }

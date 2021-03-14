@@ -147,7 +147,7 @@ class _Controller {
     try {
       await FirebaseController.updateFactor(f);
     } catch (e) {}
-    Navigator.pop(_state.context);
+    Navigator.of(_state.context).pop();
   }
 
   String validatorName(String value) {

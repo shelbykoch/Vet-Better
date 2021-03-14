@@ -5,6 +5,8 @@ import 'package:Capstone/views/mydialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import 'factor_screen.dart';
+
 class FactorAddScreen extends StatefulWidget {
   static const routeName = 'FactorAddScreen';
   @override
@@ -149,6 +151,12 @@ class _Controller {
       );
     }
     Navigator.pop(_state.context);
+    Navigator.pushReplacementNamed(_state.context, FactorScreen.routeName,
+        arguments: {
+          Constant.ARG_USER: _state.user,
+          Constant.ARG_FACTORS: _state.factors,
+          Constant.ARG_FACTOR_TITLE: _state.title,
+        });
   }
 
   String validatorName(String value) {

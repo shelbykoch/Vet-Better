@@ -38,8 +38,7 @@ class _FactorState extends State<FactorScreen> {
     title ??= arg[Constant.ARG_FACTOR_TITLE];
 
     return Scaffold(
-      appBar: factors[0].listType == ListType.WarningSigns ||
-              factors[0].listType == ListType.CopingStrategies
+      appBar: title == 'Warning Signs' || title == 'Coping Strategies'
           ? AppBar(
               title: Text(title),
               actions: <Widget>[
@@ -51,21 +50,21 @@ class _FactorState extends State<FactorScreen> {
               ],
             )
           : AppBar(title: Text(title.toString())),
-      body: factors.length == 0
-          ? Text(
-              ' \n Welcome! \n \n Tap the + button above to add your first factor.',
-              style: TextStyle(fontSize: 30.0),
-              textAlign: TextAlign.center,
-            )
-          : Padding(
-              padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  children: <Widget>[
-                    SizedBox(height: 20.0),
-                    Text("Please select all that apply"),
-                    SizedBox(height: 20.0),
-                    ListView.builder(
+      body: Padding(
+        padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              SizedBox(height: 20.0),
+              Text("Please select all that apply"),
+              SizedBox(height: 20.0),
+              factors.length == 0
+                  ? Text(
+                      '\n Tap the + button above to add $title.',
+                      style: TextStyle(fontSize: 30.0),
+                      textAlign: TextAlign.center,
+                    )
+                  : ListView.builder(
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
                       itemCount: factors.length,
@@ -76,10 +75,10 @@ class _FactorState extends State<FactorScreen> {
                             : con.withDescription(factors[index], index),
                       ),
                     ),
-                  ],
-                ),
-              ),
-            ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -188,7 +187,9 @@ class _Controller {
           ? Icon(Icons.check_box_outline_blank)
           : Icon(Icons.check_box),
       title: Text(factor.name),
-      subtitle: _state.factors[0].listType == ListType.WarningSigns ||
+      subtitle: _state.factors[0].listType ==
+                  ListType
+                      .WarningSigns || //edit button only appears for warning signs and coping strats
               _state.factors[0].listType == ListType.CopingStrategies
           ? Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -213,7 +214,8 @@ class _Controller {
   Color getColor(index) {
     Color result;
     if (delIndex != null && delIndex == index) {
-      result = Colors.red[200];
+      result = Colors.red[
+          200]; //red is only rendered if warning signs or coping strats screen
     } else if (_state.factors[index].isSelected == false) {
       result = Colors.grey[800];
     } else

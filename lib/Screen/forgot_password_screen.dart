@@ -100,10 +100,10 @@ class _Controller {
       );
     } catch (e) {
       AppDialog.info(
-        context: state.context,
-        title: 'Error',
-        message: e.message ?? e.toString(),
-      );
+          context: state.context,
+          title: 'Error',
+          message: e.message ?? e.toString(),
+          action: () => {Navigator.pop(state.context)});
     }
   }
 }

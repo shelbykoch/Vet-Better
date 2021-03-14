@@ -23,6 +23,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
   User _user;
   var formKey = GlobalKey<FormState>();
   TextEditingController _dateTimeController;
+  DatePicker picker;
 
   _AppointmentScreenState() {
     con = _Controller(this);
@@ -36,6 +37,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
     _user ??= arg[Constant.ARG_USER];
     _appointment =
         arg[Constant.ARG_APPOINTMENT] ?? Appointment.withEmail(_user.email);
+
     _dateTimeController = TextEditingController(
         text: _appointment.dateTime != null
             ? DateFormat.yMd().add_jm().format(_appointment.dateTime)
@@ -98,12 +100,17 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                 controller: _dateTimeController,
                 readOnly: true,
                 onTap: () {
-                  DatePicker.showDateTimePicker(context, showTitleActions: true,
-                      onConfirm: (date) {
-                    _appointment.dateTime = date;
-                    _dateTimeController.text =
-                        DateFormat.yMd().add_jm().format(date);
-                  }, currentTime: DateTime(2021, 03, 12, 09, 00, 00));
+                  DatePicker.showDateTimePicker(
+                    context,
+                    showTitleActions: true,
+                    onConfirm: (date) {
+                      _appointment.dateTime = date;
+                      _dateTimeController.text = DateFormat.yMd()
+                          .add_jm()
+                          .format(_appointment.dateTime);
+                    },
+                    currentTime: _appointment.dateTime,
+                  );
                 },
               ),
               Padding(
@@ -146,16 +153,7 @@ class _Controller {
     }
   }
 
-  String validateTime(String value) {
-    try {
-      _state._appointment.dateTime = DateTime.parse(value);
-    } catch (e) {
-      return 'Please enter a valid time';
-    }
-    return null;
-  }
-
-  void saveAppointment() {
+  void saveAppointment() async {
     if (!_state.formKey.currentState.validate()) return;
 
     _state.formKey.currentState.save();
@@ -163,9 +161,11 @@ class _Controller {
 
     try {
       if (_state._appointment.docID == null ||
-          _state._appointment.docID.isEmpty)
-        FirebaseController.addAppointment(_state._appointment);
-      else
+          _state._appointment.docID.isEmpty) {
+        String docID =
+            await FirebaseController.addAppointment(_state._appointment);
+        _state._appointment.docID = docID;
+      } else
         FirebaseController.updateAppointment(_state._appointment);
       Navigator.pop(_state.context); //dispose progress dialog
       Navigator.pop(_state.context); //dispose appointment detail screen

@@ -60,6 +60,13 @@ class Appointment {
         this.location;
   }
 
+  DateTime getEventKey() {
+    //Returns the Day, with the time set to 7AM
+    //This is for the how the calendar handles selectedDays
+    return DateTime(this.dateTime.year, this.dateTime.month, this.dateTime.day,
+        7, 0, 0, 0, 0);
+  }
+
   static const EMAIL = 'email';
   static const TITLE = 'title';
   static const LOCATION = 'location';

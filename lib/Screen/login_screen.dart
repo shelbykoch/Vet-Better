@@ -53,9 +53,11 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Padding(
                 padding: const EdgeInsets.only(top: 40.0),
                 child: Text(
-                  'Unnamed.',
-                  style:
-                      TextStyle(fontFamily: 'Times New Roman', fontSize: 50.0),
+                  'Vet Better',
+                  style: TextStyle(
+                      fontFamily: 'Montserrat',
+                      fontSize: 50.0,
+                      color: Color.fromRGBO(77, 225, 225, 90)),
                 ),
               ),
             ),

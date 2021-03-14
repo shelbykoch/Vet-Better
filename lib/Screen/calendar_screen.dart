@@ -2,6 +2,7 @@ import 'package:Capstone/Controller/firebase_controller.dart';
 import 'package:Capstone/Model/appointment.dart';
 import 'package:Capstone/Model/constant.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -21,8 +22,14 @@ class _CalendarScreenState extends State<CalendarScreen>
   List _selectedEvents;
   AnimationController _animationController;
   CalendarController _calendarController;
-
   List<Appointment> _appointments;
+
+  //Making firebase within the build function causes really issues.
+  //To alleviate this we will set the appointments list on the first load
+  //And then maintain that list internally instead of resetting it
+  //with a database call. This boolean manages that process.
+  bool firstLoad = true;
+
   User _user;
 
   @override
@@ -34,7 +41,6 @@ class _CalendarScreenState extends State<CalendarScreen>
     _events = new Map<DateTime, List<dynamic>>();
     _selectedEvents = _events[_selectedDay] ?? [];
     _calendarController = CalendarController();
-
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 400),
@@ -54,32 +60,34 @@ class _CalendarScreenState extends State<CalendarScreen>
 
   void _onDaySelected(DateTime day, List events, List holidays) {
     print('CALLBACK: _onDaySelected');
-    setState(() {
-      _selectedEvents = events;
-    });
+    _selectedEvents = events;
+    setState(() {});
   }
 
-  /*
-  void _onVisibleDaysChanged(
-      DateTime first, DateTime last, CalendarFormat format) {
-    print('CALLBACK: _onVisibleDaysChanged');
-  }
-
-  void _onCalendarCreated(
-      DateTime first, DateTime last, CalendarFormat format) {
-    print('CALLBACK: _onCalendarCreated');
-  }
-  */
   @override
   Widget build(BuildContext context) {
     Map arg = ModalRoute.of(context).settings.arguments;
-    _appointments ??= arg[Constant.ARG_APPOINTMENTS];
     _user ??= arg[Constant.ARG_USER];
-    con.buildMaps();
+    if (firstLoad)
+      _appointments ??= arg[Constant
+          .ARG_APPOINTMENTS]; //Maps appointments in database to the event objects required for the calendar
+    con.buildMap();
+    firstLoad = false;
 
     return Scaffold(
       appBar: AppBar(
         title: Text('Calendar'),
+        actions: <Widget>[
+          FlatButton.icon(
+            icon: Icon(Icons.add, color: Colors.white),
+            label: Text(
+              'Schedule',
+              style: TextStyle(color: Colors.white),
+            ),
+            onPressed: () =>
+                con.createAppointment(_calendarController.selectedDay),
+          ),
+        ],
       ),
       body: Column(
         mainAxisSize: MainAxisSize.max,
@@ -114,8 +122,6 @@ class _CalendarScreenState extends State<CalendarScreen>
         ),
       ),
       onDaySelected: _onDaySelected,
-      //onVisibleDaysChanged: _onVisibleDaysChanged,
-      //onCalendarCreated: _onCalendarCreated,
     );
   }
 
@@ -132,12 +138,12 @@ class _CalendarScreenState extends State<CalendarScreen>
                 child: ListTile(
                   title: Text((event as Appointment).title),
                   subtitle: Text((event as Appointment).getTimeandLocation()),
-                  //onTap: () => print('$event tapped!'),
                   trailing: Wrap(
                     children: [
                       IconButton(
                           icon: Icon(Icons.edit, color: Colors.blue),
-                          onPressed: () => con.editAppointment(event)),
+                          onPressed: () => con.editAppointment((event
+                              as Appointment))), //This will default the created appointment to the selected day
                       IconButton(
                           icon: Icon(Icons.delete, color: Colors.red),
                           onPressed: () => con.deleteAppointment(event)),
@@ -154,30 +160,66 @@ class _Controller {
   _CalendarScreenState _state;
   _Controller(this._state);
 
-  void buildMaps() {
+  void buildMap() {
     //We store appointments in Firebase but require a specific event object
     //to work with the calendar. This function will build an event map for the
     //calendar but also a map to pair and event with our custom appointment object
+    _state._events.clear();
     _state._appointments.forEach((appt) {
-      _state._events[appt.dateTime] = <dynamic>[appt];
+      if (_state._events[appt.getEventKey()] == null)
+        _state._events[appt.getEventKey()] = new List<Appointment>();
+      if (!_state._events[appt.getEventKey()].contains(appt))
+        _state._events[appt.getEventKey()].add(appt);
     });
   }
 
-  void editAppointment(Object appointment) {
-    Appointment appt = appointment;
+  //GOOD TO GO!!
+  void deleteAppointment(Object object) async {
+    Appointment appt = object;
+    await FirebaseController.deleteAppointment(appt.docID);
+
+    //Remove it from events render on map});
+    _state._appointments.remove(appt);
+    _state._selectedEvents.remove(appt);
+    _state.setState(() {}); //Update screen to reflect changes
+  }
+
+  //This will open the appointment details screen. If an appointment
+  //is passed it will populate the initail values. If not, a new appointment will
+  //be created
+  void createAppointment(DateTime dateTime) async {
+    Appointment appointment = new Appointment.withEmail(_state._user.email);
+    appointment.dateTime = dateTime.toLocal();
+    await Navigator.pushNamed(_state.context, AppointmentScreen.routeName,
+        arguments: {
+          Constant.ARG_USER: _state._user,
+          Constant.ARG_APPOINTMENT: appointment,
+        });
+    if (appointment.docID != null) {
+      _state._appointments.add(appointment);
+      _state._selectedEvents.add(appointment);
+      _state.setState(() {});
+    }
+  }
+
+  //This will open the appointment details screen. If an appointment
+  //is passed it will populate the initail values. If not, a new appointment will
+  //be created
+  void editAppointment(Appointment appointment) {
     Navigator.pushNamed(_state.context, AppointmentScreen.routeName,
         arguments: {
           Constant.ARG_USER: _state._user,
-          Constant.ARG_APPOINTMENT: appt,
+          Constant.ARG_APPOINTMENT: appointment,
         });
-  }
+    //Remove the old appointment
+    _state._appointments
+        .removeWhere((element) => element.docID == appointment.docID);
+    _state._selectedEvents.removeWhere(
+        (element) => (element as Appointment).docID == appointment.docID);
 
-  void deleteAppointment(Object object) {
-    Appointment appt = object;
-    FirebaseController.deleteAppointment(appt.docID);
-
-    _state.render(() => _state._events
-        .remove(appt.dateTime)); //Remove it from events render on map});
-    _state.render({});
+    //Add the newly edited appointment
+    _state._appointments.add(appointment);
+    _state._selectedEvents.add(appointment);
+    _state.setState(() {});
   }
 }

@@ -2,7 +2,6 @@ import 'package:Capstone/Model/appointment.dart';
 import 'package:Capstone/Model/constant.dart';
 import 'package:Capstone/Model/factor.dart';
 import 'package:Capstone/Model/personal_Info.dart';
-import 'package:Capstone/Screen/appointment_screen.dart';
 import 'package:Capstone/Screen/factor_screen.dart';
 import 'package:Capstone/Screen/personal_info_screen.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +37,7 @@ class _UserHomeState extends State<HomeScreen> {
     return WillPopScope(
       onWillPop: () => Future.value(false), //Disable android system back button
       child: Scaffold(
-        appBar: AppBar(title: Text('Unnamed.')),
+        appBar: AppBar(title: Text('Vet Better')),
         drawer: Drawer(
           child: ListView(
             children: [
@@ -102,13 +101,6 @@ class _UserHomeState extends State<HomeScreen> {
                   onPressed: () => con.calendarRoute(),
                 ),
               ),
-              SizedBox(
-                width: double.infinity,
-                child: RaisedButton(
-                  child: Text('Appointment'),
-                  onPressed: () => con.appointmentRoute(),
-                ),
-              ),
             ],
           ),
         ),
@@ -156,13 +148,6 @@ class _Controller {
       Constant.ARG_USER: _state.user,
       Constant.ARG_APPOINTMENTS: appointments,
     });
-  }
-
-  void appointmentRoute() async {
-    Navigator.pushNamed(_state.context, AppointmentScreen.routeName,
-        arguments: {
-          Constant.ARG_USER: _state.user,
-        });
   }
 
   //------------------------APP TRAY ROUTING--------------------------//

@@ -1,3 +1,4 @@
+import 'package:Capstone/Model/appointment.dart';
 import 'package:Capstone/Model/constant.dart';
 import 'package:Capstone/Model/factor.dart';
 import 'package:Capstone/Model/medication.dart';
@@ -10,6 +11,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../Controller/firebase_controller.dart';
 import '../Model/constant.dart';
 import 'calendar_screen.dart';
+import 'factor_add_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/homeScreen';
@@ -56,22 +58,20 @@ class _UserHomeState extends State<HomeScreen> {
         ),
         body: Padding(
           padding: const EdgeInsets.only(top: 20.0, left: 40.0, right: 40.0),
-          child: ListView(
-            children: <Widget>[
-              SizedBox(
-                width: double.infinity,
-                child: RaisedButton(
-                  child: Text('Personal information'),
-                  onPressed: con.personalInfoRoute,
-                ),
+          child: ListView(children: <Widget>[
+            SizedBox(
+              width: double.infinity,
+              child: RaisedButton(
+                child: Text('Personal information'),
+                onPressed: con.personalInfoRoute,
               ),
-              SizedBox(
-                width: double.infinity,
-                child: RaisedButton(
-                  child: Text('Medical history'),
-                  onPressed: () => con.factorRoute(
-                      ListType.MedicalHistory, "Medical History"),
-                ),
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: RaisedButton(
+                child: Text('Medical history'),
+                onPressed: () =>
+                    con.factorRoute(ListType.MedicalHistory, "Medical History"),
               ),
             ),
             SizedBox(
@@ -106,9 +106,24 @@ class _UserHomeState extends State<HomeScreen> {
             SizedBox(
               width: double.infinity,
               child: RaisedButton(
+                child: Text('Warning Signs'),
+                onPressed: () =>
+                    con.factorRoute(ListType.WarningSigns, "Warning Signs"),
+              ),
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: RaisedButton(
                 child: Text('Coping Strategies'),
                 onPressed: () => con.factorRoute(
                     ListType.CopingStrategies, "Coping Strategies"),
+              ),
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: RaisedButton(
+                child: Text('Calendar'),
+                onPressed: () => con.calendarRoute(),
               ),
             ),
           ]),
@@ -146,7 +161,6 @@ class _Controller {
         Constant.ARG_USER: _state.user,
         Constant.ARG_FACTORS: factors,
         Constant.ARG_FACTOR_TITLE: title,
-
       });
     }
   }
@@ -163,6 +177,7 @@ class _Controller {
           Constant.ARG_PERSONAL_INFO: info
         });
   }
+
   void calendarRoute() async {
     //Map<DateTime, List<dynamic>> function call made here to Firebase to get appointments
     List<Appointment> appointments =
@@ -173,6 +188,7 @@ class _Controller {
       Constant.ARG_APPOINTMENTS: appointments,
     });
   }
+
   void medicationInfoRoute() async {
     //First we will load the medication info associated with the account to pass to the screen
     //if it doesn't exist in the database we will created a new one and append
@@ -185,8 +201,6 @@ class _Controller {
           Constant.ARG_MEDICATION_LIST: medication,
         });
   }
-
-
 
   //------------------------APP TRAY ROUTING--------------------------//
 

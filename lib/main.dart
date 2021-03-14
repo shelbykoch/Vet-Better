@@ -2,9 +2,15 @@ import 'package:Capstone/Screen/forgot_password_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'Model/constant.dart';
+import 'Screen/appointment_screen.dart';
+import 'Screen/calendar_screen.dart';
+import 'Screen/editMed_screen.dart';
+import 'Screen/factor_add_screen.dart';
+import 'Screen/factor_edit_screen.dart';
 import 'Screen/login_screen.dart';
 import 'Screen/home_screen.dart';
 import 'Screen/factor_screen.dart';
+import 'Screen/myMedication_screen.dart';
 import 'Screen/personal_info_screen.dart';
 
 void main() async {

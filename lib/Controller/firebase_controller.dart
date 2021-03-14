@@ -5,6 +5,7 @@ import 'package:Capstone/Model/factor.dart';
 import 'package:Capstone/Model/medication.dart';
 import 'package:Capstone/Model/personal_Info.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
@@ -74,6 +75,7 @@ class FirebaseController {
       }
       return result;
     } else {
+      print("DEFAULT LIST");
       return Factor.getDefaultList(email, listType);
     }
   }
@@ -90,6 +92,12 @@ class FirebaseController {
         .collection(Factor.COLLECTION)
         .add(factor.serialize());
     return ref.id;
+  }
+  static Future<void> deleteFactor(Factor factor) async {
+    await FirebaseFirestore.instance
+        .collection(Factor.COLLECTION)
+        .doc(factor.docID)
+        .delete();
   }
 
   //-------------------APPOINTMENTS-----------------------------//

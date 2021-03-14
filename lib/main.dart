@@ -1,7 +1,4 @@
-import 'package:Capstone/Screen/appointment_screen.dart';
-import 'package:Capstone/Screen/calendar_screen.dart';
 import 'package:Capstone/Screen/forgot_password_screen.dart';
-import 'package:Capstone/Screen/myMedication_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'Model/constant.dart';
@@ -9,7 +6,6 @@ import 'Screen/login_screen.dart';
 import 'Screen/home_screen.dart';
 import 'Screen/factor_screen.dart';
 import 'Screen/personal_info_screen.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,6 +37,8 @@ class MyApp extends StatelessWidget {
         AppointmentScreen.routeName: (context) => AppointmentScreen(),
         MyMedicationScreen.routeName: (context) => MyMedicationScreen(),
         EditMedScreen.routeName: (context) => EditMedScreen(),
+        FactorAddScreen.routeName: (context) => FactorAddScreen(),
+        FactorEditScreen.routeName: (context) => FactorEditScreen(),
       },
     );
   }

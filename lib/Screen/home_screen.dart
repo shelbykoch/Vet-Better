@@ -103,6 +103,14 @@ class _UserHomeState extends State<HomeScreen> {
                 onPressed: con.medicationInfoRoute,
               ),
             ),
+            SizedBox(
+              width: double.infinity,
+              child: RaisedButton(
+                child: Text('Coping Strategies'),
+                onPressed: () => con.factorRoute(
+                    ListType.CopingStrategies, "Coping Strategies"),
+              ),
+            ),
           ]),
         ),
       ),
@@ -121,10 +129,26 @@ class _Controller {
     //If Firebase doesn't find the collection then an new version is returned
     List<Factor> factors =
         await FirebaseController.getFactorList(_state.user.email, listType);
-    Navigator.pushNamed(_state.context, FactorScreen.routeName, arguments: {
-      Constant.ARG_FACTORS: factors,
-      Constant.ARG_FACTOR_TITLE: title,
-    });
+    if (factors.length == 0 &&
+        (listType == ListType.CopingStrategies ||
+            listType == ListType.WarningSigns)) {
+      Navigator.pushNamed(
+          _state.context,
+          FactorAddScreen
+              .routeName, //nothing in warninig signs or coping strategists list navigate to add screen
+          arguments: {
+            Constant.ARG_USER: _state.user,
+            Constant.ARG_FACTORS: factors,
+            Constant.ARG_FACTOR_TITLE: title,
+          });
+    } else {
+      Navigator.pushNamed(_state.context, FactorScreen.routeName, arguments: {
+        Constant.ARG_USER: _state.user,
+        Constant.ARG_FACTORS: factors,
+        Constant.ARG_FACTOR_TITLE: title,
+
+      });
+    }
   }
 
   void personalInfoRoute() async {

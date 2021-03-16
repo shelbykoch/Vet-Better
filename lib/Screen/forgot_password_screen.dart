@@ -1,3 +1,4 @@
+import 'package:Capstone/views/mydialog.dart';
 import 'package:flutter/material.dart';
 import '../Controller/firebase_controller.dart';
 import 'app_dialog.dart';
@@ -99,10 +100,10 @@ class _Controller {
             {Navigator.pop(state.context), Navigator.pop(state.context)},
       );
     } catch (e) {
-      AppDialog.info(
+      MyDialog.info(
         context: state.context,
         title: 'Error',
-        message: e.message ?? e.toString(),
+        content: e.message ?? e.toString(),
       );
     }
   }

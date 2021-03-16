@@ -215,7 +215,7 @@ class _Controller {
     Color result;
     if (delIndex != null && delIndex == index) {
       result = Colors.red[
-          200]; //red is only rendered if warning signs or coping strats screen
+          400]; //red is only rendered if warning signs or coping strats screen
     } else if (_state.factors[index].isSelected == false) {
       result = Colors.grey[800];
     } else

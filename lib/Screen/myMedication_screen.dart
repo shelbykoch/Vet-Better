@@ -1,6 +1,7 @@
 import 'package:Capstone/Controller/firebase_controller.dart';
 import 'package:Capstone/Model/constant.dart';
 import 'package:Capstone/Model/medication.dart';
+import 'package:Capstone/Screen/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -34,9 +35,17 @@ class _MyMedicationState extends State<MyMedicationScreen> {
     Map args = ModalRoute.of(context).settings.arguments;
     user ??= args[Constant.ARG_USER];
     medication ??= args[Constant.ARG_MEDICATION_LIST];
-    
     return Scaffold(
-      appBar: AppBar(title: Text("My Medication")),
+      appBar: AppBar(
+        title: Text("My Medication"),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pushNamed(context, HomeScreen.routeName, arguments: {
+            Constant.ARG_USER: user
+          }),
+        ),
+         
+        ),
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
@@ -81,8 +90,10 @@ class _Controller {
     // First we will load the medication info associated with the account to pass to the screen
     // if it doesn't exist in the database we will created a new one and append
     // the email then pass to the screen
+    print('into MedInfoRoute');
     List<Medication> medicationList =
         await FirebaseController.getMedicationList(_state.user.email);
+
     Navigator.pushNamed(_state.context, EditMedScreen.routeName, arguments: {
       Constant.ARG_USER: _state.user,
       Constant.ARG_MEDICATION_INFO: medicationList[index],
@@ -98,4 +109,10 @@ class _Controller {
       Constant.ARG_USER: _state.user,
     });
   }
+
+  // Future<bool> navigateHome() {
+  //   Navigator.pushNamed(_state.context, HomeScreen.routeName, arguments: {
+  //     Constant.ARG_USER: _state.user,
+  //   });
+  // }
 }

@@ -17,10 +17,13 @@ class PersonalInfoScreen extends StatefulWidget {
 
 class _PersonalInfoState extends State<PersonalInfoScreen> {
   _Controller con;
-  BuildContext context;
   User user;
   PersonalInfo personalInfo;
   var formKey = GlobalKey<FormState>();
+  String chosenGender;
+  String chosenOrientaion;
+  String chosenReligion;
+  String chosenMilitary;
 
   @override
   void initState() {
@@ -51,6 +54,7 @@ class _PersonalInfoState extends State<PersonalInfoScreen> {
                   ),
                   keyboardType: TextInputType.emailAddress,
                   onSaved: con.saveName,
+                  validator: con.validatorName,
                   initialValue: personalInfo.name,
                 ),
                 TextFormField(
@@ -58,32 +62,162 @@ class _PersonalInfoState extends State<PersonalInfoScreen> {
                     hintText: 'Age',
                   ),
                   onSaved: con.saveAge,
-                  initialValue: personalInfo.age,
+                  initialValue: personalInfo.age.toString(),
                 ),
-                TextFormField(
-                  //initialValue: user.email,
-                  decoration: InputDecoration(
-                    hintText: 'Gender',
-                  ),
-                  keyboardType: TextInputType.emailAddress,
-                  onSaved: con.saveGender,
-                  initialValue: personalInfo.gender,
+                DropdownButton<String>(
+                  focusColor: Colors.white,
+                  value: chosenGender,
+                  //elevation: 5,
+                  iconEnabledColor: Colors.white,
+                  items: <String>[
+                    'Male',
+                    'Female',
+                    'Transgender',
+                    'Gender Neutral',
+                    'Non-binary',
+                    'Pangender',
+                    'Other',
+                  ].map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: SizedBox(
+                        width: 280.0,
+                        child: Text(
+                          value,
+                          textAlign: TextAlign.start,
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                  hint: personalInfo == null
+                      ? Text(
+                          "Gender",
+                        )
+                      : Text(personalInfo.gender,
+                          style: TextStyle(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.bold)),
+                  onChanged: (String value) {
+                    setState(() {
+                      chosenGender = value;
+                      personalInfo.gender = value;
+                    });
+                  },
                 ),
-                TextFormField(
-                  decoration: InputDecoration(
-                    hintText: 'Sexual orientation',
-                  ),
-                  onSaved: con.saveSexualOrientation,
-                  initialValue: personalInfo.sexualOrientation,
+                DropdownButton<String>(
+                  focusColor: Colors.white,
+                  value: chosenOrientaion,
+                  //elevation: 5,
+                  iconEnabledColor: Colors.white,
+                  items: <String>[
+                    'Heterosexual',
+                    'Gay/Lesbian',
+                    'Bisexual',
+                    'Pansexual',
+                    'Asexual',
+                    'Other',
+                  ].map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: SizedBox(
+                        width: 280.0,
+                        child: Text(
+                          value,
+                          textAlign: TextAlign.start,
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                  hint: personalInfo == null
+                      ? Text(
+                          "Sexual Orientation",
+                        )
+                      : Text(personalInfo.sexualOrientation,
+                          style: TextStyle(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.bold)),
+                  onChanged: (String value) {
+                    setState(() {
+                      chosenOrientaion = value;
+                      personalInfo.sexualOrientation = value;
+                    });
+                  },
                 ),
-                TextFormField(
-                  //initialValue: user.email,
-                  decoration: InputDecoration(
-                    hintText: 'Veteran status',
-                  ),
-                  keyboardType: TextInputType.emailAddress,
-                  onSaved: con.saveVeteranStatus,
-                  initialValue: personalInfo.veteranStatus,
+                DropdownButton<String>(
+                  focusColor: Colors.white,
+                  value: chosenReligion,
+                  //elevation: 5,
+                  iconEnabledColor: Colors.white,
+                  items: <String>[
+                    'Christianity',
+                    'Islam',
+                    'Judaism',
+                    'Hinduism',
+                    'Buddism',
+                    'Secular/Nonreligious/Agnostic/Athiest',
+                    'Other',
+                  ].map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: SizedBox(
+                        width: 280.0,
+                        child: Text(
+                          value,
+                          textAlign: TextAlign.start,
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                  hint: personalInfo == null
+                      ? Text(
+                          "Religious Affiliation",
+                        )
+                      : Text(personalInfo.religiousAffiliation,
+                          style: TextStyle(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.bold)),
+                  onChanged: (String value) {
+                    setState(() {
+                      chosenReligion = value;
+                      personalInfo.religiousAffiliation = value;
+                    });
+                  },
+                ),
+                DropdownButton<String>(
+                  focusColor: Colors.white,
+                  value: chosenMilitary,
+                  //elevation: 5,
+                  iconEnabledColor: Colors.white,
+                  items: <String>[
+                    '1-5 years',
+                    '6-10 years',
+                    '10+ years',
+                  ].map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: SizedBox(
+                        width: 280.0,
+                        child: Text(
+                          value,
+                          textAlign: TextAlign.start,
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                  hint: personalInfo == null
+                      ? Text(
+                          "Military History",
+                        )
+                      : Text(personalInfo.veteranStatus,
+                          style: TextStyle(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.bold)),
+                  onChanged: (String value) {
+                    setState(() {
+                      chosenMilitary = value;
+                      personalInfo.veteranStatus = value;
+                    });
+                  },
                 ),
                 SizedBox(
                   height: 20.0,
@@ -136,15 +270,11 @@ class _Controller {
     _state.personalInfo.age = value;
   }
 
-  void saveGender(String value) {
-    _state.personalInfo.gender = value;
+  String validatorName(String value) {
+    if (value.length < 2) {
+      return 'min 2 characters';
+    } else
+      return null;
   }
 
-  void saveSexualOrientation(String value) {
-    _state.personalInfo.sexualOrientation = value;
-  }
-
-  void saveVeteranStatus(String value) {
-    _state.personalInfo.veteranStatus = value;
-  }
 }

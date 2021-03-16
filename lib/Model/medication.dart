@@ -1,6 +1,5 @@
-
-
-import 'package:flutter/cupertino.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class Medication {
   static const COLLECTION = 'medicationInfo';
@@ -9,6 +8,7 @@ class Medication {
   static const DOSEAMT = 'doseAmt';
   static const TIMESDAILY = 'timesDaily';
   static const REFILLDATE = 'refillDate';
+  static const REFILLSLEFT = 'refillsLeft';
 
   // Field names and values
   String docId;
@@ -16,7 +16,8 @@ class Medication {
   String medName;
   String doseAmt; // in mg
   String timesDaily; // how many doses per day
-  String refillDate;
+  DateTime refillDate;
+  String refillsLeft;
 
   Medication(
       {this.docId,
@@ -24,32 +25,45 @@ class Medication {
       this.medName,
       this.doseAmt,
       this.timesDaily,
-      this.refillDate});
+      this.refillDate,
+      this.refillsLeft});
 
-  Medication.withEmail(@required String email) {
+  Medication.withEmail(String email) {
     this.email = email;
   }
 
   Map<String, dynamic> serialize() {
     return <String, dynamic>{
-      EMAIL: this.email,
+      EMAIL: email,
       MEDNAME: medName,
       DOSEAMT: doseAmt,
       TIMESDAILY: timesDaily,
       REFILLDATE: refillDate,
+      REFILLSLEFT: refillsLeft,
     };
   }
 
   static Medication deserialize(Map<String, dynamic> data, String docId) {
+    DateTime date;
+    if (data[Medication.REFILLDATE] != null) {
+      Timestamp ts = data[Medication.REFILLDATE];
+      date = ts.toDate();
+    } else
+      date = null;
     return Medication(
       docId: docId,
       email: data[Medication.EMAIL],
       medName: data[Medication.MEDNAME],
       doseAmt: data[Medication.DOSEAMT],
       timesDaily: data[Medication.TIMESDAILY],
-      refillDate: data[Medication.REFILLDATE],
+      refillsLeft: data[Medication.REFILLSLEFT],
+      refillDate: date,
     );
   }
+
+  // String getTime() {
+  //   return DateFormat.jm().format(this.refillDate).toString();
+  // }
 
   @override
   String toString() {

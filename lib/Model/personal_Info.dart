@@ -8,6 +8,7 @@ class PersonalInfo {
   String age;
   String gender;
   String sexualOrientation;
+  String religiousAffiliation;
   String veteranStatus;
 
   PersonalInfo(
@@ -17,7 +18,9 @@ class PersonalInfo {
       this.age,
       this.gender,
       this.sexualOrientation,
-      this.veteranStatus});
+      this.veteranStatus,
+      this.religiousAffiliation,
+      });
 
   PersonalInfo.withEmail(@required String email) {
     this.email = email;
@@ -30,7 +33,8 @@ class PersonalInfo {
       AGE: age,
       GENDER: gender,
       SEXUAL_ORIENTATION: sexualOrientation,
-      VETERAN_STATUS: veteranStatus
+      VETERAN_STATUS: veteranStatus,
+      RELIGIOUS_AFFILIATION: religiousAffiliation,
     };
   }
 
@@ -43,6 +47,7 @@ class PersonalInfo {
       gender: data[PersonalInfo.GENDER],
       sexualOrientation: data[PersonalInfo.SEXUAL_ORIENTATION],
       veteranStatus: data[PersonalInfo.VETERAN_STATUS],
+      religiousAffiliation: data[PersonalInfo.RELIGIOUS_AFFILIATION]
     );
   }
 
@@ -53,4 +58,5 @@ class PersonalInfo {
   static const SEXUAL_ORIENTATION = 'sexualOrientation';
   static const VETERAN_STATUS = 'veteranStatus';
   static const COLLECTION = 'personalInfo';
+  static const RELIGIOUS_AFFILIATION = 'religiousAffiliation';
 }

@@ -93,6 +93,7 @@ class FirebaseController {
         .add(factor.serialize());
     return ref.id;
   }
+
   static Future<void> deleteFactor(Factor factor) async {
     await FirebaseFirestore.instance
         .collection(Factor.COLLECTION)
@@ -143,7 +144,6 @@ class FirebaseController {
         .delete();
   }
 
-
 //-----------------MEDICATION INFORMATION------------------//
 
   static Future<String> addMedication(Medication info) async {
@@ -166,10 +166,10 @@ class FirebaseController {
         .where(Medication.EMAIL, isEqualTo: email)
         .get();
 
-    if (query != null && query.size > 0) {
-      return PersonalInfo.deserialize(query.docs[0].data(), query.docs[0].id);
+    if (query != null && query.size != 0) {
+      return Medication.deserialize(query.docs[0].data(), query.docs[0].id);
     } else {
-      return new PersonalInfo.withEmail(email);
+      return new Medication.withEmail(email);
     }
   }
 
@@ -178,16 +178,28 @@ class FirebaseController {
         .collection(Medication.COLLECTION)
         .where(Medication.EMAIL, isEqualTo: email)
         .get();
+    print('got query');
     List<Medication> result;
-    if (query != null && query.size > 0) {
+    if (query != null && query.size != 0) {
+      print("${query.size}");
       result = new List<Medication>();
       for (var doc in query.docs) {
+        print('in for loop');
         result.add(Medication.deserialize(doc.data(), doc.id));
       }
+      print('got result');
       return result;
     } else {
+      print('didn' 't get result');
       return null;
     }
+  }
+
+  static Future<void> deleteMedication(String docID) async {
+    await FirebaseFirestore.instance
+        .collection(Medication.COLLECTION)
+        .doc(docID)
+        .delete();
   }
 
   //----------------Notifications------------------//
@@ -213,7 +225,6 @@ class FirebaseController {
 //  }
 
   // Notification to take medication in the Morning
-
 
   // Notiication to take medication in the Afternoon
 

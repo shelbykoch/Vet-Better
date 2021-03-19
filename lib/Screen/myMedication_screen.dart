@@ -90,7 +90,6 @@ class _Controller {
     // First we will load the medication info associated with the account to pass to the screen
     // if it doesn't exist in the database we will created a new one and append
     // the email then pass to the screen
-    print('into MedInfoRoute');
     List<Medication> medicationList =
         await FirebaseController.getMedicationList(_state.user.email);
 

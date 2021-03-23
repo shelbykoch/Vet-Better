@@ -1,9 +1,7 @@
 import 'package:Capstone/Controller/firebase_controller.dart';
 import 'package:Capstone/Model/constant.dart';
 import 'package:Capstone/Model/personal_Info.dart';
-import 'package:Capstone/Screen/app_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class PersonalInfoScreen extends StatefulWidget {
@@ -276,5 +274,4 @@ class _Controller {
     } else
       return null;
   }
-
 }

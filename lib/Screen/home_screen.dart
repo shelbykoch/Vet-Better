@@ -8,6 +8,7 @@ import 'package:Capstone/Screen/myMedication_screen.dart';
 import 'package:Capstone/Screen/personal_info_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../Controller/firebase_controller.dart';
 import '../Model/constant.dart';
 import 'calendar_screen.dart';
@@ -24,6 +25,7 @@ class HomeScreen extends StatefulWidget {
 class _UserHomeState extends State<HomeScreen> {
   _Controller con;
   User user;
+  int _navIndex = 0;
 
   @override
   void initState() {
@@ -49,6 +51,11 @@ class _UserHomeState extends State<HomeScreen> {
                 accountEmail: Text(user.email),
               ),
               ListTile(
+                leading: Icon(Icons.person),
+                title: Text('Personal information'),
+                onTap: con.personalInfoRoute,
+              ),
+              ListTile(
                 leading: Icon(Icons.exit_to_app),
                 title: Text('Sign Out'),
                 onTap: con.signOut,
@@ -56,77 +63,29 @@ class _UserHomeState extends State<HomeScreen> {
             ],
           ),
         ),
-        body: Padding(
-          padding: const EdgeInsets.only(top: 20.0, left: 40.0, right: 40.0),
-          child: ListView(children: <Widget>[
-            SizedBox(
-              width: double.infinity,
-              child: RaisedButton(
-                child: Text('Personal information'),
-                onPressed: con.personalInfoRoute,
-              ),
+        body: con._buildBody(),
+        bottomNavigationBar: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: FaIcon(FontAwesomeIcons.cogs),
+              label: 'Health Factors',
             ),
-            SizedBox(
-              width: double.infinity,
-              child: RaisedButton(
-                child: Text('Medical history'),
-                onPressed: () =>
-                    con.factorRoute(ListType.MedicalHistory, "Medical History"),
-              ),
+            BottomNavigationBarItem(
+              icon: FaIcon(FontAwesomeIcons.users),
+              label: 'People & Resources',
             ),
-            SizedBox(
-              width: double.infinity,
-              child: RaisedButton(
-                  child: Text('Psychiatric history'),
-                  onPressed: () => con.factorRoute(
-                      ListType.PsychHistory, "Psychiatric History")),
+            BottomNavigationBarItem(
+              icon: FaIcon(FontAwesomeIcons.calendarAlt),
+              label: 'Calendar & Meds',
             ),
-            SizedBox(
-              width: double.infinity,
-              child: RaisedButton(
-                  child: Text('Baseline risk'),
-                  onPressed: () =>
-                      con.factorRoute(ListType.RiskFactors, "Risk Factors")),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.lock_open),
+              label: 'Feel Good Vault',
             ),
-            SizedBox(
-              width: double.infinity,
-              child: RaisedButton(
-                child: Text('Mitigation strategies'),
-                onPressed: () => con.factorRoute(
-                    ListType.MitigationFactors, "Mitigation Factors"),
-              ),
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: RaisedButton(
-                child: Text('Medication'),
-                onPressed: con.medicationInfoRoute,
-              ),
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: RaisedButton(
-                child: Text('Warning Signs'),
-                onPressed: () =>
-                    con.factorRoute(ListType.WarningSigns, "Warning Signs"),
-              ),
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: RaisedButton(
-                child: Text('Coping Strategies'),
-                onPressed: () => con.factorRoute(
-                    ListType.CopingStrategies, "Coping Strategies"),
-              ),
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: RaisedButton(
-                child: Text('Calendar'),
-                onPressed: () => con.calendarRoute(),
-              ),
-            ),
-          ]),
+          ],
+          currentIndex: _navIndex,
+          selectedItemColor: Color.fromRGBO(77, 225, 225, 90),
+          onTap: con._onTabTapped,
         ),
       ),
     );
@@ -136,6 +95,281 @@ class _UserHomeState extends State<HomeScreen> {
 class _Controller {
   _UserHomeState _state;
   _Controller(this._state);
+
+//--------------------------Nav Bar----------------------------------//
+
+  void _onTabTapped(index) {
+    //Changes navigation state in page
+    _state.render(() {
+      _state._navIndex = index;
+    });
+  }
+
+  Widget _buildBody() {
+    switch (_state._navIndex) {
+      //Factors - med & psych history, mitigation strats, risk factors
+      case 0:
+        return GridView.count(
+            crossAxisCount: 2,
+            crossAxisSpacing: 20,
+            mainAxisSpacing: 20,
+            padding: EdgeInsets.only(left: 40, right: 40, top: 20),
+            children: <Widget>[
+              ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                //width: double.infinity,
+                child: RaisedButton(
+                  onPressed: () =>
+                      factorRoute(ListType.MedicalHistory, "Medical History"),
+                  child: Column(
+                    // Replace with a Row for horizontal icon + text
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(top: 45.0),
+                        child: FaIcon(FontAwesomeIcons.userMd),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: Text("Medical History"),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                //width: double.infinity,
+                child: RaisedButton(
+                  onPressed: () =>
+                      factorRoute(ListType.PsychHistory, "Psychiatric History"),
+                  child: Column(
+                    // Replace with a Row for horizontal icon + text
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(top: 45.0),
+                        child: FaIcon(FontAwesomeIcons.brain),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: Text("Psychiatric History"),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                //width: double.infinity,
+                child: RaisedButton(
+                  onPressed: () =>
+                      factorRoute(ListType.RiskFactors, "Risk Factors"),
+                  child: Column(
+                    // Replace with a Row for horizontal icon + text
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(top: 45.0),
+                        child: FaIcon(FontAwesomeIcons.chartBar),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: Text("Risk Factors"),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                //width: double.infinity,
+                child: RaisedButton(
+                  onPressed: () => factorRoute(
+                      ListType.MitigationFactors, "Mitigation Factors"),
+                  child: Column(
+                    // Replace with a Row for horizontal icon + text
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(top: 45.0),
+                        child: FaIcon(FontAwesomeIcons.projectDiagram),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: Text("Mitigation Factors"),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                //width: double.infinity,
+                child: RaisedButton(
+                  onPressed: () =>
+                      factorRoute(ListType.WarningSigns, "Warning Signs"),
+                  child: Column(
+                    // Replace with a Row for horizontal icon + text
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(top: 45.0),
+                        child: FaIcon(FontAwesomeIcons.exclamationTriangle),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: Text("Warning Signs"),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                //width: double.infinity,
+                child: RaisedButton(
+                  onPressed: () => factorRoute(
+                      ListType.CopingStrategies, "Coping Strategies"),
+                  child: Column(
+                    // Replace with a Row for horizontal icon + text
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(top: 45.0),
+                        child: FaIcon(FontAwesomeIcons.hiking),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: Text("Coping Strategies"),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ]);
+      //Social activities, people to reach out to, emergency contacts
+      case 1:
+        return GridView.count(
+            crossAxisCount: 2,
+            crossAxisSpacing: 20,
+            mainAxisSpacing: 20,
+            padding: EdgeInsets.only(left: 40, right: 40, top: 20),
+            children: <Widget>[
+              ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                //width: double.infinity,
+                child: RaisedButton(
+                  onPressed: () => {},
+                  child: Column(
+                    // Replace with a Row for horizontal icon + text
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(top: 45.0),
+                        child: FaIcon(FontAwesomeIcons.users),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: Text("Social Activities"),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                //width: double.infinity,
+                child: RaisedButton(
+                  onPressed: () => {},
+                  child: Column(
+                    // Replace with a Row for horizontal icon + text
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(top: 45.0),
+                        child: FaIcon(FontAwesomeIcons.comments),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: Text("Reach Out"),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                //width: double.infinity,
+                child: RaisedButton(
+                  onPressed: () => {},
+                  child: Column(
+                    // Replace with a Row for horizontal icon + text
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(top: 45.0),
+                        child: FaIcon(FontAwesomeIcons.ambulance),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: Text("Emergency Contact"),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ]);
+      //Calendar, appointments, & meds
+      case 2:
+        return GridView.count(
+            crossAxisCount: 2,
+            crossAxisSpacing: 20,
+            mainAxisSpacing: 20,
+            padding: EdgeInsets.only(left: 40, right: 40, top: 20),
+            children: <Widget>[
+              ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                //width: double.infinity,
+                child: RaisedButton(
+                  onPressed: () => calendarRoute(),
+                  child: Column(
+                    // Replace with a Row for horizontal icon + text
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(top: 45.0),
+                        child: FaIcon(FontAwesomeIcons.calendarAlt),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: Text("Appointments"),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                //width: double.infinity,
+                child: RaisedButton(
+                  onPressed: () => medicationInfoRoute(),
+                  child: Column(
+                    // Replace with a Row for horizontal icon + text
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(top: 45.0),
+                        child: FaIcon(FontAwesomeIcons.prescriptionBottleAlt),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: Text("Medications"),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ]);
+      //Feel good vault
+      case 3:
+        return Padding(
+          padding: const EdgeInsets.only(top: 20.0, left: 40.0, right: 40.0),
+          child: ListView(children: <Widget>[Text('Feel good vault')]),
+        );
+    }
+  }
+
+  Widget _buildGrid() {}
 
 //------------------------HOME SCREEN ROUTING---------------------------//
 
@@ -214,3 +448,79 @@ class _Controller {
     Navigator.of(_state.context).pop(); //Close home screen
   }
 }
+
+/*
+
+Padding(
+          padding: const EdgeInsets.only(top: 20.0, left: 40.0, right: 40.0),
+          child: ListView(children: <Widget>[
+            SizedBox(
+              width: double.infinity,
+              child: RaisedButton(
+                child: Text('Personal information'),
+                onPressed: con.personalInfoRoute,
+              ),
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: RaisedButton(
+                child: Text('Medical history'),
+                onPressed: () =>
+                    con.factorRoute(ListType.MedicalHistory, "Medical History"),
+              ),
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: RaisedButton(
+                  child: Text('Psychiatric history'),
+                  onPressed: () => con.factorRoute(
+                      ListType.PsychHistory, "Psychiatric History")),
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: RaisedButton(
+                  child: Text('Baseline risk'),
+                  onPressed: () =>
+                      con.factorRoute(ListType.RiskFactors, "Risk Factors")),
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: RaisedButton(
+                child: Text('Mitigation strategies'),
+                onPressed: () => con.factorRoute(
+                    ListType.MitigationFactors, "Mitigation Factors"),
+              ),
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: RaisedButton(
+                child: Text('Medication'),
+                onPressed: con.medicationInfoRoute,
+              ),
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: RaisedButton(
+                child: Text('Warning Signs'),
+                onPressed: () =>
+                    con.factorRoute(ListType.WarningSigns, "Warning Signs"),
+              ),
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: RaisedButton(
+                child: Text('Coping Strategies'),
+                onPressed: () => con.factorRoute(
+                    ListType.CopingStrategies, "Coping Strategies"),
+              ),
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: RaisedButton(
+                child: Text('Calendar'),
+                onPressed: () => con.calendarRoute(),
+              ),
+            ),
+          ]),
+        )
+        */

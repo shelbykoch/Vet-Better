@@ -1,11 +1,15 @@
 import 'package:Capstone/Model/constant.dart';
 import 'package:Capstone/Screen/forgot_password_screen.dart';
+import 'package:Capstone/Screen/test_notification_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../Controller/firebase_controller.dart';
 import 'sign_up_screen.dart';
 import 'home_screen.dart';
 import 'app_dialog.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 class LoginScreen extends StatefulWidget {
   static const routeName = '/loginScreen';
@@ -100,6 +104,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
+                  PaddedRaisedButton(
+                      buttonText:
+                          'Schedule notification to appear in 5 seconds based '
+                          'on local time zone',
+                      onPressed: () async {
+                        await con._zonedScheduleNotification();
+                      },
+                    ),
                 ],
               ),
             ),
@@ -177,4 +189,19 @@ class _Controller {
   void resetPassword() async {
     Navigator.pushNamed(state.context, ForgotPasswordScreen.routeName);
   }
+
+  Future<void> _zonedScheduleNotification() async {
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+        0,
+        'Reminder',
+        'Take your pillz!',
+        tz.TZDateTime.now(tz.local).add(const Duration(seconds: 1)),
+        const NotificationDetails(
+            android: AndroidNotificationDetails('your channel id',
+                'your channel name', 'your channel description')),
+        androidAllowWhileIdle: true,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime);
+  }
+      
 }

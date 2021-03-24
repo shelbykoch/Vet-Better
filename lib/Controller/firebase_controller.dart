@@ -34,12 +34,19 @@ class FirebaseController {
 
   //-----------------PERSONAL INFORMATION------------------//
 
+  static Future<String> addPersonalInfo(PersonalInfo info) async {
+    DocumentReference ref = await FirebaseFirestore.instance
+        .collection(PersonalInfo.COLLECTION)
+        .add(info.serialize());
+    return ref.id;
+  }
+
   static Future<void> updatePersonalInfo(PersonalInfo info) async {
     await FirebaseFirestore.instance
         .collection(PersonalInfo.COLLECTION)
         .doc(info.docID)
         .set(info.serialize());
-  }
+  } 
 
   static Future<PersonalInfo> getPersonalInfo(String email) async {
     QuerySnapshot query = await FirebaseFirestore.instance

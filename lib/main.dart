@@ -1,3 +1,4 @@
+import 'package:Capstone/Screen/contact_edit_screen.dart';
 import 'package:Capstone/Screen/forgot_password_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -12,6 +13,7 @@ import 'Screen/home_screen.dart';
 import 'Screen/factor_screen.dart';
 import 'Screen/myMedication_screen.dart';
 import 'Screen/personal_info_screen.dart';
+import 'Screen/contact_list_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,6 +47,8 @@ class MyApp extends StatelessWidget {
         EditMedScreen.routeName: (context) => EditMedScreen(),
         FactorAddScreen.routeName: (context) => FactorAddScreen(),
         FactorEditScreen.routeName: (context) => FactorEditScreen(),
+        ContactEditScreen.routeName: (context) => ContactEditScreen(),
+        ContactListScreen.routeName: (context) => ContactListScreen(),
       },
     );
   }

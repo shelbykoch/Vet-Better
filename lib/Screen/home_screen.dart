@@ -1,8 +1,11 @@
 import 'package:Capstone/Model/appointment.dart';
 import 'package:Capstone/Model/constant.dart';
+import 'package:Capstone/Model/contact.dart';
 import 'package:Capstone/Model/factor.dart';
 import 'package:Capstone/Model/medication.dart';
 import 'package:Capstone/Model/personal_Info.dart';
+import 'package:Capstone/Screen/contact_edit_screen.dart';
+import 'package:Capstone/Screen/contact_list_screen.dart';
 import 'package:Capstone/Screen/factor_screen.dart';
 import 'package:Capstone/Screen/myMedication_screen.dart';
 import 'package:Capstone/Screen/personal_info_screen.dart';
@@ -31,6 +34,7 @@ class _UserHomeState extends State<HomeScreen> {
   void initState() {
     super.initState();
     con = _Controller(this);
+    con._buildButtonList();
   }
 
   void render(fn) => setState(fn);
@@ -63,7 +67,12 @@ class _UserHomeState extends State<HomeScreen> {
             ],
           ),
         ),
-        body: con._buildBody(),
+        body: GridView.count(
+            crossAxisCount: 2,
+            crossAxisSpacing: 20,
+            mainAxisSpacing: 20,
+            padding: EdgeInsets.only(left: 40, right: 40, top: 20),
+            children: con._buildButtonList()),
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
@@ -105,271 +114,80 @@ class _Controller {
     });
   }
 
-  Widget _buildBody() {
-    switch (_state._navIndex) {
-      //Factors - med & psych history, mitigation strats, risk factors
-      case 0:
-        return GridView.count(
-            crossAxisCount: 2,
-            crossAxisSpacing: 20,
-            mainAxisSpacing: 20,
-            padding: EdgeInsets.only(left: 40, right: 40, top: 20),
-            children: <Widget>[
-              ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                //width: double.infinity,
-                child: RaisedButton(
-                  onPressed: () =>
-                      factorRoute(ListType.MedicalHistory, "Medical History"),
-                  child: Column(
-                    // Replace with a Row for horizontal icon + text
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(top: 45.0),
-                        child: FaIcon(FontAwesomeIcons.userMd),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20.0),
-                        child: Text("Medical History"),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                //width: double.infinity,
-                child: RaisedButton(
-                  onPressed: () =>
-                      factorRoute(ListType.PsychHistory, "Psychiatric History"),
-                  child: Column(
-                    // Replace with a Row for horizontal icon + text
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(top: 45.0),
-                        child: FaIcon(FontAwesomeIcons.brain),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20.0),
-                        child: Text("Psychiatric History"),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                //width: double.infinity,
-                child: RaisedButton(
-                  onPressed: () =>
-                      factorRoute(ListType.RiskFactors, "Risk Factors"),
-                  child: Column(
-                    // Replace with a Row for horizontal icon + text
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(top: 45.0),
-                        child: FaIcon(FontAwesomeIcons.chartBar),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20.0),
-                        child: Text("Risk Factors"),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                //width: double.infinity,
-                child: RaisedButton(
-                  onPressed: () => factorRoute(
-                      ListType.MitigationFactors, "Mitigation Factors"),
-                  child: Column(
-                    // Replace with a Row for horizontal icon + text
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(top: 45.0),
-                        child: FaIcon(FontAwesomeIcons.projectDiagram),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20.0),
-                        child: Text("Mitigation Factors"),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                //width: double.infinity,
-                child: RaisedButton(
-                  onPressed: () =>
-                      factorRoute(ListType.WarningSigns, "Warning Signs"),
-                  child: Column(
-                    // Replace with a Row for horizontal icon + text
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(top: 45.0),
-                        child: FaIcon(FontAwesomeIcons.exclamationTriangle),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20.0),
-                        child: Text("Warning Signs"),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                //width: double.infinity,
-                child: RaisedButton(
-                  onPressed: () => factorRoute(
-                      ListType.CopingStrategies, "Coping Strategies"),
-                  child: Column(
-                    // Replace with a Row for horizontal icon + text
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(top: 45.0),
-                        child: FaIcon(FontAwesomeIcons.hiking),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20.0),
-                        child: Text("Coping Strategies"),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ]);
-      //Social activities, people to reach out to, emergency contacts
-      case 1:
-        return GridView.count(
-            crossAxisCount: 2,
-            crossAxisSpacing: 20,
-            mainAxisSpacing: 20,
-            padding: EdgeInsets.only(left: 40, right: 40, top: 20),
-            children: <Widget>[
-              ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                //width: double.infinity,
-                child: RaisedButton(
-                  onPressed: () => {},
-                  child: Column(
-                    // Replace with a Row for horizontal icon + text
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(top: 45.0),
-                        child: FaIcon(FontAwesomeIcons.users),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20.0),
-                        child: Text("Social Activities"),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                //width: double.infinity,
-                child: RaisedButton(
-                  onPressed: () => {},
-                  child: Column(
-                    // Replace with a Row for horizontal icon + text
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(top: 45.0),
-                        child: FaIcon(FontAwesomeIcons.comments),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20.0),
-                        child: Text("Reach Out"),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                //width: double.infinity,
-                child: RaisedButton(
-                  onPressed: () => {},
-                  child: Column(
-                    // Replace with a Row for horizontal icon + text
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(top: 45.0),
-                        child: FaIcon(FontAwesomeIcons.ambulance),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20.0),
-                        child: Text("Emergency Contact"),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ]);
-      //Calendar, appointments, & meds
-      case 2:
-        return GridView.count(
-            crossAxisCount: 2,
-            crossAxisSpacing: 20,
-            mainAxisSpacing: 20,
-            padding: EdgeInsets.only(left: 40, right: 40, top: 20),
-            children: <Widget>[
-              ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                //width: double.infinity,
-                child: RaisedButton(
-                  onPressed: () => calendarRoute(),
-                  child: Column(
-                    // Replace with a Row for horizontal icon + text
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(top: 45.0),
-                        child: FaIcon(FontAwesomeIcons.calendarAlt),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20.0),
-                        child: Text("Appointments"),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                //width: double.infinity,
-                child: RaisedButton(
-                  onPressed: () => medicationInfoRoute(),
-                  child: Column(
-                    // Replace with a Row for horizontal icon + text
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(top: 45.0),
-                        child: FaIcon(FontAwesomeIcons.prescriptionBottleAlt),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20.0),
-                        child: Text("Medications"),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ]);
-      //Feel good vault
-      case 3:
-        return Padding(
-          padding: const EdgeInsets.only(top: 20.0, left: 40.0, right: 40.0),
-          child: ListView(children: <Widget>[Text('Feel good vault')]),
-        );
-    }
+//-----------------------GRID & BUTTON BUILDER-----------------------//
+  Widget _screenButton(Function route, FaIcon icon, String text) {
+    return ClipRRect(
+      borderRadius: BorderRadius.all(Radius.circular(25.0)),
+      //width: double.infinity,
+      child: RaisedButton(
+        onPressed: route,
+        child: Column(
+          // Replace with a Row for horizontal icon + text
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(top: 45.0),
+              child: icon,
+            ),
+            Padding(
+                padding: const EdgeInsets.only(top: 20.0), child: Text(text)),
+          ],
+        ),
+      ),
+    );
   }
 
-  Widget _buildGrid() {}
+  List<Widget> _buildButtonList() {
+    List<Widget> buttons = new List<Widget>();
+    buttons.clear();
+    switch (_state._navIndex) {
+      case 0:
+        buttons.add(_screenButton(
+            () => factorRoute(ListType.MedicalHistory, "Medical History"),
+            FaIcon(FontAwesomeIcons.userMd),
+            "Medical History"));
+        buttons.add(_screenButton(
+            () => factorRoute(ListType.PsychHistory, "Psychiatric History"),
+            FaIcon(FontAwesomeIcons.brain),
+            "Psychiatric History"));
+        buttons.add(_screenButton(
+            () => factorRoute(ListType.RiskFactors, "Risk Factors"),
+            FaIcon(FontAwesomeIcons.chartBar),
+            "Risk Factors"));
+        buttons.add(_screenButton(
+            () => factorRoute(ListType.MitigationFactors, "Mitigation Factors"),
+            FaIcon(FontAwesomeIcons.projectDiagram),
+            "Mitigation Factors"));
+        buttons.add(_screenButton(
+            () => factorRoute(ListType.WarningSigns, "Warning Signs"),
+            FaIcon(FontAwesomeIcons.exclamationTriangle),
+            "Warning Signs"));
+        buttons.add(_screenButton(
+            () => factorRoute(ListType.CopingStrategies, "Coping Strategies"),
+            FaIcon(FontAwesomeIcons.hiking),
+            "Coping Strategies"));
+        break;
+      case 1:
+        buttons.add(_screenButton(
+            () => {}, FaIcon(FontAwesomeIcons.users), "Social Activities"));
+        buttons.add(_screenButton(() => reachOutRoute(),
+            FaIcon(FontAwesomeIcons.comments), "Reach Out"));
+        buttons.add(_screenButton(() => emergencyContactRoute(),
+            FaIcon(FontAwesomeIcons.ambulance), "Emergency Contact"));
+        break;
+      case 2:
+        buttons.add(_screenButton(() => calendarRoute(),
+            FaIcon(FontAwesomeIcons.calendarAlt), "Appointments"));
+        buttons.add(_screenButton(() => {},
+            FaIcon(FontAwesomeIcons.prescriptionBottleAlt), "Medications"));
+        break;
+      case 3:
+        buttons.add(Padding(
+          padding: const EdgeInsets.only(top: 20.0, left: 40.0, right: 40.0),
+          child: ListView(children: <Widget>[Text('Feel good vault')]),
+        ));
+    }
+    return buttons;
+  }
 
 //------------------------HOME SCREEN ROUTING---------------------------//
 
@@ -436,6 +254,43 @@ class _Controller {
         });
   }
 
+  void contactEditRoute() async {
+    Contact contact =
+        new Contact.withEmail(_state.user.email, ContactType.Personal);
+    contact.type = ContactType.Personal;
+    await Navigator.pushNamed(_state.context, ContactEditScreen.routeName,
+        arguments: {
+          Constant.ARG_USER: _state.user,
+          Constant.ARG_CONTACT: contact,
+        });
+  }
+
+  void reachOutRoute() async {
+    List<Contact> contacts = await FirebaseController.getContactList(
+        _state.user.email, ContactType.Personal);
+
+    Navigator.pushNamed(_state.context, ContactListScreen.routeName,
+        arguments: {
+          Constant.ARG_USER: _state.user,
+          Constant.ARG_CONTACT_LIST: contacts,
+          Constant.ARG_CONTACT_TYPE: ContactType.Personal,
+          Constant.ARG_CONTACT_TITLE: 'Reach out',
+        });
+  }
+
+  void emergencyContactRoute() async {
+    List<Contact> contacts = await FirebaseController.getContactList(
+        _state.user.email, ContactType.Emergency);
+
+    Navigator.pushNamed(_state.context, ContactListScreen.routeName,
+        arguments: {
+          Constant.ARG_USER: _state.user,
+          Constant.ARG_CONTACT_LIST: contacts,
+          Constant.ARG_CONTACT_TYPE: ContactType.Emergency,
+          Constant.ARG_CONTACT_TITLE: 'Emergency contacts',
+        });
+  }
+
   //------------------------APP TRAY ROUTING--------------------------//
 
   void signOut() async {
@@ -448,79 +303,3 @@ class _Controller {
     Navigator.of(_state.context).pop(); //Close home screen
   }
 }
-
-/*
-
-Padding(
-          padding: const EdgeInsets.only(top: 20.0, left: 40.0, right: 40.0),
-          child: ListView(children: <Widget>[
-            SizedBox(
-              width: double.infinity,
-              child: RaisedButton(
-                child: Text('Personal information'),
-                onPressed: con.personalInfoRoute,
-              ),
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: RaisedButton(
-                child: Text('Medical history'),
-                onPressed: () =>
-                    con.factorRoute(ListType.MedicalHistory, "Medical History"),
-              ),
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: RaisedButton(
-                  child: Text('Psychiatric history'),
-                  onPressed: () => con.factorRoute(
-                      ListType.PsychHistory, "Psychiatric History")),
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: RaisedButton(
-                  child: Text('Baseline risk'),
-                  onPressed: () =>
-                      con.factorRoute(ListType.RiskFactors, "Risk Factors")),
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: RaisedButton(
-                child: Text('Mitigation strategies'),
-                onPressed: () => con.factorRoute(
-                    ListType.MitigationFactors, "Mitigation Factors"),
-              ),
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: RaisedButton(
-                child: Text('Medication'),
-                onPressed: con.medicationInfoRoute,
-              ),
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: RaisedButton(
-                child: Text('Warning Signs'),
-                onPressed: () =>
-                    con.factorRoute(ListType.WarningSigns, "Warning Signs"),
-              ),
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: RaisedButton(
-                child: Text('Coping Strategies'),
-                onPressed: () => con.factorRoute(
-                    ListType.CopingStrategies, "Coping Strategies"),
-              ),
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: RaisedButton(
-                child: Text('Calendar'),
-                onPressed: () => con.calendarRoute(),
-              ),
-            ),
-          ]),
-        )
-        */

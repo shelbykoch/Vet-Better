@@ -1,6 +1,7 @@
 //Firebase connection class
 import 'dart:async';
 import 'package:Capstone/Model/appointment.dart';
+import 'package:Capstone/Model/contact.dart';
 import 'package:Capstone/Model/factor.dart';
 import 'package:Capstone/Model/medication.dart';
 import 'package:Capstone/Model/personal_Info.dart';
@@ -98,6 +99,48 @@ class FirebaseController {
     await FirebaseFirestore.instance
         .collection(Factor.COLLECTION)
         .doc(factor.docID)
+        .delete();
+  }
+
+  //-----------------------CONTACTS-----------------------------//
+  static Future<List<Contact>> getContactList(
+      String email, ContactType type) async {
+    print(email);
+    print(type.toString());
+    QuerySnapshot query = await FirebaseFirestore.instance
+        .collection(Contact.COLLECTION)
+        .where(Contact.EMAIL, isEqualTo: email)
+        .where(Contact.TYPE, isEqualTo: type.index)
+        .orderBy(Contact.NAME)
+        .get();
+
+    List<Contact> result = new List<Contact>();
+    if (query != null && query.size != 0) {
+      for (var doc in query.docs) {
+        result.add(Contact.deserialize(doc.data(), doc.id));
+      }
+    }
+    return result;
+  }
+
+  static Future<void> updateContact(Contact contact) async {
+    await FirebaseFirestore.instance
+        .collection(Contact.COLLECTION)
+        .doc(contact.docID)
+        .set(contact.serialize());
+  }
+
+  static Future<String> addContact(Contact contact) async {
+    DocumentReference ref = await FirebaseFirestore.instance
+        .collection(Contact.COLLECTION)
+        .add(contact.serialize());
+    return ref.id;
+  }
+
+  static Future<void> deleteContact(String docID) async {
+    await FirebaseFirestore.instance
+        .collection(Contact.COLLECTION)
+        .doc(docID)
         .delete();
   }
 

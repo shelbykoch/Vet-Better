@@ -71,7 +71,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               TextFormField(
-                //initialValue: record.imageUrl,
                 decoration: InputDecoration(
                   labelText: 'Title',
                 ),
@@ -81,7 +80,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                     _appointment.title != null ? _appointment.title : "",
               ),
               TextFormField(
-                //initialValue: record.title,
                 decoration: InputDecoration(
                   labelText: 'Location',
                 ),
@@ -91,11 +89,9 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                     _appointment.location != null ? _appointment.location : "",
               ),
               TextFormField(
-                //initialValue: record.title,
                 decoration: InputDecoration(
                   labelText: 'Date & Time',
                 ),
-                //controller: _dateController,
                 autocorrect: false,
                 controller: _dateTimeController,
                 readOnly: true,

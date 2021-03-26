@@ -5,6 +5,8 @@ import 'package:Capstone/Screen/app_dialog.dart';
 import 'package:Capstone/Screen/contact_edit_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart'
+    as UrlLauncher; //Used to make calls
 
 class ContactListScreen extends StatefulWidget {
   static const routeName = '/contactScreen';
@@ -71,14 +73,14 @@ class _ContactListState extends State<ContactListScreen> {
                       itemBuilder: (BuildContext context, index) => ListTile(
                         title: Text(_contacts[index].name),
                         subtitle: Text(_contacts[index].phoneNumber),
+                        onTap: () => con.editContact(index),
                         trailing: Wrap(
                           children: [
                             IconButton(
-                                icon: Icon(Icons.edit, color: Colors.blue),
-                                onPressed: () => con.editContact(index)),
-                            IconButton(
-                                icon: Icon(Icons.delete, color: Colors.red),
-                                onPressed: () => con.deleteContact(index)),
+                                icon:
+                                    Icon(Icons.call, color: Colors.green[800]),
+                                onPressed: () =>
+                                    con.call(_contacts[index].phoneNumber)),
                           ],
                         ),
                       ),
@@ -116,19 +118,9 @@ class _Controller {
     _state.render(() {});
   }
 
-  void deleteContact(int index) async {
+  void call(String phoneNumber) {
     try {
-      await FirebaseController.deleteContact(_state._contacts[index].docID);
-      _state._contacts.removeAt(index);
-      _state.render(() {});
-    } catch (e) {
-      AppDialog.info(
-          context: _state.context,
-          title: 'Delete error',
-          message: e.message ?? e.toString(),
-          action: () => {
-                Navigator.pop(_state.context),
-              });
-    }
+      UrlLauncher.launch('tel://${phoneNumber}');
+    } catch (e) {}
   }
 }

@@ -4,7 +4,6 @@ import 'package:Capstone/Model/contact.dart';
 import 'package:Capstone/Model/factor.dart';
 import 'package:Capstone/Model/medication.dart';
 import 'package:Capstone/Model/personal_Info.dart';
-import 'package:Capstone/Screen/contact_edit_screen.dart';
 import 'package:Capstone/Screen/contact_list_screen.dart';
 import 'package:Capstone/Screen/factor_screen.dart';
 import 'package:Capstone/Screen/myMedication_screen.dart';
@@ -115,6 +114,7 @@ class _Controller {
   }
 
 //-----------------------GRID & BUTTON BUILDER-----------------------//
+  //This is the default button used on the every homescreen
   Widget _screenButton(Function route, FaIcon icon, String text) {
     return ClipRRect(
       borderRadius: BorderRadius.all(Radius.circular(25.0)),
@@ -136,6 +136,7 @@ class _Controller {
     );
   }
 
+  //This will build a button list based on the navbar index
   List<Widget> _buildButtonList() {
     List<Widget> buttons = new List<Widget>();
     buttons.clear();
@@ -251,17 +252,6 @@ class _Controller {
         arguments: {
           Constant.ARG_USER: _state.user,
           Constant.ARG_MEDICATION_LIST: medication,
-        });
-  }
-
-  void contactEditRoute() async {
-    Contact contact =
-        new Contact.withEmail(_state.user.email, ContactType.Personal);
-    contact.type = ContactType.Personal;
-    await Navigator.pushNamed(_state.context, ContactEditScreen.routeName,
-        arguments: {
-          Constant.ARG_USER: _state.user,
-          Constant.ARG_CONTACT: contact,
         });
   }
 

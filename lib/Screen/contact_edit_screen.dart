@@ -93,6 +93,14 @@ class _ContactEditScreenState extends State<ContactEditScreen> {
                 initialValue: _contact.notes != null ? _contact.notes : "",
                 onChanged: con.onNotesChanged,
               ),
+              SizedBox(
+                width: double.infinity,
+                child: RaisedButton(
+                    child: Text("Delete"),
+                    onPressed: () {
+                      con.deleteContact();
+                    }),
+              ),
             ],
           ),
         ),
@@ -149,7 +157,6 @@ class _Controller {
         _state._contact.docID = docID;
       } else
         FirebaseController.updateContact(_state._contact);
-      Navigator.pop(_state.context); //dispose progress dialog
       Navigator.pop(_state.context); //dispose contact detail screen
     } catch (e) {
       AppDialog.popProgressBar(_state.context);
@@ -161,6 +168,23 @@ class _Controller {
                 Navigator.pop(_state.context),
               });
       return;
+    }
+  }
+
+  void deleteContact() async {
+    try {
+      await FirebaseController.deleteContact(_state._contact.docID);
+      Navigator.pop(_state.context); //dispose progress dialog
+      Navigator.pop(_state.context); //dispose contact detail screen
+      _state.render(() {});
+    } catch (e) {
+      AppDialog.info(
+          context: _state.context,
+          title: 'Delete error',
+          message: e.message ?? e.toString(),
+          action: () => {
+                Navigator.pop(_state.context),
+              });
     }
   }
 }

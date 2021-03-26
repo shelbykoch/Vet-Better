@@ -17,4 +17,14 @@ class Constant {
   //Medication screen
   static const ARG_MEDICATION_LIST = 'medicationList';
   static const ARG_MEDICATION_INFO = 'medicationInfo';
+
+  //Social Activities screens
+  static const ARG_CONTACTS = 'contacts';
+  static const ARG_CONTACT = 'contact';
+  static const ARG_ACTIVITIES = 'activities';
+  static const ARG_ACTIVITY = 'activities';
+  static const ARG_LOCATIONS = 'locations';
+  static const ARG_LOCATION = 'location';
+  static const ARG_SOCIALACTIVITIES = 'socialActivities';
+  static const ARG_SOCIALACTIVITY = 'socialActivity';
 }

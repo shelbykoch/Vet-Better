@@ -1,8 +1,12 @@
+import 'package:Capstone/Model/activity.dart';
 import 'package:Capstone/Model/appointment.dart';
 import 'package:Capstone/Model/constant.dart';
+import 'package:Capstone/Model/contact.dart';
 import 'package:Capstone/Model/factor.dart';
+import 'package:Capstone/Model/location.dart';
 import 'package:Capstone/Model/medication.dart';
 import 'package:Capstone/Model/personal_Info.dart';
+import 'package:Capstone/Model/social_activity.dart';
 import 'package:Capstone/Screen/factor_screen.dart';
 import 'package:Capstone/Screen/myMedication_screen.dart';
 import 'package:Capstone/Screen/personal_info_screen.dart';
@@ -126,6 +130,13 @@ class _UserHomeState extends State<HomeScreen> {
                 onPressed: () => con.calendarRoute(),
               ),
             ),
+            SizedBox(
+              width: double.infinity,
+              child: RaisedButton(
+                child: Text('Social Activities'),
+                onPressed: () => con.socialActRoute(),
+              ),
+            ),
           ]),
         ),
       ),
@@ -138,6 +149,27 @@ class _Controller {
   _Controller(this._state);
 
 //------------------------HOME SCREEN ROUTING---------------------------//
+
+  void socialActRoute() async {
+    //Request risk factors from database.
+    //If Firebase doesn't find the collection then an new version is returned
+    List<SocialActivity> socialActivities =
+        await FirebaseController.getSocialActivityList(_state.user.email);
+    List<Contact> contacts = await FirebaseController.getContactList(
+        _state.user.email, ContactType.Social);
+    List<Activity> activities =
+        await FirebaseController.getActivityList(_state.user.email);
+    List<Location> locations =
+        await FirebaseController.getLocationList(_state.user.email);
+
+    Navigator.pushNamed(_state.context, FactorScreen.routeName, arguments: {
+      Constant.ARG_USER: _state.user,
+      Constant.ARG_SOCIALACTIVITIES: socialActivities,
+      Constant.ARG_CONTACTS: contacts,
+      Constant.ARG_ACTIVITIES: activities,
+      Constant.ARG_LOCATIONS: locations,
+    });
+  }
 
   void factorRoute(ListType listType, String title) async {
     //Request risk factors from database.

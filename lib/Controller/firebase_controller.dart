@@ -1,9 +1,13 @@
 //Firebase connection class
 import 'dart:async';
+import 'package:Capstone/Model/location.dart';
+import 'package:Capstone/Model/activity.dart';
 import 'package:Capstone/Model/appointment.dart';
+import 'package:Capstone/Model/contact.dart';
 import 'package:Capstone/Model/factor.dart';
 import 'package:Capstone/Model/medication.dart';
 import 'package:Capstone/Model/personal_Info.dart';
+import 'package:Capstone/Model/social_activity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -98,6 +102,168 @@ class FirebaseController {
     await FirebaseFirestore.instance
         .collection(Factor.COLLECTION)
         .doc(factor.docID)
+        .delete();
+  }
+
+  //-----------------------CONTACTS-----------------------------//
+  static Future<List<Contact>> getContactList(
+      String email, ContactType type) async {
+    print(email);
+    print(type.toString());
+    QuerySnapshot query = await FirebaseFirestore.instance
+        .collection(Contact.COLLECTION)
+        .where(Contact.EMAIL, isEqualTo: email)
+        .where(Contact.TYPE, isEqualTo: type.index)
+        .orderBy(Contact.NAME)
+        .get();
+
+    List<Contact> result = new List<Contact>();
+    if (query != null && query.size != 0) {
+      for (var doc in query.docs) {
+        result.add(Contact.deserialize(doc.data(), doc.id));
+      }
+    }
+    return result;
+  }
+
+  static Future<void> updateContact(Contact contact) async {
+    await FirebaseFirestore.instance
+        .collection(Contact.COLLECTION)
+        .doc(contact.docID)
+        .set(contact.serialize());
+  }
+
+  static Future<String> addContact(Contact contact) async {
+    DocumentReference ref = await FirebaseFirestore.instance
+        .collection(Contact.COLLECTION)
+        .add(contact.serialize());
+    return ref.id;
+  }
+
+  static Future<void> deleteContact(Contact contact) async {
+    await FirebaseFirestore.instance
+        .collection(Contact.COLLECTION)
+        .doc(contact.docID)
+        .delete();
+  }
+
+  //-----------------------ACTIVITIES-----------------------------//
+  static Future<List<Activity>> getActivityList(String email) async {
+    print(email);
+    QuerySnapshot query = await FirebaseFirestore.instance
+        .collection(Activity.COLLECTION)
+        .where(Activity.EMAIL, isEqualTo: email)
+        .orderBy(Activity.NAME)
+        .get();
+
+    List<Activity> result = new List<Activity>();
+    if (query != null && query.size != 0) {
+      for (var doc in query.docs) {
+        result.add(Activity.deserialize(doc.data(), doc.id));
+      }
+    }
+    return result;
+  }
+
+  static Future<void> updateActivity(Activity activity) async {
+    await FirebaseFirestore.instance
+        .collection(Activity.COLLECTION)
+        .doc(activity.docID)
+        .set(activity.serialize());
+  }
+
+  static Future<String> addActivity(Activity activity) async {
+    DocumentReference ref = await FirebaseFirestore.instance
+        .collection(Activity.COLLECTION)
+        .add(activity.serialize());
+    return ref.id;
+  }
+
+  static Future<void> deleteActivity(Activity activity) async {
+    await FirebaseFirestore.instance
+        .collection(Activity.COLLECTION)
+        .doc(activity.docID)
+        .delete();
+  }
+
+  //-----------------------LOCATIONS-----------------------------//
+  static Future<List<Location>> getLocationList(String email) async {
+    print(email);
+    QuerySnapshot query = await FirebaseFirestore.instance
+        .collection(Location.COLLECTION)
+        .where(Location.EMAIL, isEqualTo: email)
+        .orderBy(Location.NAME)
+        .get();
+
+    List<Location> result = new List<Location>();
+    if (query != null && query.size != 0) {
+      for (var doc in query.docs) {
+        result.add(Location.deserialize(doc.data(), doc.id));
+      }
+    }
+    return result;
+  }
+
+  static Future<void> updateLocation(Location location) async {
+    await FirebaseFirestore.instance
+        .collection(Location.COLLECTION)
+        .doc(location.docID)
+        .set(location.serialize());
+  }
+
+  static Future<String> addLocation(Location location) async {
+    DocumentReference ref = await FirebaseFirestore.instance
+        .collection(Location.COLLECTION)
+        .add(location.serialize());
+    return ref.id;
+  }
+
+  static Future<void> deleteLocation(Location location) async {
+    await FirebaseFirestore.instance
+        .collection(Location.COLLECTION)
+        .doc(location.docID)
+        .delete();
+  }
+
+  //-----------------------SOCIAL-ACTIVITIES-----------------------------//
+  static Future<List<SocialActivity>> getSocialActivityList(
+      String email) async {
+    print(email);
+    QuerySnapshot query = await FirebaseFirestore.instance
+        .collection(SocialActivity.COLLECTION)
+        .where(SocialActivity.EMAIL, isEqualTo: email)
+        .orderBy(SocialActivity.NAME)
+        .get();
+
+    List<SocialActivity> result = new List<SocialActivity>();
+    if (query != null && query.size != 0) {
+      for (var doc in query.docs) {
+        result.add(SocialActivity.deserialize(doc.data(), doc.id));
+      }
+    }
+    return result;
+  }
+
+  static Future<void> updateSocialActivity(
+      SocialActivity socialActivity) async {
+    await FirebaseFirestore.instance
+        .collection(SocialActivity.COLLECTION)
+        .doc(socialActivity.docID)
+        .set(socialActivity.serialize());
+  }
+
+  static Future<String> addSocialActivity(SocialActivity socialActivity) async {
+    DocumentReference ref = await FirebaseFirestore.instance
+        .collection(SocialActivity.COLLECTION)
+        .add(socialActivity.serialize());
+    return ref.id;
+  }
+
+  static Future<void> deleteSocialActivity(
+      SocialActivity socialActivity) async {
+    await FirebaseFirestore.instance
+        .collection(SocialActivity.COLLECTION)
+        .doc(socialActivity.docID)
         .delete();
   }
 

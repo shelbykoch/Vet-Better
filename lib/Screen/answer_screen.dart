@@ -77,7 +77,7 @@ class _Controller {
   _AnswerState _state;
   _Controller(this._state);
   int index;
-  String docId;
+  
 
   void save() async {
     if (!_state.formKey.currentState.validate()) return; //If invalid, return
@@ -85,14 +85,12 @@ class _Controller {
     _state.questionInfo.email = _state.user.email;
     try {
       if (_state.questionInfo.docId == null) {
-        docId =
+        String docId =
             await FirebaseController.addQuestionInfo(_state.questionInfo);
         _state.questionInfo.docId = docId;
       } else {
             await FirebaseController.updateQuestionInfo(_state.questionInfo);
-        _state.questionInfo.docId = docId;
       }
-
       List<Question> questionList =
           await FirebaseController.getQuestionList(_state.user.email);
 

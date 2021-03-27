@@ -14,6 +14,8 @@ import '../Controller/firebase_controller.dart';
 import '../Model/constant.dart';
 import 'calendar_screen.dart';
 import 'factor_add_screen.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/homeScreen';
@@ -26,7 +28,7 @@ class HomeScreen extends StatefulWidget {
 class _UserHomeState extends State<HomeScreen> {
   _Controller con;
   User user;
-
+  List<Question> questionList;
   @override
   void initState() {
     super.initState();
@@ -39,6 +41,7 @@ class _UserHomeState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     Map args = ModalRoute.of(context).settings.arguments;
     user ??= args[Constant.ARG_USER];
+    questionList ??= args[Constant.ARG_QUESTION_LIST];
     return WillPopScope(
       onWillPop: () => Future.value(false), //Disable android system back button
       child: Scaffold(
@@ -212,18 +215,35 @@ class _Controller {
   }
 
   void dailyQuestionsRoute() async {
-    //First we will load the medication info associated with the account to pass to the screen
-    //if it doesn't exist in the database we will created a new one and append
-    //the email then pass to the screen
-    List<Question> questionList =
-        await FirebaseController.getQuestionList(_state.user.email);
-    Navigator.pushNamed(_state.context, DailyQuestionsScreen.routeName,
-        arguments: {
-          Constant.ARG_USER: _state.user,
-          Constant.ARG_QUESTION_LIST: questionList,
-        });
+    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+    tz.TZDateTime newDay = tz.TZDateTime(
+        tz.local, now.year, now.month, now.day, now.hour, now.minute, 00);
+         print(newDay);
+    if (newDay.isBefore(now)) {
+      newDay = newDay.add(const Duration(days: 1));
+    }
+    _state.questionList =
+          await FirebaseController.getQuestionList(_state.user.email);
+    if (_state.questionList == null) {
+      List<Question> questionList = new List<Question>();
+        questionList = Question.getDailyQuestions(_state.user.email);
+        for (Question question in questionList)
+          await FirebaseController.addQuestionInfo(question);
+      questionList =
+          await FirebaseController.getQuestionList(_state.user.email);
+      Navigator.pushNamed(_state.context, DailyQuestionsScreen.routeName,
+          arguments: {
+            Constant.ARG_USER: _state.user,
+            Constant.ARG_QUESTION_LIST: questionList,
+          });
+    } else {
+      Navigator.pushNamed(_state.context, DailyQuestionsScreen.routeName,
+          arguments: {
+            Constant.ARG_USER: _state.user,
+            Constant.ARG_QUESTION_LIST: _state.questionList,
+          });
+    }
   }
-
   //------------------------APP TRAY ROUTING--------------------------//
 
   void signOut() async {

@@ -84,13 +84,13 @@ class _DailyQuestionsState extends State<DailyQuestionsScreen> {
 class _Controller {
   _DailyQuestionsState _state;
   _Controller(this._state);
-  List<Question> questionList;
 
   void answerScreenRoute(int index) async {
     // First we will load the medication info associated with the account to pass to the screen
     // if it doesn't exist in the database we will created a new one and append
     // the email then pass to the screen
-    questionList = await FirebaseController.getQuestionList(_state.user.email);
+    List<Question> questionList =
+        await FirebaseController.getQuestionList(_state.user.email);
 
     Navigator.pushNamed(_state.context, AnswerScreen.routeName, arguments: {
       Constant.ARG_USER: _state.user,

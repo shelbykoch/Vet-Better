@@ -27,6 +27,10 @@ class Question {
     this.questionNumber = questionNumber;
   }
 
+  Question.withEmail(String email) {
+    this.email = email;
+  }
+
   Map<String, dynamic> serialize() {
     return <String, dynamic>{
       EMAIL: email,

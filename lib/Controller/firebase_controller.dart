@@ -11,7 +11,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-
 class FirebaseController {
 //-------------------------ACCOUNT------------------------//
 
@@ -233,23 +232,10 @@ class FirebaseController {
       result = new List<Question>();
       for (var doc in query.docs) {
         result.add(Question.deserialize(doc.data(), doc.id));
-        if (result.length < 3) {
-          print("result.length is less than 3");
-          print(result.length);
-          for (int i = result.length; i < 3; i++) {
-            print(i);
-            print(Question.getDailyQuestions(email)[i]);
-            result.add(Question.getDailyQuestions(email)[i]);
-          }
-        }
       }
       return result;
     } else {
-      List<Question> newList = new List<Question>();
-      for (int i = 0; i < 3; i++) {
-        newList.add(Question.getDailyQuestions(email)[i]);
-      }
-      return newList;
+      return null;
     }
   }
 

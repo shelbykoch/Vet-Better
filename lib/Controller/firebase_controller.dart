@@ -4,12 +4,13 @@ import 'package:Capstone/Model/appointment.dart';
 import 'package:Capstone/Model/factor.dart';
 import 'package:Capstone/Model/medication.dart';
 import 'package:Capstone/Model/personal_Info.dart';
+import 'package:Capstone/Model/question.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
 
 class FirebaseController {
 //-------------------------ACCOUNT------------------------//
@@ -46,7 +47,7 @@ class FirebaseController {
         .collection(PersonalInfo.COLLECTION)
         .doc(info.docID)
         .set(info.serialize());
-  } 
+  }
 
   static Future<PersonalInfo> getPersonalInfo(String email) async {
     QuerySnapshot query = await FirebaseFirestore.instance
@@ -204,31 +205,54 @@ class FirebaseController {
         .delete();
   }
 
-  //----------------Notifications------------------//
-//  static Future<void> getNoticiationToken() {
-//  FirebaseMessaging.getInstance().getToken()
-//     .addOnCompleteListener(new OnCompleteListener<String>() {
-//         @Override
-//         public void onComplete(@NonNull Task<String> task) {
-//           if (!task.isSuccessful()) {
-//             Log.w(TAG, "Fetching FCM registration token failed", task.getException());
-//             return;
-//           }
+//-----------------DAILY QUESTIONS------------------//
 
-//           // Get new FCM registration token
-//           String token = task.getResult();
+  static Future<String> addQuestionInfo(Question info) async {
+    DocumentReference ref = await FirebaseFirestore.instance
+        .collection(Question.COLLECTION)
+        .add(info.serialize());
+    return ref.id;
+  }
 
-//           // Log and toast
-//           String msg = getString(R.string.msg_token_fmt, token);
-//           Log.d(TAG, msg);
-//           Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
-//         }
-//     });
-//  }
+  static Future<void> updateQuestionInfo(Question info) async {
+    await FirebaseFirestore.instance
+        .collection(Question.COLLECTION)
+        .doc(info.docId)
+        .set(info.serialize());
+  }
 
-  // Notification to take medication in the Morning
+  static Future<List<Question>> getQuestionList(String email) async {
+    QuerySnapshot query = await FirebaseFirestore.instance
+        .collection(Question.COLLECTION)
+        .where(Question.EMAIL, isEqualTo: email)
+        .orderBy(Question.QUESTION_NUMBER)
+        .get();
 
-  // Notiication to take medication in the Afternoon
+    List<Question> result;
+    if (query != null && query.size != 0) {
+      result = new List<Question>();
+      for (var doc in query.docs) {
+        result.add(Question.deserialize(doc.data(), doc.id));
+        if (result.length < 3) {
+          print("result.length is less than 3");
+          print(result.length);
+          for (int i = result.length; i < 3; i++) {
+            print(i);
+            print(Question.getDailyQuestions(email)[i]);
+            result.add(Question.getDailyQuestions(email)[i]);
+          }
+        }
+      }
+      return result;
+    } else {
+      List<Question> newList = new List<Question>();
+      for (int i = 0; i < 3; i++) {
+        newList.add(Question.getDailyQuestions(email)[i]);
+      }
+      return newList;
+    }
+  }
 
-  // Notification to take medication in the Evening}
+//-----------------NOTIFICATIONS------------------//
+
 }

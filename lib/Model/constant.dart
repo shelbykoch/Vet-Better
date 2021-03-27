@@ -17,4 +17,8 @@ class Constant {
   //Medication screen
   static const ARG_MEDICATION_LIST = 'medicationList';
   static const ARG_MEDICATION_INFO = 'medicationInfo';
+
+  //Daily Questions Screen
+  static const ARG_QUESTION_LIST = 'questionList';
+  static const ARG_QUESTION_INFO = 'questionInfo';
 }

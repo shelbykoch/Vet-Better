@@ -1,4 +1,5 @@
 import 'package:Capstone/Controller/firebase_controller.dart';
+import 'package:Capstone/Controller/notificationController.dart';
 import 'package:Capstone/Model/constant.dart';
 import 'package:Capstone/Model/medication.dart';
 import 'package:Capstone/Screen/myMedication_screen.dart';
@@ -22,6 +23,8 @@ class _EditMedState extends State<EditMedScreen> {
   Medication medicationInfo;
   TextEditingController dateTimeController;
   DatePicker picker;
+  int chosenTimesDaily;
+  int chosenRefillsLeft;
 
   var formKey = GlobalKey<FormState>();
 
@@ -37,10 +40,12 @@ class _EditMedState extends State<EditMedScreen> {
     Map args = ModalRoute.of(context).settings.arguments;
     user ??= args[Constant.ARG_USER];
     medicationInfo ??= args[Constant.ARG_MEDICATION_INFO];
-    dateTimeController = TextEditingController(
-        text: medicationInfo.refillDate != null
-            ? DateFormat.yMd().add_jm().format(medicationInfo.refillDate)
-            : "");
+    medicationInfo != null
+        ? dateTimeController = TextEditingController(
+            text: medicationInfo.refillDate != null
+                ? DateFormat.yMd().add_jm().format(medicationInfo.refillDate)
+                : "")
+        : dateTimeController = TextEditingController(text: "");
     if (medicationInfo == null) medicationInfo = new Medication();
     return Scaffold(
       appBar: AppBar(
@@ -53,6 +58,8 @@ class _EditMedState extends State<EditMedScreen> {
         ],
       ),
       body: SingleChildScrollView(
+        child: Padding(
+            padding: const EdgeInsets.only(top: 20.0, left: 50.0, right: 50.0),
         child: Column(
           children: <Widget>[
             Form(
@@ -80,25 +87,75 @@ class _EditMedState extends State<EditMedScreen> {
                       autocorrect: true,
                       onSaved: con.saveDoseAmt,
                     ),
-                    TextFormField(
-                      decoration: InputDecoration(
-                        hintText: 'Number of Times Daily',
+                    Container(
+                      alignment: Alignment.bottomLeft,
+                      child: DropdownButton<int>(
+                        focusColor: Colors.white,
+                        value: chosenTimesDaily,
+                        //elevation: 5,
+                        iconEnabledColor: Colors.white,
+                        items: <int>[1, 2, 3]
+                            .map<DropdownMenuItem<int>>((int value) {
+                          return DropdownMenuItem<int>(
+                            value: value,
+                            child: SizedBox(
+                              width: 280.0,
+                              child: Text(
+                                value.toString(),
+                                textAlign: TextAlign.start,
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                        hint: medicationInfo.timesDaily == null
+                            ? Text(
+                                "Number of Times Taken Daily",
+                              )
+                            : Text(medicationInfo.timesDaily.toString(),
+                                style: TextStyle(
+                                    color: Colors.white70,
+                                    fontWeight: FontWeight.bold)),
+                        onChanged: (int value) {
+                          setState(() {
+                            chosenTimesDaily = value;
+                            medicationInfo.timesDaily = value;
+                          });
+                        },
                       ),
-                      initialValue: medicationInfo == null
-                          ? null
-                          : medicationInfo.timesDaily,
-                      autocorrect: true,
-                      onSaved: con.saveTimesDaily,
                     ),
-                    TextFormField(
-                      decoration: InputDecoration(
-                        hintText: 'Refills Left',
+                    Container(
+                      alignment: Alignment.bottomLeft,
+                      child: DropdownButton<int>(
+                        focusColor: Colors.white,
+                        value: chosenRefillsLeft,
+                        iconEnabledColor: Colors.white,
+                        items: <int>[1, 2, 3, 4, 5].map<DropdownMenuItem<int>>((int value) {
+                          return DropdownMenuItem<int>(
+                            value: value,
+                            child: SizedBox(
+                              width: 280.0,
+                              child: Text(
+                                value.toString(),
+                                textAlign: TextAlign.start,
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                        hint: medicationInfo.refillsLeft == null
+                            ? Text(
+                                "Number of refills left",
+                              )
+                            : Text(medicationInfo.refillsLeft.toString(),
+                                style: TextStyle(
+                                    color: Colors.white70,
+                                    fontWeight: FontWeight.bold)),
+                        onChanged: (int value) {
+                          setState(() {
+                            chosenRefillsLeft = value;
+                            medicationInfo.refillsLeft = value;
+                          });
+                        },
                       ),
-                      initialValue: medicationInfo == null
-                          ? null
-                          : medicationInfo.refillsLeft,
-                      autocorrect: true,
-                      onSaved: con.saveRefillsLeft,
                     ),
                     TextFormField(
                       //initialValue: record.title,
@@ -134,6 +191,7 @@ class _EditMedState extends State<EditMedScreen> {
           ],
         ),
       ),
+      ),
     );
   }
 }
@@ -153,10 +211,10 @@ class _Controller {
       } else {
         await FirebaseController.updateMedicationInfo(_state.medicationInfo);
       }
-
+       if(_state.medicationInfo.timesDaily != null) NotificationController.medicationNotification(_state.user.email);
       List<Medication> medication =
           await FirebaseController.getMedicationList(_state.user.email);
-      
+
       Navigator.pushNamed(_state.context, MyMedicationScreen.routeName,
           arguments: {
             Constant.ARG_USER: _state.user,
@@ -188,11 +246,5 @@ class _Controller {
     _state.medicationInfo.doseAmt = value;
   }
 
-  void saveTimesDaily(String value) {
-    _state.medicationInfo.timesDaily = value;
-  }
 
-  void saveRefillsLeft(String value) {
-    _state.medicationInfo.refillsLeft = value;
-  }
 }

@@ -15,9 +15,9 @@ class Medication {
   String email;
   String medName;
   String doseAmt; // in mg
-  String timesDaily; // how many doses per day
+  int timesDaily; // how many doses per day
   DateTime refillDate;
-  String refillsLeft;
+  int refillsLeft;
 
   Medication(
       {this.docId,

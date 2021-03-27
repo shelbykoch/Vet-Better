@@ -3,6 +3,8 @@ import 'package:Capstone/Model/constant.dart';
 import 'package:Capstone/Model/factor.dart';
 import 'package:Capstone/Model/medication.dart';
 import 'package:Capstone/Model/personal_Info.dart';
+import 'package:Capstone/Model/question.dart';
+import 'package:Capstone/Screen/dailyquestions_screen.dart';
 import 'package:Capstone/Screen/factor_screen.dart';
 import 'package:Capstone/Screen/myMedication_screen.dart';
 import 'package:Capstone/Screen/personal_info_screen.dart';
@@ -126,6 +128,13 @@ class _UserHomeState extends State<HomeScreen> {
                 onPressed: () => con.calendarRoute(),
               ),
             ),
+            SizedBox(
+              width: double.infinity,
+              child: RaisedButton(
+                child: Text('Daily Questions'),
+                onPressed: () => con.dailyQuestionsRoute(),
+              ),
+            ),
           ]),
         ),
       ),
@@ -199,6 +208,19 @@ class _Controller {
         arguments: {
           Constant.ARG_USER: _state.user,
           Constant.ARG_MEDICATION_LIST: medication,
+        });
+  }
+
+  void dailyQuestionsRoute() async {
+    //First we will load the medication info associated with the account to pass to the screen
+    //if it doesn't exist in the database we will created a new one and append
+    //the email then pass to the screen
+    List<Question> questionList =
+        await FirebaseController.getQuestionList(_state.user.email);
+    Navigator.pushNamed(_state.context, DailyQuestionsScreen.routeName,
+        arguments: {
+          Constant.ARG_USER: _state.user,
+          Constant.ARG_QUESTION_LIST: questionList,
         });
   }
 

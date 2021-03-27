@@ -1,3 +1,6 @@
+import 'package:Capstone/Controller/notificationController.dart';
+import 'package:Capstone/Screen/answer_screen.dart';
+import 'package:Capstone/Screen/dailyquestions_screen.dart';
 import 'package:Capstone/Screen/forgot_password_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -14,15 +17,13 @@ import 'Screen/factor_screen.dart';
 import 'Screen/myMedication_screen.dart';
 import 'Screen/personal_info_screen.dart';
 import 'Screen/test_notification_screen.dart';
-import 'package:timezone/data/latest.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
-
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
-  await _configureLocalTimeZone();
+  await NotificationController.configureLocalTimeZone();
+  await NotificationController.dailyQuestionsNotification();
 
   final NotificationAppLaunchDetails notificationAppLaunchDetails =
       await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
@@ -71,6 +72,7 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   NotificationAppLaunchDetails notificationAppLaunchDetails;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -97,13 +99,10 @@ class MyApp extends StatelessWidget {
         EditMedScreen.routeName: (context) => EditMedScreen(),
         FactorAddScreen.routeName: (context) => FactorAddScreen(),
         FactorEditScreen.routeName: (context) => FactorEditScreen(),
+        DailyQuestionsScreen.routeName: (context) => DailyQuestionsScreen(),
+        AnswerScreen.routeName: (context) => AnswerScreen(),
       },
     );
   }
 }
 
-Future<void> _configureLocalTimeZone() async {
-  tz.initializeTimeZones();
-  //final String timeZoneName = await platform.invokeMethod('getTimeZoneName');
-  //tz.setLocalLocation(tz.getLocation(timeZoneName));
-}

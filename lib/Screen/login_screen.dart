@@ -1,3 +1,4 @@
+import 'package:Capstone/Controller/notificationController.dart';
 import 'package:Capstone/Model/constant.dart';
 import 'package:Capstone/Screen/forgot_password_screen.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +7,6 @@ import '../Controller/firebase_controller.dart';
 import 'sign_up_screen.dart';
 import 'home_screen.dart';
 import 'app_dialog.dart';
-
 
 class LoginScreen extends StatefulWidget {
   static const routeName = '/loginScreen';
@@ -168,9 +168,7 @@ class _Controller {
               });
       return; //cease login process
     }
-
     Navigator.pop(state.context); //dispose dialog
-    state._textContoller.clear();
     Navigator.pushNamed(state.context, HomeScreen.routeName,
         arguments: {Constant.ARG_USER: user});
   }

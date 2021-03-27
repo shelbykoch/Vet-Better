@@ -239,6 +239,13 @@ class FirebaseController {
     }
   }
 
+    static Future<void> deleteQuestion(String docID) async {
+    await FirebaseFirestore.instance
+        .collection(Question.COLLECTION)
+        .doc(docID)
+        .delete();
+  }
+
 //-----------------NOTIFICATIONS------------------//
 
 }

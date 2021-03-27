@@ -44,75 +44,73 @@ class ReceivedNotification {
 
 String selectedNotificationPayload;
 
-
 /// IMPORTANT: running the following code on its own won't work as there is
 /// setup required for each platform head project.
 ///
 /// Please download the complete example app from the GitHub repository where
 /// all the setup has been done
+Future<void> main() async {
+  // needed if you intend to initialize in the `main` function
+  WidgetsFlutterBinding.ensureInitialized();
 
-// Future<void> main() async {
-//   // needed if you intend to initialize in the `main` function
-//   WidgetsFlutterBinding.ensureInitialized();
+  await _configureLocalTimeZone();
 
-//   await _configureLocalTimeZone();
+  final NotificationAppLaunchDetails notificationAppLaunchDetails =
+      await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+  String initialRoute = HomePage.routeName;
+  if (notificationAppLaunchDetails?.didNotificationLaunchApp ?? false) {
+    selectedNotificationPayload = notificationAppLaunchDetails.payload;
+    initialRoute = SecondPage.routeName;
+  }
 
-//   final NotificationAppLaunchDetails notificationAppLaunchDetails =
-//       await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
-//   String initialRoute = HomePage.routeName;
-//   if (notificationAppLaunchDetails?.didNotificationLaunchApp ?? false) {
-//     selectedNotificationPayload = notificationAppLaunchDetails.payload;
-//     initialRoute = SecondPage.routeName;
-//   }
+  const AndroidInitializationSettings initializationSettingsAndroid =
+      AndroidInitializationSettings('app_icon');
 
-//   const AndroidInitializationSettings initializationSettingsAndroid =
-//       AndroidInitializationSettings('@mipmap/ic_launcher');
+  /// Note: permissions aren't requested here just to demonstrate that can be
+  /// done later
+  final IOSInitializationSettings initializationSettingsIOS =
+      IOSInitializationSettings(
+          requestAlertPermission: false,
+          requestBadgePermission: false,
+          requestSoundPermission: false,
+          onDidReceiveLocalNotification:
+              (int id, String title, String body, String payload) async {
+            didReceiveLocalNotificationSubject.add(ReceivedNotification(
+                id: id, title: title, body: body, payload: payload));
+          });
+  const MacOSInitializationSettings initializationSettingsMacOS =
+      MacOSInitializationSettings(
+          requestAlertPermission: false,
+          requestBadgePermission: false,
+          requestSoundPermission: false);
+  final InitializationSettings initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsIOS,
+      macOS: initializationSettingsMacOS);
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings,
+      onSelectNotification: (String payload) async {
+    if (payload != null) {
+      debugPrint('notification payload: $payload');
+    }
+    selectedNotificationPayload = payload;
+    selectNotificationSubject.add(payload);
+  });
+  runApp(
+    MaterialApp(
+      initialRoute: initialRoute,
+      routes: <String, WidgetBuilder>{
+        HomePage.routeName: (_) => HomePage(notificationAppLaunchDetails),
+        SecondPage.routeName: (_) => SecondPage(selectedNotificationPayload)
+      },
+    ),
+  );
+}
 
-//   /// Note: permissions aren't requested here just to demonstrate that can be
-//   /// done later
-//   final IOSInitializationSettings initializationSettingsIOS =
-//       IOSInitializationSettings(
-//           requestAlertPermission: false,
-//           requestBadgePermission: false,
-//           requestSoundPermission: false,
-//           onDidReceiveLocalNotification:
-//               (int id, String title, String body, String payload) async {
-//             didReceiveLocalNotificationSubject.add(ReceivedNotification(
-//                 id: id, title: title, body: body, payload: payload));
-//           });
-//   const MacOSInitializationSettings initializationSettingsMacOS =
-//       MacOSInitializationSettings(
-//           requestAlertPermission: false,
-//           requestBadgePermission: false,
-//           requestSoundPermission: false);
-//   final InitializationSettings initializationSettings = InitializationSettings(
-//       android: initializationSettingsAndroid,
-//       iOS: initializationSettingsIOS,
-//       macOS: initializationSettingsMacOS);
-//   await flutterLocalNotificationsPlugin.initialize(initializationSettings,
-//       onSelectNotification: (String payload) async {
-//     if (payload != null) {
-//       debugPrint('notification payload: $payload');
-//     }
-//     selectedNotificationPayload = payload;
-//     selectNotificationSubject.add(payload);
-//   });
-//   runApp(
-//     MaterialApp(
-//       initialRoute: initialRoute,
-//       routes: <String, WidgetBuilder>{
-//         HomePage.routeName: (_) => HomePage(notificationAppLaunchDetails),
-//         SecondPage.routeName: (_) => SecondPage(selectedNotificationPayload)
-//       },
-//     ),
-//   );
-// }
-
-// Future<void> _configureLocalTimeZone() async {
-//   tz.initializeTimeZones();
-//   final String timeZoneName = await platform.invokeMethod('getTimeZoneName');
-//   tz.setLocalLocation(tz.getLocation(timeZoneName));
-// }
+Future<void> _configureLocalTimeZone() async {
+  tz.initializeTimeZones();
+  final String timeZoneName = await platform.invokeMethod('getTimeZoneName');
+  tz.setLocalLocation(tz.getLocation(timeZoneName));
+}
 
 class PaddedRaisedButton extends StatelessWidget {
   const PaddedRaisedButton({
@@ -139,8 +137,8 @@ class HomePage extends StatefulWidget {
     this.notificationAppLaunchDetails, {
     Key key,
   }) : super(key: key);
-  static const routeName = '/homePage';
-  //static const String routeName = '/';
+
+  static const String routeName = '/';
 
   final NotificationAppLaunchDetails notificationAppLaunchDetails;
 

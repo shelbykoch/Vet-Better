@@ -211,7 +211,7 @@ class _Controller {
       } else {
         await FirebaseController.updateMedicationInfo(_state.medicationInfo);
       }
-       if(_state.medicationInfo.timesDaily != null) NotificationController.medicationNotification(_state.user.email);
+       //if(_state.medicationInfo.timesDaily != null) NotificationController.medicationNotification(_state.user.email);
       List<Medication> medication =
           await FirebaseController.getMedicationList(_state.user.email);
 

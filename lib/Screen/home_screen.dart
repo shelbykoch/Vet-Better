@@ -196,8 +196,8 @@ class _Controller {
             FaIcon(FontAwesomeIcons.calendarAlt), "Appointments"));
         buttons.add(_screenButton(() => medicationInfoRoute(),
             FaIcon(FontAwesomeIcons.prescriptionBottleAlt), "Medications"));
-	buttons.add(_screenButton(() => dailyQuestionsRoute(),
-	    FaIcon(FontAwesomeIcons.question), "Daily Questions"));
+        buttons.add(_screenButton(() => dailyQuestionsRoute(),
+            FaIcon(FontAwesomeIcons.question), "Daily Questions"));
         break;
       case 3:
         buttons.add(Padding(
@@ -298,6 +298,7 @@ class _Controller {
           Constant.ARG_CONTACT_TITLE: 'Emergency contacts',
         });
   }
+
   void dailyQuestionsRoute() async {
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
     tz.TZDateTime newDay = tz.TZDateTime(
@@ -347,7 +348,7 @@ class _Controller {
           NotificationSettings.getNotificationSettings(_state.user.email);
       for (NotificationSettings setting in settings)
         await FirebaseController.addNotificationSetting(setting);
-        settings =
+      settings =
           await FirebaseController.getNotificationSettings(_state.user.email);
       Navigator.pushNamed(_state.context, NotificationSettingsScreen.routeName,
           arguments: {

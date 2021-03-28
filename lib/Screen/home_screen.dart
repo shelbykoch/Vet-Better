@@ -1,12 +1,15 @@
+import 'package:Capstone/Controller/notificationController.dart';
 import 'package:Capstone/Model/appointment.dart';
 import 'package:Capstone/Model/constant.dart';
 import 'package:Capstone/Model/factor.dart';
 import 'package:Capstone/Model/medication.dart';
+import 'package:Capstone/Model/notification_settings.dart';
 import 'package:Capstone/Model/personal_Info.dart';
 import 'package:Capstone/Model/question.dart';
 import 'package:Capstone/Screen/dailyquestions_screen.dart';
 import 'package:Capstone/Screen/factor_screen.dart';
 import 'package:Capstone/Screen/myMedication_screen.dart';
+import 'package:Capstone/Screen/notificationsettings_screen.dart';
 import 'package:Capstone/Screen/personal_info_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -29,6 +32,8 @@ class _UserHomeState extends State<HomeScreen> {
   _Controller con;
   User user;
   List<Question> questionList;
+  List<NotificationSettings> settings;
+
   @override
   void initState() {
     super.initState();
@@ -42,6 +47,7 @@ class _UserHomeState extends State<HomeScreen> {
     Map args = ModalRoute.of(context).settings.arguments;
     user ??= args[Constant.ARG_USER];
     questionList ??= args[Constant.ARG_QUESTION_LIST];
+    settings ??= args[Constant.ARG_NOTIFICATION_SETTINGS];
     return WillPopScope(
       onWillPop: () => Future.value(false), //Disable android system back button
       child: Scaffold(
@@ -57,6 +63,11 @@ class _UserHomeState extends State<HomeScreen> {
                 leading: Icon(Icons.exit_to_app),
                 title: Text('Sign Out'),
                 onTap: con.signOut,
+              ),
+              ListTile(
+                leading: Icon(Icons.settings),
+                title: Text('Notification Settings'),
+                onTap: con.notificationSettings,
               ),
             ],
           ),
@@ -218,17 +229,17 @@ class _Controller {
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
     tz.TZDateTime newDay = tz.TZDateTime(
         tz.local, now.year, now.month, now.day, now.hour, now.minute, 00);
-         print(newDay);
+    print(newDay);
     if (newDay.isBefore(now)) {
       newDay = newDay.add(const Duration(minutes: 1));
     }
     _state.questionList =
-          await FirebaseController.getQuestionList(_state.user.email);
+        await FirebaseController.getQuestionList(_state.user.email);
     if (_state.questionList == null) {
       List<Question> questionList = new List<Question>();
-        questionList = Question.getDailyQuestions(_state.user.email);
-        for (Question question in questionList)
-          await FirebaseController.addQuestionInfo(question);
+      questionList = Question.getDailyQuestions(_state.user.email);
+      for (Question question in questionList)
+        await FirebaseController.addQuestionInfo(question);
       questionList =
           await FirebaseController.getQuestionList(_state.user.email);
       Navigator.pushNamed(_state.context, DailyQuestionsScreen.routeName,
@@ -254,5 +265,28 @@ class _Controller {
     }
     Navigator.of(_state.context).pop(); //Close app drawer
     Navigator.of(_state.context).pop(); //Close home screen
+  }
+
+  void notificationSettings() async {
+    if (_state.settings == null) {
+      List<NotificationSettings> settings = new List<NotificationSettings>();
+      settings =
+          NotificationSettings.getNotificationSettings(_state.user.email);
+      for (NotificationSettings setting in settings)
+        await FirebaseController.addNotificationSetting(setting);
+        settings =
+          await FirebaseController.getNotificationSettings(_state.user.email);
+      Navigator.pushNamed(_state.context, NotificationSettingsScreen.routeName,
+          arguments: {
+            Constant.ARG_USER: _state.user,
+            Constant.ARG_QUESTION_LIST: settings,
+          });
+    } else {
+      Navigator.pushNamed(_state.context, NotificationSettingsScreen.routeName,
+          arguments: {
+            Constant.ARG_USER: _state.user,
+            Constant.ARG_QUESTION_LIST: _state.settings,
+          });
+    }
   }
 }

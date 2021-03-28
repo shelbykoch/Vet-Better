@@ -2,6 +2,7 @@ import 'package:Capstone/Controller/notificationController.dart';
 import 'package:Capstone/Screen/answer_screen.dart';
 import 'package:Capstone/Screen/dailyquestions_screen.dart';
 import 'package:Capstone/Screen/forgot_password_screen.dart';
+import 'package:Capstone/Screen/notificationsettings_screen.dart';
 import 'package:Capstone/views/testNotifications.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -86,6 +87,7 @@ class MyApp extends StatelessWidget {
         FactorEditScreen.routeName: (context) => FactorEditScreen(),
         DailyQuestionsScreen.routeName: (context) => DailyQuestionsScreen(),
         AnswerScreen.routeName: (context) => AnswerScreen(),
+        NotificationSettingsScreen.routeName: (context) => NotificationSettingsScreen(),
       },
     );
   }

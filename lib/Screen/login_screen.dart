@@ -169,6 +169,7 @@ class _Controller {
       return; //cease login process
     }
     await NotificationController.dailyQuestionsNotification();
+    await NotificationController.medicationNotification(user.email);
     Navigator.pop(state.context); //dispose dialog
     Navigator.pushNamed(state.context, HomeScreen.routeName,
         arguments: {Constant.ARG_USER: user});

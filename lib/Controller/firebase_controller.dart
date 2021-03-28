@@ -10,6 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:Capstone/Model/notification_settings.dart';
 
 class FirebaseController {
 //-------------------------ACCOUNT------------------------//
@@ -239,7 +240,7 @@ class FirebaseController {
     }
   }
 
-    static Future<void> deleteQuestion(String docID) async {
+  static Future<void> deleteQuestion(String docID) async {
     await FirebaseFirestore.instance
         .collection(Question.COLLECTION)
         .doc(docID)
@@ -248,4 +249,51 @@ class FirebaseController {
 
 //-----------------NOTIFICATIONS------------------//
 
+  static Future<String> addNotificationSetting(
+      NotificationSettings info) async {
+    DocumentReference ref = await FirebaseFirestore.instance
+        .collection(NotificationSettings.COLLECTION)
+        .add(info.serialize());
+    return ref.id;
+  }
+
+  static Future<void> updateNotificationSetting(
+      NotificationSettings info) async {
+    await FirebaseFirestore.instance
+        .collection(NotificationSettings.COLLECTION)
+        .doc(info.docId)
+        .set(info.serialize());
+  }
+
+    static Future<void> getNotificationInfo(String email, NotificationSettings info) async {
+    QuerySnapshot query = await FirebaseFirestore.instance
+        .collection(NotificationSettings.COLLECTION)
+        .where(NotificationSettings.EMAIL, isEqualTo: email)
+        .get();
+
+    if (query != null && query.size != 0) {
+      return NotificationSettings.deserialize(query.docs[0].data(), query.docs[0].id);
+    } else {
+      return new NotificationSettings.withEmail(email);
+    }
+  }
+
+  static Future<List<NotificationSettings>> getNotificationSettings(
+      String email) async {
+    QuerySnapshot query = await FirebaseFirestore.instance
+        .collection(NotificationSettings.COLLECTION)
+        .where(NotificationSettings.EMAIL, isEqualTo: email)
+        .get();
+
+    List<NotificationSettings> result;
+    if (query != null && query.size != 0) {
+      result = new List<NotificationSettings>();
+      for (var doc in query.docs) {
+        result.add(NotificationSettings.deserialize(doc.data(), doc.id));
+      }
+      return result;
+    } else {
+      return null;
+    }
+  }
 }

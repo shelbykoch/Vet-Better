@@ -21,4 +21,7 @@ class Constant {
   //Daily Questions Screen
   static const ARG_QUESTION_LIST = 'questionList';
   static const ARG_QUESTION_INFO = 'questionInfo';
+
+  //Notifications
+  static const ARG_NOTIFICATION_SETTINGS = 'notificationSettings';
 }

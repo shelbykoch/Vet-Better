@@ -1,14 +1,18 @@
 import 'package:Capstone/Controller/notificationController.dart';
+import 'package:Capstone/Model/activity.dart';
 import 'package:Capstone/Model/appointment.dart';
 import 'package:Capstone/Model/constant.dart';
 import 'package:Capstone/Model/contact.dart';
 import 'package:Capstone/Model/factor.dart';
+import 'package:Capstone/Model/location.dart';
 import 'package:Capstone/Model/medication.dart';
 import 'package:Capstone/Model/notification_settings.dart';
 import 'package:Capstone/Model/personal_Info.dart';
 import 'package:Capstone/Screen/contact_list_screen.dart';
 import 'package:Capstone/Model/question.dart';
 import 'package:Capstone/Screen/dailyquestions_screen.dart';
+import 'package:Capstone/Model/social_activity.dart';
+import 'package:Capstone/Screen/Social%20Activities/socialActivity_screen.dart';
 import 'package:Capstone/Screen/factor_screen.dart';
 import 'package:Capstone/Screen/myMedication_screen.dart';
 import 'package:Capstone/Screen/notificationsettings_screen.dart';
@@ -119,7 +123,6 @@ class _UserHomeState extends State<HomeScreen> {
 class _Controller {
   _UserHomeState _state;
   _Controller(this._state);
-
 //--------------------------Nav Bar----------------------------------//
 
   void _onTabTapped(index) {
@@ -185,7 +188,7 @@ class _Controller {
         break;
       case 1:
         buttons.add(_screenButton(
-            () => {}, FaIcon(FontAwesomeIcons.users), "Social Activities"));
+            () => socialActRoute(), FaIcon(FontAwesomeIcons.users), "Social Activities"));
         buttons.add(_screenButton(() => reachOutRoute(),
             FaIcon(FontAwesomeIcons.comments), "Reach Out"));
         buttons.add(_screenButton(() => emergencyContactRoute(),
@@ -328,6 +331,27 @@ class _Controller {
             Constant.ARG_QUESTION_LIST: _state.questionList,
           });
     }
+  }
+  void socialActRoute() async {
+    //Request data from database.
+    //If Firebase doesn't find the collection then an new version is returned
+    List<SocialActivity> socialActivities =
+        await FirebaseController.getSocialActivityList(_state.user.email);
+    List<Contact> contacts = await FirebaseController.getContactList(
+        _state.user.email, ContactType.Social);
+    List<Activity> activities =
+        await FirebaseController.getActivityList(_state.user.email);
+    List<Location> locations =
+        await FirebaseController.getLocationList(_state.user.email);
+
+    Navigator.pushNamed(_state.context, SocialActivityScreen.routeName,
+        arguments: {
+          Constant.ARG_USER: _state.user,
+          Constant.ARG_SOCIALACTIVITIES: socialActivities,
+          Constant.ARG_CONTACTS: contacts,
+          Constant.ARG_ACTIVITIES: activities,
+          Constant.ARG_LOCATIONS: locations,
+        });
   }
   //------------------------APP TRAY ROUTING--------------------------//
 

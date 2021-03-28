@@ -325,7 +325,8 @@ class _Controller {
 
   void deleteContact() async {
     try {
-      await FirebaseController.deleteContact(_state.contacts[contactIndex]);
+      await FirebaseController.deleteContact(
+          _state.contacts[contactIndex].docID);
       _state.contacts.removeAt(contactIndex);
       _state.render(() {
         if (_state.activities.length != 0) {

@@ -35,6 +35,7 @@ class NotificationController {
   static Future<void> medicationNotification(String email) async {
     List<Medication> medication =
         await FirebaseController.getMedicationList(email);
+    if (medication == null) return; //Return if meds do not exist
     for (Medication med in medication) {
       if (med.timesDaily > 0) {
         print("timesDaily > 0: ${med.timesDaily.toString()}");

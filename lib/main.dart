@@ -1,4 +1,3 @@
-
 import 'package:Capstone/Screen/Social%20Activities/activity_add_screen.dart';
 import 'package:Capstone/Screen/Social%20Activities/activity_edit_screen.dart';
 import 'package:Capstone/Screen/Social%20Activities/location_add_screen.dart';
@@ -30,13 +29,12 @@ import 'Screen/factor_screen.dart';
 import 'Screen/myMedication_screen.dart';
 import 'Screen/personal_info_screen.dart';
 import 'Screen/contact_list_screen.dart';
+import 'Screen/contact_edit_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await NotificationController.configureLocalTimeZone();
-
-
 
   final NotificationAppLaunchDetails notificationAppLaunchDetails =
       await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
@@ -50,7 +48,7 @@ Future<void> main() async {
       AndroidInitializationSettings('@mipmap/ic_launcher');
 
   final InitializationSettings initializationSettings = InitializationSettings(
-      android: initializationSettingsAndroid,
+    android: initializationSettingsAndroid,
   );
   await flutterLocalNotificationsPlugin.initialize(initializationSettings,
       onSelectNotification: (String payload) async {
@@ -60,7 +58,6 @@ Future<void> main() async {
     selectedNotificationPayload = payload;
     selectNotificationSubject.add(payload);
   });
-
 
   runApp(MyApp());
 }
@@ -97,7 +94,8 @@ class MyApp extends StatelessWidget {
         FactorEditScreen.routeName: (context) => FactorEditScreen(),
         DailyQuestionsScreen.routeName: (context) => DailyQuestionsScreen(),
         AnswerScreen.routeName: (context) => AnswerScreen(),
-        NotificationSettingsScreen.routeName: (context) => NotificationSettingsScreen(),
+        NotificationSettingsScreen.routeName: (context) =>
+            NotificationSettingsScreen(),
         ContactEditScreen.routeName: (context) => ContactEditScreen(),
         ContactListScreen.routeName: (context) => ContactListScreen(),
         ActivityAddScreen.routeName: (context) => ActivityAddScreen(),

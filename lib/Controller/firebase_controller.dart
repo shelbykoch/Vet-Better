@@ -149,10 +149,10 @@ class FirebaseController {
     return ref.id;
   }
 
-  static Future<void> deleteContact(Contact contact) async {
+  static Future<void> deleteContact(String docID) async {
     await FirebaseFirestore.instance
         .collection(Contact.COLLECTION)
-        .doc(contact.docID)
+        .doc(docID)
         .delete();
   }
 
@@ -437,14 +437,16 @@ class FirebaseController {
         .set(info.serialize());
   }
 
-    static Future<void> getNotificationInfo(String email, NotificationSettings info) async {
+  static Future<void> getNotificationInfo(
+      String email, NotificationSettings info) async {
     QuerySnapshot query = await FirebaseFirestore.instance
         .collection(NotificationSettings.COLLECTION)
         .where(NotificationSettings.EMAIL, isEqualTo: email)
         .get();
 
     if (query != null && query.size != 0) {
-      return NotificationSettings.deserialize(query.docs[0].data(), query.docs[0].id);
+      return NotificationSettings.deserialize(
+          query.docs[0].data(), query.docs[0].id);
     } else {
       return new NotificationSettings.withEmail(email);
     }

@@ -220,7 +220,7 @@ class _Controller {
         tz.local, now.year, now.month, now.day, now.hour, now.minute, 00);
          print(newDay);
     if (newDay.isBefore(now)) {
-      newDay = newDay.add(const Duration(days: 1));
+      newDay = newDay.add(const Duration(minutes: 1));
     }
     _state.questionList =
           await FirebaseController.getQuestionList(_state.user.email);

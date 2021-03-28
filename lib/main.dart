@@ -2,11 +2,12 @@ import 'package:Capstone/Controller/notificationController.dart';
 import 'package:Capstone/Screen/answer_screen.dart';
 import 'package:Capstone/Screen/dailyquestions_screen.dart';
 import 'package:Capstone/Screen/forgot_password_screen.dart';
-import 'package:Capstone/Screen/test_screen.dart';
+import 'package:Capstone/views/testNotifications.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'Model/constant.dart';
+import 'Controller/notificationController.dart';
 import 'Screen/appointment_screen.dart';
 import 'Screen/calendar_screen.dart';
 import 'Screen/editMed_screen.dart';
@@ -24,7 +25,7 @@ Future<void> main() async {
 
 
   await NotificationController.configureLocalTimeZone();
-  await NotificationController.dailyQuestionsNotification();
+
 
 
   final NotificationAppLaunchDetails notificationAppLaunchDetails =

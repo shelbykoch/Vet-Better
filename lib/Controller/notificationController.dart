@@ -1,13 +1,15 @@
 import 'dart:async';
 import 'package:Capstone/Controller/firebase_controller.dart';
 import 'package:Capstone/Model/medication.dart';
-import 'package:Capstone/Screen/test_screen.dart';
+import 'package:Capstone/views/testNotifications.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
+
+
 class NotificationController {
-  
+
   static Future<void> configureLocalTimeZone() async {
     tz.initializeTimeZones();
     //final String timeZoneName = await platform.invokeMethod('getTimeZoneName');
@@ -114,7 +116,7 @@ class NotificationController {
   static tz.TZDateTime _nextInstanceOfTenAM() {
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
     tz.TZDateTime scheduledDate =
-        tz.TZDateTime(tz.local, now.year, now.month, now.day, now.hour, 15);
+        tz.TZDateTime(tz.local, now.year, now.month, now.day, now.hour, now.minute, 30);
     print("10am: ${scheduledDate}");
     if (scheduledDate.isBefore(now)) {
       scheduledDate = scheduledDate.add(const Duration(minutes: 1));

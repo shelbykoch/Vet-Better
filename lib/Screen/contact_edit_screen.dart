@@ -3,6 +3,7 @@ import 'package:Capstone/Model/constant.dart';
 import 'package:Capstone/Model/contact.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbols.dart';
 import 'app_dialog.dart';
 
 class ContactEditScreen extends StatefulWidget {
@@ -157,6 +158,7 @@ class _Controller {
         _state._contact.docID = docID;
       } else
         FirebaseController.updateContact(_state._contact);
+      Navigator.pop(_state.context); //dispose progress dialog
       Navigator.pop(_state.context); //dispose contact detail screen
     } catch (e) {
       AppDialog.popProgressBar(_state.context);
@@ -175,7 +177,8 @@ class _Controller {
     try {
       await FirebaseController.deleteContact(_state._contact.docID);
       Navigator.pop(_state.context); //dispose progress dialog
-      Navigator.pop(_state.context); //dispose contact detail screen
+      _state._contact.docID =
+          "deleted"; // This will allow us to easily remove the deleted contact from the list
       _state.render(() {});
     } catch (e) {
       AppDialog.info(

@@ -131,7 +131,11 @@ class FirebaseController {
       for (var doc in query.docs) {
         result.add(Contact.deserialize(doc.data(), doc.id));
       }
+    } else if ((query == null || query.size == 0) &&
+        type == ContactType.Personal) {
+      result = Contact.getDefaultReachOutList(email);
     }
+
     return result;
   }
 

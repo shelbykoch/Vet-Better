@@ -106,6 +106,7 @@ class _Controller {
           Constant.ARG_USER: _state._user,
           Constant.ARG_CONTACT: contact,
         });
+    _state._contacts.add(contact);
     _state.render(() {});
   }
 
@@ -115,6 +116,8 @@ class _Controller {
           Constant.ARG_USER: _state._user,
           Constant.ARG_CONTACT: _state._contacts[index],
         });
+    if (_state._contacts[index].docID == "deleted")
+      _state._contacts.removeAt(index);
     _state.render(() {});
   }
 

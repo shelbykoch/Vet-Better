@@ -1,12 +1,12 @@
 import 'package:Capstone/Controller/firebase_controller.dart';
+import 'package:Capstone/Model/activity.dart';
 import 'package:Capstone/Model/constant.dart';
-import 'package:Capstone/Model/factor.dart';
+import 'package:Capstone/Model/contact.dart';
 import 'package:Capstone/Model/location.dart';
+import 'package:Capstone/Model/social_activity.dart';
 import 'package:Capstone/views/mydialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
-import '../factor_screen.dart';
 
 class LocationAddScreen extends StatefulWidget {
   static const routeName = '/locationAddScreen';
@@ -19,8 +19,12 @@ class LocationAddScreen extends StatefulWidget {
 class _LocationAddState extends State<LocationAddScreen> {
   _Controller con;
   User user;
-  String title;
+  SocialActivity socialActivity;
+  List<SocialActivity> socialActivities;
+  List<Contact> contacts;
+  List<Activity> activities;
   List<Location> locations;
+  int index;
   var formKey = GlobalKey<FormState>();
 
   @override
@@ -35,8 +39,10 @@ class _LocationAddState extends State<LocationAddScreen> {
   Widget build(BuildContext context) {
     Map arg = ModalRoute.of(context).settings.arguments;
     user ??= arg[Constant.ARG_USER];
+    socialActivities ??= arg[Constant.ARG_SOCIALACTIVITIES];
+    contacts ??= arg[Constant.ARG_CONTACTS];
+    activities ??= arg[Constant.ARG_ACTIVITIES];
     locations ??= arg[Constant.ARG_LOCATIONS];
-    title ??= arg[Constant.ARG_FACTOR_TITLE];
 
     return Scaffold(
       appBar: AppBar(
@@ -57,7 +63,7 @@ class _LocationAddState extends State<LocationAddScreen> {
               children: <Widget>[
                 TextFormField(
                   decoration: InputDecoration(
-                    hintText: 'Title',
+                    hintText: 'Name',
                   ),
                   autocorrect: true,
                   validator: con.validatorName,
@@ -65,8 +71,9 @@ class _LocationAddState extends State<LocationAddScreen> {
                 ),
                 TextFormField(
                   decoration: InputDecoration(
-                    hintText: 'Description',
+                    hintText: 'Address',
                   ),
+                  keyboardType: TextInputType.streetAddress,
                   autocorrect: true,
                   onSaved: con.onSavedAddress,
                 ),
@@ -112,12 +119,6 @@ class _Controller {
       );
     }
     Navigator.pop(_state.context);
-    // Navigator.pushReplacementNamed(_state.context, FactorScreen.routeName,
-    //     arguments: {
-    //       Constant.ARG_USER: _state.user,
-    //       Constant.ARG_FACTORS: _state.factors,
-    //       Constant.ARG_FACTOR_TITLE: _state.title,
-    //     });
   }
 
   String validatorName(String value) {

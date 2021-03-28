@@ -1,12 +1,12 @@
 import 'package:Capstone/Controller/firebase_controller.dart';
 import 'package:Capstone/Model/activity.dart';
 import 'package:Capstone/Model/constant.dart';
-import 'package:Capstone/Model/factor.dart';
+import 'package:Capstone/Model/contact.dart';
+import 'package:Capstone/Model/location.dart';
+import 'package:Capstone/Model/social_activity.dart';
 import 'package:Capstone/views/mydialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
-import '../factor_screen.dart';
 
 class ActivityAddScreen extends StatefulWidget {
   static const routeName = '/activityAddScreen';
@@ -19,8 +19,12 @@ class ActivityAddScreen extends StatefulWidget {
 class _ActivityAddState extends State<ActivityAddScreen> {
   _Controller con;
   User user;
-  String title;
+  SocialActivity socialActivity;
+  List<SocialActivity> socialActivities;
+  List<Contact> contacts;
   List<Activity> activities;
+  List<Location> locations;
+  int index;
   var formKey = GlobalKey<FormState>();
 
   @override
@@ -35,12 +39,14 @@ class _ActivityAddState extends State<ActivityAddScreen> {
   Widget build(BuildContext context) {
     Map arg = ModalRoute.of(context).settings.arguments;
     user ??= arg[Constant.ARG_USER];
+    socialActivities ??= arg[Constant.ARG_SOCIALACTIVITIES];
+    contacts ??= arg[Constant.ARG_CONTACTS];
     activities ??= arg[Constant.ARG_ACTIVITIES];
-    title ??= arg[Constant.ARG_FACTOR_TITLE];
+    locations ??= arg[Constant.ARG_LOCATIONS];
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add $title'),
+        title: Text('Add Activity'),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.check),
@@ -97,6 +103,7 @@ class _Controller {
     }
     _state.formKey.currentState.save();
     var a = Activity(
+      email: _state.user.email,
       name: name,
       description: description,
     );
@@ -111,12 +118,6 @@ class _Controller {
       );
     }
     Navigator.pop(_state.context);
-    // Navigator.pushReplacementNamed(_state.context, FactorScreen.routeName,
-    //     arguments: {
-    //       Constant.ARG_USER: _state.user,
-    //       Constant.ARG_FACTORS: _state.activities,
-    //       Constant.ARG_FACTOR_TITLE: _state.title,
-    //     });
   }
 
   String validatorName(String value) {

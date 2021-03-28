@@ -1,6 +1,9 @@
 import 'package:Capstone/Controller/firebase_controller.dart';
+import 'package:Capstone/Model/activity.dart';
 import 'package:Capstone/Model/constant.dart';
+import 'package:Capstone/Model/contact.dart';
 import 'package:Capstone/Model/factor.dart';
+import 'package:Capstone/Model/location.dart';
 import 'package:Capstone/Model/social_activity.dart';
 import 'package:Capstone/Screen/Social%20Activities/socialActivity_add_screen.dart';
 import 'package:Capstone/Screen/Social%20Activities/socialActivity_edit_screen.dart';
@@ -20,7 +23,10 @@ class SocialActivityScreen extends StatefulWidget {
 class _SocialActivityState extends State<SocialActivityScreen> {
   _Controller con;
   User user;
-  List<SocialActivity> socialAtivities;
+  List<SocialActivity> socialActivities;
+  List<Contact> contacts;
+  List<Activity> activities;
+  List<Location> locations;
   String title;
   int delIndex;
 
@@ -35,8 +41,10 @@ class _SocialActivityState extends State<SocialActivityScreen> {
   Widget build(BuildContext context) {
     Map arg = ModalRoute.of(context).settings.arguments;
     user ??= arg[Constant.ARG_USER];
-    // factors ??= arg[Constant.ARG_FACTORS];
-    // title ??= arg[Constant.ARG_FACTOR_TITLE];
+    socialActivities ??= arg[Constant.ARG_SOCIALACTIVITIES];
+    contacts ??= arg[Constant.ARG_CONTACTS];
+    activities ??= arg[Constant.ARG_ACTIVITIES];
+    locations ??= arg[Constant.ARG_LOCATIONS];
 
     return Scaffold(
       appBar: AppBar(
@@ -55,9 +63,7 @@ class _SocialActivityState extends State<SocialActivityScreen> {
           child: Column(
             children: <Widget>[
               SizedBox(height: 20.0),
-              Text("Please select all that apply"),
-              SizedBox(height: 20.0),
-              socialAtivities.length == 0
+              socialActivities.length == 0
                   ? Text(
                       '\n Tap the + button above to add a new Social Activity',
                       style: TextStyle(fontSize: 30.0),
@@ -66,11 +72,11 @@ class _SocialActivityState extends State<SocialActivityScreen> {
                   : ListView.builder(
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
-                      itemCount: socialAtivities.length,
+                      itemCount: socialActivities.length,
                       itemBuilder: (BuildContext context, index) => Container(
                         color: con.getColor(index),
                         child: ListTile(
-                          title: Text(socialAtivities[index].name),
+                          title: Text(socialActivities[index].name),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
@@ -102,7 +108,10 @@ class _Controller {
     await Navigator.pushNamed(_state.context, SocialActivityAddScreen.routeName,
         arguments: {
           Constant.ARG_USER: _state.user,
-          Constant.ARG_FACTORS: _state.socialAtivities,
+          Constant.ARG_SOCIALACTIVITIES: _state.socialActivities,
+          Constant.ARG_CONTACTS: _state.contacts,
+          Constant.ARG_ACTIVITIES: _state.activities,
+          Constant.ARG_LOCATIONS: _state.locations,
         });
     _state.render(() {});
   }
@@ -113,18 +122,20 @@ class _Controller {
         arguments: {
           'index': index,
           Constant.ARG_USER: _state.user,
-          Constant.ARG_SOCIALACTIVITY: _state.socialAtivities[index],
-          Constant.ARG_SOCIALACTIVITIES: _state.socialAtivities,
-          Constant.ARG_FACTOR_TITLE: _state.socialAtivities[index].name,
+          Constant.ARG_SOCIALACTIVITY: _state.socialActivities[index],
+          Constant.ARG_SOCIALACTIVITIES: _state.socialActivities,
+          Constant.ARG_CONTACTS: _state.contacts,
+          Constant.ARG_ACTIVITIES: _state.activities,
+          Constant.ARG_LOCATIONS: _state.locations,
         });
     _state.render(() {});
   }
 
   void delete() async {
     try {
-      SocialActivity socialActivity = _state.socialAtivities[delIndex];
+      SocialActivity socialActivity = _state.socialActivities[delIndex];
       await FirebaseController.deleteSocialActivity(socialActivity);
-      _state.socialAtivities.removeAt(delIndex);
+      _state.socialActivities.removeAt(delIndex);
       _state.render(() {
         delIndex = null;
       });
@@ -146,7 +157,7 @@ class _Controller {
     _state.render(() {}); //render changes on screen
     try {
       await FirebaseController.updateSocialActivity(
-          _state.socialAtivities[index]);
+          _state.socialActivities[index]);
     } catch (e) {}
   }
 

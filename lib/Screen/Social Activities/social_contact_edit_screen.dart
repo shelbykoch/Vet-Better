@@ -1,6 +1,9 @@
 import 'package:Capstone/Controller/firebase_controller.dart';
+import 'package:Capstone/Model/activity.dart';
 import 'package:Capstone/Model/constant.dart';
-import 'package:Capstone/Model/factor.dart';
+import 'package:Capstone/Model/contact.dart';
+import 'package:Capstone/Model/location.dart';
+import 'package:Capstone/Model/social_activity.dart';
 import 'package:Capstone/views/mydialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -9,20 +12,22 @@ class SocialContactEditScreen extends StatefulWidget {
   static const routeName = '/socialContactEditScreen';
   @override
   State<StatefulWidget> createState() {
-    return _FactorEditState();
+    return _SocialContactEditState();
   }
 }
 
 enum SeverityLevel { moderate, severe }
 
-class _FactorEditState extends State<FactorEditScreen> {
+class _SocialContactEditState extends State<SocialContactEditScreen> {
   _Controller con;
   User user;
-  Factor factor;
-  List<Factor> factors;
+  SocialActivity socialActivity;
+  List<SocialActivity> socialActivities;
+  List<Contact> contacts;
+  List<Activity> activities;
+  List<Location> locations;
+  Contact contact;
   int index;
-  String title;
-  SeverityLevel _character = SeverityLevel.moderate;
   var formKey = GlobalKey<FormState>();
 
   @override
@@ -37,14 +42,15 @@ class _FactorEditState extends State<FactorEditScreen> {
   Widget build(BuildContext context) {
     Map arg = ModalRoute.of(context).settings.arguments;
     user ??= arg[Constant.ARG_USER];
-    factor ??= arg[Constant.ARG_FACTOR];
-    factors ??= arg[Constant.ARG_FACTORS];
-    index ??= arg['index'];
-    title ??= arg[Constant.ARG_FACTOR_TITLE];
+    socialActivities ??= arg[Constant.ARG_SOCIALACTIVITIES];
+    contacts ??= arg[Constant.ARG_CONTACTS];
+    contact ??= arg[Constant.ARG_CONTACT];
+    activities ??= arg[Constant.ARG_ACTIVITIES];
+    locations ??= arg[Constant.ARG_LOCATIONS];
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add $title'),
+        title: Text('Edit ${contact.name}'),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.check),
@@ -61,44 +67,39 @@ class _FactorEditState extends State<FactorEditScreen> {
               children: <Widget>[
                 TextFormField(
                   decoration: InputDecoration(
-                    hintText: 'Title',
+                    hintText: 'Name',
                   ),
+                  initialValue: contact.name,
+                  keyboardType: TextInputType.name,
                   autocorrect: true,
-                  initialValue: factor.name,
                   validator: con.validatorName,
                   onSaved: con.onSavedName,
                 ),
                 TextFormField(
                   decoration: InputDecoration(
-                    hintText: 'Description',
+                    hintText: 'Phone Number',
                   ),
+                  initialValue: contact.phoneNumber,
+                  keyboardType: TextInputType.phone,
                   autocorrect: true,
-                  initialValue: factor.description,
-                  onSaved: con.onSavedDescription,
+                  onSaved: con.onSavedNumber,
                 ),
-                ListTile(
-                  title: const Text('Moderate'),
-                  leading: Radio<SeverityLevel>(
-                    value: SeverityLevel.moderate,
-                    groupValue: _character,
-                    onChanged: (SeverityLevel value) {
-                      setState(() {
-                        _character = value;
-                      });
-                    },
+                TextFormField(
+                  decoration: InputDecoration(
+                    hintText: 'Address',
                   ),
+                  initialValue: contact.phoneNumber,
+                  keyboardType: TextInputType.streetAddress,
+                  autocorrect: true,
+                  onSaved: con.onSavedAddress,
                 ),
-                ListTile(
-                  title: const Text('Severe'),
-                  leading: Radio<SeverityLevel>(
-                    value: SeverityLevel.severe,
-                    groupValue: _character,
-                    onChanged: (SeverityLevel value) {
-                      setState(() {
-                        _character = value;
-                      });
-                    },
+                TextFormField(
+                  decoration: InputDecoration(
+                    hintText: 'Notes',
                   ),
+                  initialValue: contact.notes,
+                  autocorrect: true,
+                  onSaved: con.onSavedNotes,
                 ),
               ],
             ),
@@ -110,13 +111,12 @@ class _FactorEditState extends State<FactorEditScreen> {
 }
 
 class _Controller {
-  _FactorEditState _state;
+  _SocialContactEditState _state;
   _Controller(this._state);
   String name;
-  String description;
-  int score;
-  bool severe;
-  ListType listType;
+  String address;
+  String phoneNumber;
+  String notes;
 
   void save() async {
     if (!_state.formKey.currentState.validate()) {
@@ -128,26 +128,22 @@ class _Controller {
       return; //If invalid, return
     }
     _state.formKey.currentState.save();
-    if (_state._character == SeverityLevel.severe) {
-      score = 2;
-    } else
-      score = 1;
-    if (_state.title == "Warning Signs") {
-      listType = ListType.WarningSigns;
-    } else
-      listType = ListType.CopingStrategies;
-    var f = Factor(
-      name: name,
-      description: description,
-      score: score,
-      listType: listType,
-      isSelected: true,
-    );
-    _state.factors[_state.index] = f;
+
+    _state.contact.name = name;
+    _state.contact.address = address;
+    _state.contact.phoneNumber = phoneNumber;
+    _state.contact.notes = notes;
+
     try {
-      await FirebaseController.updateFactor(f);
-    } catch (e) {}
-    Navigator.of(_state.context).pop();
+      await FirebaseController.updateContact(_state.contact);
+    } catch (e) {
+      MyDialog.info(
+        context: _state.context,
+        title: 'Error',
+        content: e.message ?? e.toString(),
+      );
+    }
+    Navigator.pop(_state.context);
   }
 
   String validatorName(String value) {
@@ -162,7 +158,15 @@ class _Controller {
     this.name = value;
   }
 
-  void onSavedDescription(String value) {
-    this.description = value;
+  void onSavedNumber(String value) {
+    this.phoneNumber = value;
+  }
+
+  void onSavedAddress(String value) {
+    this.address = value;
+  }
+
+  void onSavedNotes(String value) {
+    this.notes = value;
   }
 }

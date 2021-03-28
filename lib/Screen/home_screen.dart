@@ -7,6 +7,7 @@ import 'package:Capstone/Model/location.dart';
 import 'package:Capstone/Model/medication.dart';
 import 'package:Capstone/Model/personal_Info.dart';
 import 'package:Capstone/Model/social_activity.dart';
+import 'package:Capstone/Screen/Social%20Activities/socialActivity_screen.dart';
 import 'package:Capstone/Screen/factor_screen.dart';
 import 'package:Capstone/Screen/myMedication_screen.dart';
 import 'package:Capstone/Screen/personal_info_screen.dart';
@@ -151,7 +152,7 @@ class _Controller {
 //------------------------HOME SCREEN ROUTING---------------------------//
 
   void socialActRoute() async {
-    //Request risk factors from database.
+    //Request data from database.
     //If Firebase doesn't find the collection then an new version is returned
     List<SocialActivity> socialActivities =
         await FirebaseController.getSocialActivityList(_state.user.email);
@@ -162,13 +163,14 @@ class _Controller {
     List<Location> locations =
         await FirebaseController.getLocationList(_state.user.email);
 
-    Navigator.pushNamed(_state.context, FactorScreen.routeName, arguments: {
-      Constant.ARG_USER: _state.user,
-      Constant.ARG_SOCIALACTIVITIES: socialActivities,
-      Constant.ARG_CONTACTS: contacts,
-      Constant.ARG_ACTIVITIES: activities,
-      Constant.ARG_LOCATIONS: locations,
-    });
+    Navigator.pushNamed(_state.context, SocialActivityScreen.routeName,
+        arguments: {
+          Constant.ARG_USER: _state.user,
+          Constant.ARG_SOCIALACTIVITIES: socialActivities,
+          Constant.ARG_CONTACTS: contacts,
+          Constant.ARG_ACTIVITIES: activities,
+          Constant.ARG_LOCATIONS: locations,
+        });
   }
 
   void factorRoute(ListType listType, String title) async {

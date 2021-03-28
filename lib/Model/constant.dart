@@ -23,4 +23,11 @@ class Constant {
   static const ARG_CONTACT_LIST = 'contacts';
   static const ARG_CONTACT_TITLE = 'contactTitle';
   static const ARG_CONTACT_TYPE = 'contactType';
+
+  //Daily Questions Screen
+  static const ARG_QUESTION_LIST = 'questionList';
+  static const ARG_QUESTION_INFO = 'questionInfo';
+
+  //Notifications
+  static const ARG_NOTIFICATION_SETTINGS = 'notificationSettings';
 }

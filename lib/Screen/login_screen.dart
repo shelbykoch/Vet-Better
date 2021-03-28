@@ -1,3 +1,4 @@
+import 'package:Capstone/Controller/notificationController.dart';
 import 'package:Capstone/Model/constant.dart';
 import 'package:Capstone/Screen/forgot_password_screen.dart';
 import 'package:flutter/material.dart';
@@ -167,9 +168,9 @@ class _Controller {
               });
       return; //cease login process
     }
-
+    await NotificationController.dailyQuestionsNotification();
+    await NotificationController.medicationNotification(user.email);
     Navigator.pop(state.context); //dispose dialog
-    state._textContoller.clear();
     Navigator.pushNamed(state.context, HomeScreen.routeName,
         arguments: {Constant.ARG_USER: user});
   }

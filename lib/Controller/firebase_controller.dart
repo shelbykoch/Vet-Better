@@ -5,12 +5,13 @@ import 'package:Capstone/Model/contact.dart';
 import 'package:Capstone/Model/factor.dart';
 import 'package:Capstone/Model/medication.dart';
 import 'package:Capstone/Model/personal_Info.dart';
+import 'package:Capstone/Model/question.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:Capstone/Model/notification_settings.dart';
 
 class FirebaseController {
 //-------------------------ACCOUNT------------------------//
@@ -34,6 +35,13 @@ class FirebaseController {
   }
 
   //-----------------PERSONAL INFORMATION------------------//
+
+  static Future<String> addPersonalInfo(PersonalInfo info) async {
+    DocumentReference ref = await FirebaseFirestore.instance
+        .collection(PersonalInfo.COLLECTION)
+        .add(info.serialize());
+    return ref.id;
+  }
 
   static Future<void> updatePersonalInfo(PersonalInfo info) async {
     await FirebaseFirestore.instance
@@ -221,19 +229,14 @@ class FirebaseController {
         .collection(Medication.COLLECTION)
         .where(Medication.EMAIL, isEqualTo: email)
         .get();
-    print('got query');
     List<Medication> result;
     if (query != null && query.size != 0) {
-      print("${query.size}");
       result = new List<Medication>();
       for (var doc in query.docs) {
-        print('in for loop');
         result.add(Medication.deserialize(doc.data(), doc.id));
       }
-      print('got result');
       return result;
     } else {
-      print('didn' 't get result');
       return null;
     }
   }
@@ -245,31 +248,95 @@ class FirebaseController {
         .delete();
   }
 
-  //----------------Notifications------------------//
-//  static Future<void> getNoticiationToken() {
-//  FirebaseMessaging.getInstance().getToken()
-//     .addOnCompleteListener(new OnCompleteListener<String>() {
-//         @Override
-//         public void onComplete(@NonNull Task<String> task) {
-//           if (!task.isSuccessful()) {
-//             Log.w(TAG, "Fetching FCM registration token failed", task.getException());
-//             return;
-//           }
+//-----------------DAILY QUESTIONS------------------//
 
-//           // Get new FCM registration token
-//           String token = task.getResult();
+  static Future<String> addQuestionInfo(Question info) async {
+    DocumentReference ref = await FirebaseFirestore.instance
+        .collection(Question.COLLECTION)
+        .add(info.serialize());
+    return ref.id;
+  }
 
-//           // Log and toast
-//           String msg = getString(R.string.msg_token_fmt, token);
-//           Log.d(TAG, msg);
-//           Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
-//         }
-//     });
-//  }
+  static Future<void> updateQuestionInfo(Question info) async {
+    await FirebaseFirestore.instance
+        .collection(Question.COLLECTION)
+        .doc(info.docId)
+        .set(info.serialize());
+  }
 
-  // Notification to take medication in the Morning
+  static Future<List<Question>> getQuestionList(String email) async {
+    QuerySnapshot query = await FirebaseFirestore.instance
+        .collection(Question.COLLECTION)
+        .where(Question.EMAIL, isEqualTo: email)
+        .orderBy(Question.QUESTION_NUMBER)
+        .get();
 
-  // Notiication to take medication in the Afternoon
+    List<Question> result;
+    if (query != null && query.size != 0) {
+      result = new List<Question>();
+      for (var doc in query.docs) {
+        result.add(Question.deserialize(doc.data(), doc.id));
+      }
+      return result;
+    } else {
+      return null;
+    }
+  }
 
-  // Notification to take medication in the Evening}
+  static Future<void> deleteQuestion(String docID) async {
+    await FirebaseFirestore.instance
+        .collection(Question.COLLECTION)
+        .doc(docID)
+        .delete();
+  }
+
+//-----------------NOTIFICATIONS------------------//
+
+  static Future<String> addNotificationSetting(
+      NotificationSettings info) async {
+    DocumentReference ref = await FirebaseFirestore.instance
+        .collection(NotificationSettings.COLLECTION)
+        .add(info.serialize());
+    return ref.id;
+  }
+
+  static Future<void> updateNotificationSetting(
+      NotificationSettings info) async {
+    await FirebaseFirestore.instance
+        .collection(NotificationSettings.COLLECTION)
+        .doc(info.docId)
+        .set(info.serialize());
+  }
+
+    static Future<void> getNotificationInfo(String email, NotificationSettings info) async {
+    QuerySnapshot query = await FirebaseFirestore.instance
+        .collection(NotificationSettings.COLLECTION)
+        .where(NotificationSettings.EMAIL, isEqualTo: email)
+        .get();
+
+    if (query != null && query.size != 0) {
+      return NotificationSettings.deserialize(query.docs[0].data(), query.docs[0].id);
+    } else {
+      return new NotificationSettings.withEmail(email);
+    }
+  }
+
+  static Future<List<NotificationSettings>> getNotificationSettings(
+      String email) async {
+    QuerySnapshot query = await FirebaseFirestore.instance
+        .collection(NotificationSettings.COLLECTION)
+        .where(NotificationSettings.EMAIL, isEqualTo: email)
+        .get();
+
+    List<NotificationSettings> result;
+    if (query != null && query.size != 0) {
+      result = new List<NotificationSettings>();
+      for (var doc in query.docs) {
+        result.add(NotificationSettings.deserialize(doc.data(), doc.id));
+      }
+      return result;
+    } else {
+      return null;
+    }
+  }
 }

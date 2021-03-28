@@ -53,14 +53,18 @@ class _PersonalInfoState extends State<PersonalInfoScreen> {
                   keyboardType: TextInputType.emailAddress,
                   onSaved: con.saveName,
                   validator: con.validatorName,
-                  initialValue: personalInfo.name,
+                  initialValue: personalInfo == null
+                          ? null
+                          : personalInfo.name,
                 ),
                 TextFormField(
                   decoration: InputDecoration(
                     hintText: 'Age',
                   ),
                   onSaved: con.saveAge,
-                  initialValue: personalInfo.age.toString(),
+                  initialValue: personalInfo == null
+                          ? null
+                          : personalInfo.age,
                 ),
                 DropdownButton<String>(
                   focusColor: Colors.white,
@@ -87,8 +91,9 @@ class _PersonalInfoState extends State<PersonalInfoScreen> {
                       ),
                     );
                   }).toList(),
-                  hint: personalInfo == null
-                      ? Text(
+                  hint: personalInfo.gender == null
+                      ?
+                       Text(
                           "Gender",
                         )
                       : Text(personalInfo.gender,
@@ -126,7 +131,7 @@ class _PersonalInfoState extends State<PersonalInfoScreen> {
                       ),
                     );
                   }).toList(),
-                  hint: personalInfo == null
+                  hint: personalInfo.sexualOrientation == null
                       ? Text(
                           "Sexual Orientation",
                         )
@@ -166,8 +171,9 @@ class _PersonalInfoState extends State<PersonalInfoScreen> {
                       ),
                     );
                   }).toList(),
-                  hint: personalInfo == null
-                      ? Text(
+                  hint: personalInfo.religiousAffiliation == null
+                      ? 
+                      Text(
                           "Religious Affiliation",
                         )
                       : Text(personalInfo.religiousAffiliation,
@@ -202,8 +208,9 @@ class _PersonalInfoState extends State<PersonalInfoScreen> {
                       ),
                     );
                   }).toList(),
-                  hint: personalInfo == null
-                      ? Text(
+                  hint: personalInfo.veteranStatus == null
+                      ? 
+                      Text(
                           "Military History",
                         )
                       : Text(personalInfo.veteranStatus,

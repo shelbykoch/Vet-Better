@@ -1,3 +1,4 @@
+import 'package:Capstone/Model/text_content.dart';
 import 'package:Capstone/Screen/Social%20Activities/activity_add_screen.dart';
 import 'package:Capstone/Screen/Social%20Activities/activity_edit_screen.dart';
 import 'package:Capstone/Screen/Social%20Activities/location_add_screen.dart';
@@ -7,6 +8,8 @@ import 'package:Capstone/Screen/Social%20Activities/socialActivity_screen.dart';
 import 'package:Capstone/Screen/Social%20Activities/social_contact_add_screen.dart';
 import 'package:Capstone/Screen/Social%20Activities/social_contact_edit_screen.dart';
 import 'package:Capstone/Screen/forgot_password_screen.dart';
+import 'package:Capstone/Screen/picture_add_screen.dart';
+import 'package:Capstone/Screen/text_content_add_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'Model/constant.dart';
@@ -66,6 +69,8 @@ class MyApp extends StatelessWidget {
         SocialActivityEditScreen.routeName: (context) =>
             SocialActivityEditScreen(),
         SocialActivityScreen.routeName: (context) => SocialActivityScreen(),
+        TextContentAddScreen.routeName: (context) => TextContentAddScreen(),
+        PictureAddScreen.routeName: (context) => PictureAddScreen(),
       },
     );
   }

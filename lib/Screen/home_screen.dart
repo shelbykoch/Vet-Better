@@ -22,10 +22,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../Controller/firebase_controller.dart';
 import '../Model/constant.dart';
+import '../Model/picture.dart';
+import '../Model/text_content.dart';
 import 'calendar_screen.dart';
 import 'factor_add_screen.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+
+import 'picture_add_screen.dart';
+import 'text_content_add_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/homeScreen';
@@ -187,8 +192,8 @@ class _Controller {
             "Coping Strategies"));
         break;
       case 1:
-        buttons.add(_screenButton(
-            () => socialActRoute(), FaIcon(FontAwesomeIcons.users), "Social Activities"));
+        buttons.add(_screenButton(() => socialActRoute(),
+            FaIcon(FontAwesomeIcons.users), "Social Activities"));
         buttons.add(_screenButton(() => reachOutRoute(),
             FaIcon(FontAwesomeIcons.comments), "Reach Out"));
         buttons.add(_screenButton(() => emergencyContactRoute(),
@@ -207,11 +212,37 @@ class _Controller {
           padding: const EdgeInsets.only(top: 20.0, left: 40.0, right: 40.0),
           child: ListView(children: <Widget>[Text('Feel good vault')]),
         ));
+        buttons.add(_screenButton(() => vaultContentRoute(),
+            FaIcon(FontAwesomeIcons.notesMedical), "Add Text Content"));
+        buttons.add(_screenButton(() => vaultPictureRoute(),
+            FaIcon(FontAwesomeIcons.photoVideo), "Add Picture"));
     }
     return buttons;
   }
 
 //------------------------HOME SCREEN ROUTING---------------------------//
+  void vaultContentRoute() async {
+    //Request content from database.
+    //If Firebase doesn't find the collection then an new version is returned
+    List<TextContent> textContent =
+        await FirebaseController.getTextContentList(_state.user.email);
+    Navigator.pushNamed(_state.context, TextContentAddScreen.routeName,
+        arguments: {
+          Constant.ARG_USER: _state.user,
+          Constant.ARG_TEXT_CONTENT_LIST: textContent,
+        });
+  }
+
+  void vaultPictureRoute() async {
+    //Request pics from database.
+    //If Firebase doesn't find the collection then an new version is returned
+    List<Picture> pictures =
+        await FirebaseController.getPictures(_state.user.email);
+    Navigator.pushNamed(_state.context, PictureAddScreen.routeName, arguments: {
+      Constant.ARG_USER: _state.user,
+      Constant.ARG_PICTURE_LIST: pictures,
+    });
+  }
 
   void factorRoute(ListType listType, String title) async {
     //Request risk factors from database.

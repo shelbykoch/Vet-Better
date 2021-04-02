@@ -37,4 +37,10 @@ class Constant {
   static const ARG_LOCATION = 'location';
   static const ARG_SOCIALACTIVITIES = 'socialActivities';
   static const ARG_SOCIALACTIVITY = 'socialActivity';
+
+  //Feel Good Vault
+  static const ARG_TEXT_CONTENT = 'textContent';
+  static const ARG_PICTURE = 'picture';
+  static const ARG_TEXT_CONTENT_LIST = 'textContentList';
+  static const ARG_PICTURE_LIST = 'pictureList';
 }

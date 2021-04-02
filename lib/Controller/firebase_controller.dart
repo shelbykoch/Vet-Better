@@ -1,5 +1,6 @@
 //Firebase connection class
 import 'dart:async';
+import 'dart:io';
 import 'package:Capstone/Model/location.dart';
 import 'package:Capstone/Model/activity.dart';
 import 'package:Capstone/Model/appointment.dart';
@@ -7,8 +8,10 @@ import 'package:Capstone/Model/contact.dart';
 import 'package:Capstone/Model/factor.dart';
 import 'package:Capstone/Model/medication.dart';
 import 'package:Capstone/Model/personal_Info.dart';
+import 'package:Capstone/Model/picture.dart';
 import 'package:Capstone/Model/question.dart';
 import 'package:Capstone/Model/social_activity.dart';
+import 'package:Capstone/Model/text_content.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -135,7 +138,6 @@ class FirebaseController {
         type == ContactType.Personal) {
       result = Contact.getDefaultReachOutList(email);
     }
-
     return result;
   }
 
@@ -278,6 +280,105 @@ class FirebaseController {
         .collection(SocialActivity.COLLECTION)
         .doc(socialActivity.docID)
         .delete();
+  }
+
+  //-----------------------FEEL GOOD VAULT TEXT CONTENT-----------------------------//
+  static Future<List<TextContent>> getTextContentList(String email) async {
+    print(email);
+    QuerySnapshot query = await FirebaseFirestore.instance
+        .collection(TextContent.COLLECTION)
+        .where(TextContent.EMAIL, isEqualTo: email)
+        .orderBy(TextContent.TITLE)
+        .get();
+
+    List<TextContent> result = new List<TextContent>();
+    if (query != null && query.size != 0) {
+      for (var doc in query.docs) {
+        result.add(TextContent.deserialize(doc.data(), doc.id));
+      }
+    }
+    return result;
+  }
+
+  static Future<void> updateTextContent(TextContent textContent) async {
+    await FirebaseFirestore.instance
+        .collection(TextContent.COLLECTION)
+        .doc(textContent.docID)
+        .set(textContent.serialize());
+  }
+
+  static Future<String> addTextContent(TextContent textContent) async {
+    DocumentReference ref = await FirebaseFirestore.instance
+        .collection(TextContent.COLLECTION)
+        .add(textContent.serialize());
+    return ref.id;
+  }
+
+  static Future<void> deleteTextContent(TextContent textContent) async {
+    await FirebaseFirestore.instance
+        .collection(TextContent.COLLECTION)
+        .doc(textContent.docID)
+        .delete();
+  }
+
+  //-----------------------FEEL GOOD VAULT PICTURES-----------------------------//
+  static Future<List<Picture>> getPictures(String email) async {
+    print(email);
+    QuerySnapshot query = await FirebaseFirestore.instance
+        .collection(TextContent.COLLECTION)
+        .where(TextContent.EMAIL, isEqualTo: email)
+        .orderBy(TextContent.TITLE)
+        .get();
+
+    List<Picture> result = new List<Picture>();
+    if (query != null && query.size != 0) {
+      for (var doc in query.docs) {
+        result.add(Picture.deserialize(doc.data(), doc.id));
+      }
+    }
+    return result;
+  }
+
+  static Future<void> updatePicture(Picture picture) async {
+    await FirebaseFirestore.instance
+        .collection(Picture.COLLECTION)
+        .doc(picture.docId)
+        .set(picture.serialize());
+  }
+
+  static Future<String> addPicture(Picture picture) async {
+    DocumentReference ref = await FirebaseFirestore.instance
+        .collection(Picture.COLLECTION)
+        .add(picture.serialize());
+    return ref.id;
+  }
+
+  static Future<void> deletePicture(Picture picture) async {
+    await FirebaseFirestore.instance
+        .collection(Picture.COLLECTION)
+        .doc(picture.docId)
+        .delete();
+  }
+
+  static Future<Map<String, String>> uploadStorage({
+    @required File image,
+    String filePath,
+    @required String uid,
+    @required Function listener,
+  }) async {
+    filePath ??= '${Picture.IMAGE_FOLDER}/$uid/${DateTime.now()}';
+
+    UploadTask task =
+        FirebaseStorage.instance.ref().child(filePath).putFile(image);
+    task.snapshotEvents.listen((event) {
+      double percentage =
+          (event.bytesTransferred.toDouble() / event.totalBytes.toDouble()) *
+              100;
+      listener(percentage);
+    });
+    var download = await task;
+    String url = await download.ref.getDownloadURL();
+    return {'url': url, 'path': filePath};
   }
 
   //-------------------APPOINTMENTS-----------------------------//

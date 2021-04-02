@@ -1,5 +1,6 @@
 //Firebase connection class
 import 'dart:async';
+import 'dart:io';
 import 'package:Capstone/Model/location.dart';
 import 'package:Capstone/Model/activity.dart';
 import 'package:Capstone/Model/appointment.dart';
@@ -7,13 +8,17 @@ import 'package:Capstone/Model/contact.dart';
 import 'package:Capstone/Model/factor.dart';
 import 'package:Capstone/Model/medication.dart';
 import 'package:Capstone/Model/personal_Info.dart';
+import 'package:Capstone/Model/picture.dart';
+import 'package:Capstone/Model/question.dart';
 import 'package:Capstone/Model/social_activity.dart';
+import 'package:Capstone/Model/text_content.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:Capstone/Model/notification_settings.dart';
 
 class FirebaseController {
 //-------------------------ACCOUNT------------------------//
@@ -37,6 +42,13 @@ class FirebaseController {
   }
 
   //-----------------PERSONAL INFORMATION------------------//
+
+  static Future<String> addPersonalInfo(PersonalInfo info) async {
+    DocumentReference ref = await FirebaseFirestore.instance
+        .collection(PersonalInfo.COLLECTION)
+        .add(info.serialize());
+    return ref.id;
+  }
 
   static Future<void> updatePersonalInfo(PersonalInfo info) async {
     await FirebaseFirestore.instance
@@ -140,10 +152,10 @@ class FirebaseController {
     return ref.id;
   }
 
-  static Future<void> deleteContact(Contact contact) async {
+  static Future<void> deleteContact(String docID) async {
     await FirebaseFirestore.instance
         .collection(Contact.COLLECTION)
-        .doc(contact.docID)
+        .doc(docID)
         .delete();
   }
 
@@ -267,6 +279,105 @@ class FirebaseController {
         .delete();
   }
 
+  //-----------------------FEEL GOOD VAULT TEXT CONTENT-----------------------------//
+  static Future<List<TextContent>> getTextContentList(String email) async {
+    print(email);
+    QuerySnapshot query = await FirebaseFirestore.instance
+        .collection(TextContent.COLLECTION)
+        .where(TextContent.EMAIL, isEqualTo: email)
+        .orderBy(TextContent.TITLE)
+        .get();
+
+    List<TextContent> result = new List<TextContent>();
+    if (query != null && query.size != 0) {
+      for (var doc in query.docs) {
+        result.add(TextContent.deserialize(doc.data(), doc.id));
+      }
+    }
+    return result;
+  }
+
+  static Future<void> updateTextContent(TextContent textContent) async {
+    await FirebaseFirestore.instance
+        .collection(TextContent.COLLECTION)
+        .doc(textContent.docID)
+        .set(textContent.serialize());
+  }
+
+  static Future<String> addTextContent(TextContent textContent) async {
+    DocumentReference ref = await FirebaseFirestore.instance
+        .collection(TextContent.COLLECTION)
+        .add(textContent.serialize());
+    return ref.id;
+  }
+
+  static Future<void> deleteTextContent(TextContent textContent) async {
+    await FirebaseFirestore.instance
+        .collection(TextContent.COLLECTION)
+        .doc(textContent.docID)
+        .delete();
+  }
+
+  //-----------------------FEEL GOOD VAULT PICTURES-----------------------------//
+  static Future<List<Picture>> getPictures(String email) async {
+    print(email);
+    QuerySnapshot query = await FirebaseFirestore.instance
+        .collection(TextContent.COLLECTION)
+        .where(TextContent.EMAIL, isEqualTo: email)
+        .orderBy(TextContent.TITLE)
+        .get();
+
+    List<Picture> result = new List<Picture>();
+    if (query != null && query.size != 0) {
+      for (var doc in query.docs) {
+        result.add(Picture.deserialize(doc.data(), doc.id));
+      }
+    }
+    return result;
+  }
+
+  static Future<void> updatePicture(Picture picture) async {
+    await FirebaseFirestore.instance
+        .collection(Picture.COLLECTION)
+        .doc(picture.docId)
+        .set(picture.serialize());
+  }
+
+  static Future<String> addPicture(Picture picture) async {
+    DocumentReference ref = await FirebaseFirestore.instance
+        .collection(Picture.COLLECTION)
+        .add(picture.serialize());
+    return ref.id;
+  }
+
+  static Future<void> deletePicture(Picture picture) async {
+    await FirebaseFirestore.instance
+        .collection(Picture.COLLECTION)
+        .doc(picture.docId)
+        .delete();
+  }
+
+  static Future<Map<String, String>> uploadStorage({
+    @required File image,
+    String filePath,
+    @required String uid,
+    @required Function listener,
+  }) async {
+    filePath ??= '${Picture.IMAGE_FOLDER}/$uid/${DateTime.now()}';
+
+    UploadTask task =
+        FirebaseStorage.instance.ref().child(filePath).putFile(image);
+    task.snapshotEvents.listen((event) {
+      double percentage =
+          (event.bytesTransferred.toDouble() / event.totalBytes.toDouble()) *
+              100;
+      listener(percentage);
+    });
+    var download = await task;
+    String url = await download.ref.getDownloadURL();
+    return {'url': url, 'path': filePath};
+  }
+
   //-------------------APPOINTMENTS-----------------------------//
 
   static Future<List<Appointment>> getAppointmentList(String email) async {
@@ -368,31 +479,97 @@ class FirebaseController {
         .delete();
   }
 
-  //----------------Notifications------------------//
-//  static Future<void> getNoticiationToken() {
-//  FirebaseMessaging.getInstance().getToken()
-//     .addOnCompleteListener(new OnCompleteListener<String>() {
-//         @Override
-//         public void onComplete(@NonNull Task<String> task) {
-//           if (!task.isSuccessful()) {
-//             Log.w(TAG, "Fetching FCM registration token failed", task.getException());
-//             return;
-//           }
+//-----------------DAILY QUESTIONS------------------//
 
-//           // Get new FCM registration token
-//           String token = task.getResult();
+  static Future<String> addQuestionInfo(Question info) async {
+    DocumentReference ref = await FirebaseFirestore.instance
+        .collection(Question.COLLECTION)
+        .add(info.serialize());
+    return ref.id;
+  }
 
-//           // Log and toast
-//           String msg = getString(R.string.msg_token_fmt, token);
-//           Log.d(TAG, msg);
-//           Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
-//         }
-//     });
-//  }
+  static Future<void> updateQuestionInfo(Question info) async {
+    await FirebaseFirestore.instance
+        .collection(Question.COLLECTION)
+        .doc(info.docId)
+        .set(info.serialize());
+  }
 
-  // Notification to take medication in the Morning
+  static Future<List<Question>> getQuestionList(String email) async {
+    QuerySnapshot query = await FirebaseFirestore.instance
+        .collection(Question.COLLECTION)
+        .where(Question.EMAIL, isEqualTo: email)
+        .orderBy(Question.QUESTION_NUMBER)
+        .get();
 
-  // Notiication to take medication in the Afternoon
+    List<Question> result;
+    if (query != null && query.size != 0) {
+      result = new List<Question>();
+      for (var doc in query.docs) {
+        result.add(Question.deserialize(doc.data(), doc.id));
+      }
+      return result;
+    } else {
+      return null;
+    }
+  }
 
-  // Notification to take medication in the Evening}
+  static Future<void> deleteQuestion(String docID) async {
+    await FirebaseFirestore.instance
+        .collection(Question.COLLECTION)
+        .doc(docID)
+        .delete();
+  }
+
+//-----------------NOTIFICATIONS------------------//
+
+  static Future<String> addNotificationSetting(
+      NotificationSettings info) async {
+    DocumentReference ref = await FirebaseFirestore.instance
+        .collection(NotificationSettings.COLLECTION)
+        .add(info.serialize());
+    return ref.id;
+  }
+
+  static Future<void> updateNotificationSetting(
+      NotificationSettings info) async {
+    await FirebaseFirestore.instance
+        .collection(NotificationSettings.COLLECTION)
+        .doc(info.docId)
+        .set(info.serialize());
+  }
+
+  static Future<void> getNotificationInfo(
+      String email, NotificationSettings info) async {
+    QuerySnapshot query = await FirebaseFirestore.instance
+        .collection(NotificationSettings.COLLECTION)
+        .where(NotificationSettings.EMAIL, isEqualTo: email)
+        .get();
+
+    if (query != null && query.size != 0) {
+      return NotificationSettings.deserialize(
+          query.docs[0].data(), query.docs[0].id);
+    } else {
+      return new NotificationSettings.withEmail(email);
+    }
+  }
+
+  static Future<List<NotificationSettings>> getNotificationSettings(
+      String email) async {
+    QuerySnapshot query = await FirebaseFirestore.instance
+        .collection(NotificationSettings.COLLECTION)
+        .where(NotificationSettings.EMAIL, isEqualTo: email)
+        .get();
+
+    List<NotificationSettings> result;
+    if (query != null && query.size != 0) {
+      result = new List<NotificationSettings>();
+      for (var doc in query.docs) {
+        result.add(NotificationSettings.deserialize(doc.data(), doc.id));
+      }
+      return result;
+    } else {
+      return null;
+    }
+  }
 }

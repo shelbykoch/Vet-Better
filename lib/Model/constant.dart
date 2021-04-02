@@ -17,14 +17,30 @@ class Constant {
   //Medication screen
   static const ARG_MEDICATION_LIST = 'medicationList';
   static const ARG_MEDICATION_INFO = 'medicationInfo';
+  //Contacts
+  static const ARG_CONTACT = 'contact';
+  static const ARG_CONTACT_LIST = 'contacts';
+  static const ARG_CONTACT_TITLE = 'contactTitle';
+  static const ARG_CONTACT_TYPE = 'contactType';
 
+  //Daily Questions Screen
+  static const ARG_QUESTION_LIST = 'questionList';
+  static const ARG_QUESTION_INFO = 'questionInfo';
+
+  //Notifications
+  static const ARG_NOTIFICATION_SETTINGS = 'notificationSettings';
   //Social Activities screens
   static const ARG_CONTACTS = 'contacts';
-  static const ARG_CONTACT = 'contact';
   static const ARG_ACTIVITIES = 'activities';
   static const ARG_ACTIVITY = 'activity';
   static const ARG_LOCATIONS = 'locations';
   static const ARG_LOCATION = 'location';
   static const ARG_SOCIALACTIVITIES = 'socialActivities';
   static const ARG_SOCIALACTIVITY = 'socialActivity';
+
+  //Feel Good Vault
+  static const ARG_TEXT_CONTENT = 'textContent';
+  static const ARG_PICTURE = 'picture';
+  static const ARG_TEXT_CONTENT_LIST = 'textContentList';
+  static const ARG_PICTURE_LIST = 'pictureList';
 }

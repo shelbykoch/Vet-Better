@@ -14,6 +14,7 @@ import 'package:Capstone/Screen/dailyquestions_screen.dart';
 import 'package:Capstone/Model/social_activity.dart';
 import 'package:Capstone/Screen/Social%20Activities/socialActivity_screen.dart';
 import 'package:Capstone/Screen/factor_screen.dart';
+import 'package:Capstone/Screen/login_screen.dart';
 import 'package:Capstone/Screen/myMedication_screen.dart';
 import 'package:Capstone/Screen/notificationsettings_screen.dart';
 import 'package:Capstone/Screen/personal_info_screen.dart';
@@ -187,8 +188,8 @@ class _Controller {
             "Coping Strategies"));
         break;
       case 1:
-        buttons.add(_screenButton(
-            () => socialActRoute(), FaIcon(FontAwesomeIcons.users), "Social Activities"));
+        buttons.add(_screenButton(() => socialActRoute(),
+            FaIcon(FontAwesomeIcons.users), "Social Activities"));
         buttons.add(_screenButton(() => reachOutRoute(),
             FaIcon(FontAwesomeIcons.comments), "Reach Out"));
         buttons.add(_screenButton(() => emergencyContactRoute(),
@@ -306,7 +307,6 @@ class _Controller {
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
     tz.TZDateTime newDay = tz.TZDateTime(
         tz.local, now.year, now.month, now.day, now.hour, now.minute, 00);
-    print(newDay);
     if (newDay.isBefore(now)) {
       newDay = newDay.add(const Duration(minutes: 1));
     }
@@ -332,6 +332,7 @@ class _Controller {
           });
     }
   }
+
   void socialActRoute() async {
     //Request data from database.
     //If Firebase doesn't find the collection then an new version is returned
@@ -361,11 +362,14 @@ class _Controller {
     } catch (e) {
       //do nothing
     }
-    Navigator.of(_state.context).pop(); //Close app drawer
-    Navigator.of(_state.context).pop(); //Close home screen
+    // Navigator.of(_state.context).pop(); //Close app drawer
+    // Navigator.of(_state.context).pop(); //Close home screen
+    Navigator.pushReplacementNamed(_state.context, LoginScreen.routeName);
   }
 
   void notificationSettings() async {
+    _state.settings =
+        await FirebaseController.getNotificationSettings(_state.user.email);
     if (_state.settings == null) {
       List<NotificationSettings> settings = new List<NotificationSettings>();
       settings =
@@ -377,13 +381,17 @@ class _Controller {
       Navigator.pushNamed(_state.context, NotificationSettingsScreen.routeName,
           arguments: {
             Constant.ARG_USER: _state.user,
-            Constant.ARG_QUESTION_LIST: settings,
+            Constant.ARG_NOTIFICATION_SETTINGS: settings,
           });
     } else {
+      for (int i = 0; i < _state.settings.length; i++) {
+        print(
+            "settings: ${_state.settings[i].notificationIndex} ${_state.settings[i].notificationTitle}, ${_state.settings[i].currentToggle}");
+      }
       Navigator.pushNamed(_state.context, NotificationSettingsScreen.routeName,
           arguments: {
             Constant.ARG_USER: _state.user,
-            Constant.ARG_QUESTION_LIST: _state.settings,
+            Constant.ARG_NOTIFICATION_SETTINGS: _state.settings,
           });
     }
   }

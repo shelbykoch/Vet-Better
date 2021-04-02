@@ -1,6 +1,9 @@
 import 'package:Capstone/Controller/notificationController.dart';
 import 'package:Capstone/Model/constant.dart';
+import 'package:Capstone/Model/medication.dart';
+import 'package:Capstone/Model/notification_settings.dart';
 import 'package:Capstone/Screen/forgot_password_screen.dart';
+import 'package:Capstone/views/testNotifications.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../Controller/firebase_controller.dart';
@@ -35,6 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Login'),
+        automaticallyImplyLeading: false,
         actions: <Widget>[
           FlatButton.icon(
             icon: Icon(Icons.people, color: Colors.white),
@@ -168,8 +172,23 @@ class _Controller {
               });
       return; //cease login process
     }
-    await NotificationController.dailyQuestionsNotification();
+
+    // Notifications fire upon login
+    
+    var testNow = DateTime.utc(2021, 4, 26);
+    //var now = DateTime.now();
+    List<Medication> medication =
+        await FirebaseController.getMedicationList(email);
+    for (Medication med in medication) {
+      if (testNow.isAfter(med.refillDate) == true) {
+        print(" refillDate: ${med.refillDate}");
+        await NotificationController.refillNotifications(email);
+      }
+      
+    }
+    await NotificationController.dailyQuestionsNotification(user.email);
     await NotificationController.medicationNotification(user.email);
+
     Navigator.pop(state.context); //dispose dialog
     Navigator.pushNamed(state.context, HomeScreen.routeName,
         arguments: {Constant.ARG_USER: user});

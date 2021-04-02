@@ -1,3 +1,4 @@
+import 'package:Capstone/Model/notification_settings.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Medication {
@@ -6,6 +7,7 @@ class Medication {
   static const MEDNAME = 'medName';
   static const DOSEAMT = 'doseAmt';
   static const TIMESDAILY = 'timesDaily';
+  static const RENEWALDATE = 'renewalDate';
   static const REFILLDATE = 'refillDate';
   static const REFILLSLEFT = 'refillsLeft';
 
@@ -15,6 +17,7 @@ class Medication {
   String medName;
   String doseAmt; // in mg
   int timesDaily; // how many doses per day
+  DateTime renewalDate;
   DateTime refillDate;
   int refillsLeft;
 
@@ -24,6 +27,7 @@ class Medication {
       this.medName,
       this.doseAmt,
       this.timesDaily,
+      this.renewalDate,
       this.refillDate,
       this.refillsLeft});
 
@@ -37,6 +41,7 @@ class Medication {
       MEDNAME: medName,
       DOSEAMT: doseAmt,
       TIMESDAILY: timesDaily,
+      RENEWALDATE: renewalDate,
       REFILLDATE: refillDate,
       REFILLSLEFT: refillsLeft,
     };
@@ -44,8 +49,8 @@ class Medication {
 
   static Medication deserialize(Map<String, dynamic> data, String docId) {
     DateTime date;
-    if (data[Medication.REFILLDATE] != null) {
-      Timestamp ts = data[Medication.REFILLDATE];
+    if (data[Medication.RENEWALDATE] != null) {
+      Timestamp ts = data[Medication.RENEWALDATE];
       date = ts.toDate();
     } else
       date = null;
@@ -56,16 +61,25 @@ class Medication {
       doseAmt: data[Medication.DOSEAMT],
       timesDaily: data[Medication.TIMESDAILY],
       refillsLeft: data[Medication.REFILLSLEFT],
+      renewalDate: date,
       refillDate: date,
     );
   }
 
   // String getTime() {
-  //   return DateFormat.jm().format(this.refillDate).toString();
+  //   return DateFormat.jm().format(this.renewalDate).toString();
   // }
 
   @override
   String toString() {
     return 'Medication: {medName: ${medName}}';
+  }
+
+  DateTime refillTime(refillsLeft) {
+    var now = DateTime.now();
+    int numberOfDays = 30 * refillsLeft - 7;
+    DateTime refillDate = now.add(Duration(days: numberOfDays));
+    print("refillDate: ${refillDate}");
+    return refillDate;
   }
 }

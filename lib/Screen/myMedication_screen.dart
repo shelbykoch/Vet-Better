@@ -60,7 +60,7 @@ class _MyMedicationState extends State<MyMedicationScreen> {
                         itemBuilder: (BuildContext context, int index) {
                           return ListTile(
                             title: Text(medication[index].medName),
-                            onTap: () => con.medicationInfoRoute(index),
+                            onTap: () => con.editMedicationInfoRoute(index),
                             trailing: Icon(Icons.arrow_forward),
                             subtitle: Text(
                                 "${medication[index].doseAmt}mg, ${medication[index].timesDaily} times daily"),
@@ -86,11 +86,10 @@ class _Controller {
   _MyMedicationState _state;
   _Controller(this._state);
 
-  void medicationInfoRoute(int index) async {
+  void editMedicationInfoRoute(int index) async {
     // First we will load the medication info associated with the account to pass to the screen
     // if it doesn't exist in the database we will created a new one and append
     // the email then pass to the screen
-    print('into MedInfoRoute');
     List<Medication> medicationList =
         await FirebaseController.getMedicationList(_state.user.email);
 

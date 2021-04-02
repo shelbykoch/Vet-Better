@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:intl/intl.dart';
 
 class Medication {
   static const COLLECTION = 'medicationInfo';
@@ -15,9 +14,9 @@ class Medication {
   String email;
   String medName;
   String doseAmt; // in mg
-  String timesDaily; // how many doses per day
+  int timesDaily; // how many doses per day
   DateTime refillDate;
-  String refillsLeft;
+  int refillsLeft;
 
   Medication(
       {this.docId,

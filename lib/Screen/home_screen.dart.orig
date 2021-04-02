@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 import 'package:Capstone/Controller/notificationController.dart';
+=======
 import 'package:Capstone/Model/activity.dart';
+>>>>>>> origin/sprint3_james
 import 'package:Capstone/Model/appointment.dart';
 import 'package:Capstone/Model/constant.dart';
 import 'package:Capstone/Model/contact.dart';
@@ -8,11 +11,14 @@ import 'package:Capstone/Model/location.dart';
 import 'package:Capstone/Model/medication.dart';
 import 'package:Capstone/Model/notification_settings.dart';
 import 'package:Capstone/Model/personal_Info.dart';
+<<<<<<< HEAD
 import 'package:Capstone/Screen/contact_list_screen.dart';
 import 'package:Capstone/Model/question.dart';
 import 'package:Capstone/Screen/dailyquestions_screen.dart';
+=======
 import 'package:Capstone/Model/social_activity.dart';
 import 'package:Capstone/Screen/Social%20Activities/socialActivity_screen.dart';
+>>>>>>> origin/sprint3_james
 import 'package:Capstone/Screen/factor_screen.dart';
 import 'package:Capstone/Screen/myMedication_screen.dart';
 import 'package:Capstone/Screen/notificationsettings_screen.dart';
@@ -22,15 +28,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../Controller/firebase_controller.dart';
 import '../Model/constant.dart';
-import '../Model/picture.dart';
-import '../Model/text_content.dart';
 import 'calendar_screen.dart';
 import 'factor_add_screen.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
-
-import 'picture_add_screen.dart';
-import 'text_content_add_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/homeScreen';
@@ -115,10 +116,21 @@ class _UserHomeState extends State<HomeScreen> {
               icon: Icon(Icons.lock_open),
               label: 'Feel Good Vault',
             ),
+<<<<<<< HEAD
           ],
           currentIndex: _navIndex,
           selectedItemColor: Color.fromRGBO(77, 225, 225, 90),
           onTap: con._onTabTapped,
+=======
+            SizedBox(
+              width: double.infinity,
+              child: RaisedButton(
+                child: Text('Social Activities'),
+                onPressed: () => con.socialActRoute(),
+              ),
+            ),
+          ]),
+>>>>>>> origin/sprint3_james
         ),
       ),
     );
@@ -128,6 +140,7 @@ class _UserHomeState extends State<HomeScreen> {
 class _Controller {
   _UserHomeState _state;
   _Controller(this._state);
+
 //--------------------------Nav Bar----------------------------------//
 
   void _onTabTapped(index) {
@@ -192,8 +205,8 @@ class _Controller {
             "Coping Strategies"));
         break;
       case 1:
-        buttons.add(_screenButton(() => socialActRoute(),
-            FaIcon(FontAwesomeIcons.users), "Social Activities"));
+        buttons.add(_screenButton(
+            () => {}, FaIcon(FontAwesomeIcons.users), "Social Activities"));
         buttons.add(_screenButton(() => reachOutRoute(),
             FaIcon(FontAwesomeIcons.comments), "Reach Out"));
         buttons.add(_screenButton(() => emergencyContactRoute(),
@@ -212,36 +225,32 @@ class _Controller {
           padding: const EdgeInsets.only(top: 20.0, left: 40.0, right: 40.0),
           child: ListView(children: <Widget>[Text('Feel good vault')]),
         ));
-        buttons.add(_screenButton(() => vaultContentRoute(),
-            FaIcon(FontAwesomeIcons.notesMedical), "Add Text Content"));
-        buttons.add(_screenButton(() => vaultPictureRoute(),
-            FaIcon(FontAwesomeIcons.photoVideo), "Add Picture"));
     }
     return buttons;
   }
 
 //------------------------HOME SCREEN ROUTING---------------------------//
-  void vaultContentRoute() async {
-    //Request content from database.
+
+  void socialActRoute() async {
+    //Request data from database.
     //If Firebase doesn't find the collection then an new version is returned
-    List<TextContent> textContent =
-        await FirebaseController.getTextContentList(_state.user.email);
-    Navigator.pushNamed(_state.context, TextContentAddScreen.routeName,
+    List<SocialActivity> socialActivities =
+        await FirebaseController.getSocialActivityList(_state.user.email);
+    List<Contact> contacts = await FirebaseController.getContactList(
+        _state.user.email, ContactType.Social);
+    List<Activity> activities =
+        await FirebaseController.getActivityList(_state.user.email);
+    List<Location> locations =
+        await FirebaseController.getLocationList(_state.user.email);
+
+    Navigator.pushNamed(_state.context, SocialActivityScreen.routeName,
         arguments: {
           Constant.ARG_USER: _state.user,
-          Constant.ARG_TEXT_CONTENT_LIST: textContent,
+          Constant.ARG_SOCIALACTIVITIES: socialActivities,
+          Constant.ARG_CONTACTS: contacts,
+          Constant.ARG_ACTIVITIES: activities,
+          Constant.ARG_LOCATIONS: locations,
         });
-  }
-
-  void vaultPictureRoute() async {
-    //Request pics from database.
-    //If Firebase doesn't find the collection then an new version is returned
-    List<Picture> pictures =
-        await FirebaseController.getPictures(_state.user.email);
-    Navigator.pushNamed(_state.context, PictureAddScreen.routeName, arguments: {
-      Constant.ARG_USER: _state.user,
-      Constant.ARG_PICTURE_LIST: pictures,
-    });
   }
 
   void factorRoute(ListType listType, String title) async {
@@ -362,28 +371,6 @@ class _Controller {
             Constant.ARG_QUESTION_LIST: _state.questionList,
           });
     }
-  }
-
-  void socialActRoute() async {
-    //Request data from database.
-    //If Firebase doesn't find the collection then an new version is returned
-    List<SocialActivity> socialActivities =
-        await FirebaseController.getSocialActivityList(_state.user.email);
-    List<Contact> contacts = await FirebaseController.getContactList(
-        _state.user.email, ContactType.Social);
-    List<Activity> activities =
-        await FirebaseController.getActivityList(_state.user.email);
-    List<Location> locations =
-        await FirebaseController.getLocationList(_state.user.email);
-
-    Navigator.pushNamed(_state.context, SocialActivityScreen.routeName,
-        arguments: {
-          Constant.ARG_USER: _state.user,
-          Constant.ARG_SOCIALACTIVITIES: socialActivities,
-          Constant.ARG_CONTACTS: contacts,
-          Constant.ARG_ACTIVITIES: activities,
-          Constant.ARG_LOCATIONS: locations,
-        });
   }
   //------------------------APP TRAY ROUTING--------------------------//
 

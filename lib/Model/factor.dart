@@ -111,30 +111,29 @@ class Factor {
     return result;
   }
 
-  //!!!!! PLEASE KEEP THESE LISTS ALPHABATIZED!!!!!!!!!!!!!!!/////////
-
   static List<Factor> _getMedicalHistory(String email) {
     List<Factor> factors = new List<Factor>();
     ListType listType = ListType.MedicalHistory;
-    factors.add(new Factor.standard(email, "Cancer", 2, listType));
-    factors.add(new Factor.standard(email, "Crohns Disease", 1, listType));
-    factors.add(new Factor.standard(email, "Diabetes", 1, listType));
-    factors.add(new Factor.standard(email, "Heart Disease", 2, listType));
-    factors.add(new Factor.standard(email, "High Blood Pressure", 1, listType));
-    factors.add(new Factor.standard(email, "High Cholestoral", 1, listType));
+    factors.add(new Factor.standard(email, "Cancer", -2, listType));
+    factors.add(new Factor.standard(email, "Crohns Disease", -1, listType));
+    factors.add(new Factor.standard(email, "Diabetes", -1, listType));
+    factors.add(new Factor.standard(email, "Heart Disease", -2, listType));
+    factors
+        .add(new Factor.standard(email, "High Blood Pressure", -1, listType));
+    factors.add(new Factor.standard(email, "High Cholestoral", -1, listType));
     return factors;
   }
 
   static List<Factor> _getPsychiatricHistory(String email) {
     List<Factor> factors = new List<Factor>();
     ListType listType = ListType.PsychHistory;
-    factors.add(new Factor.standard(email, "Anxiety", 1, listType));
-    factors.add(new Factor.standard(email, "Bipolar Disorder", 2, listType));
-    factors.add(new Factor.standard(email, "Depression", 2, listType));
-    factors.add(new Factor.standard(email, "Eating Disorder", 1, listType));
+    factors.add(new Factor.standard(email, "Anxiety", -1, listType));
+    factors.add(new Factor.standard(email, "Bipolar Disorder", -2, listType));
+    factors.add(new Factor.standard(email, "Depression", -2, listType));
+    factors.add(new Factor.standard(email, "Eating Disorder", -1, listType));
     factors.add(new Factor.standard(
-        email, "Post-Traumatic Stress Disorder", 2, listType));
-    factors.add(new Factor.standard(email, "Schizophrenia", 2, listType));
+        email, "Post-Traumatic Stress Disorder", -2, listType));
+    factors.add(new Factor.standard(email, "Schizophrenia", -2, listType));
     return factors;
   }
 
@@ -161,19 +160,19 @@ class Factor {
   static List<Factor> _getRiskFactors(String email) {
     List<Factor> factors = new List<Factor>();
     ListType listType = ListType.RiskFactors;
-    factors.add(new Factor.standard(email, "Aggressive Tendencies", 1, listType,
-        "Do you often feel agressive toward others or yourself?"));
-    factors.add(new Factor.standard(email, "Criminal Problems", 1, listType,
+    factors.add(new Factor.standard(email, "Aggressive Tendencies", -1,
+        listType, "Do you often feel agressive toward others or yourself?"));
+    factors.add(new Factor.standard(email, "Criminal Problems", -1, listType,
         "Are you facing unresolved criminal charges?"));
-    factors.add(new Factor.standard(email, "Impulsive Tendencies", 1, listType,
+    factors.add(new Factor.standard(email, "Impulsive Tendencies", -1, listType,
         "Do you often make impulsive or irresponsible decisions?"));
     factors.add(new Factor.standard(
-        email, "Owning a firearm", 2, listType, "Do you own a firearm?"));
-    factors.add(new Factor.standard(email, "Previous Self Harm", 2, listType,
+        email, "Owning a firearm", -2, listType, "Do you own a firearm?"));
+    factors.add(new Factor.standard(email, "Previous Self Harm", -2, listType,
         "Have you previously attempted to harm yourself?"));
-    factors.add(new Factor.standard(email, "Previous Suicide Attempt", 2,
+    factors.add(new Factor.standard(email, "Previous Suicide Attempt", -2,
         listType, "Have you previously attempted suicide?"));
-    factors.add(new Factor.standard(email, "Social Isolation", 2, listType,
+    factors.add(new Factor.standard(email, "Social Isolation", -2, listType,
         "Do you feel socially isolated from others?"));
 
     return factors;

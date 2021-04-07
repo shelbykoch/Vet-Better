@@ -130,6 +130,7 @@ class _Controller {
       score = 1;
     if (_state.title == "Warning Signs") {
       listType = ListType.WarningSigns;
+      score *= -1;
     } else
       listType = ListType.CopingStrategies;
     var f = Factor(

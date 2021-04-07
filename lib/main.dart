@@ -26,6 +26,7 @@ import 'Screen/factor_edit_screen.dart';
 import 'Screen/login_screen.dart';
 import 'Screen/home_screen.dart';
 import 'Screen/factor_screen.dart';
+import 'Screen/factor_score_screen.dart';
 import 'Screen/myMedication_screen.dart';
 import 'Screen/personal_info_screen.dart';
 import 'Screen/contact_list_screen.dart';
@@ -116,6 +117,7 @@ class MyApp extends StatelessWidget {
         SocialActivityScreen.routeName: (context) => SocialActivityScreen(),
         TextContentAddScreen.routeName: (context) => TextContentAddScreen(),
         PictureAddScreen.routeName: (context) => PictureAddScreen(),
+        FactorScoreScreen.routeName: (context) => FactorScoreScreen(),
       },
     );
   }

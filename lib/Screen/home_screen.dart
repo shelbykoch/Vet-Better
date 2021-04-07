@@ -1,4 +1,3 @@
-import 'package:Capstone/Controller/notificationController.dart';
 import 'package:Capstone/Model/activity.dart';
 import 'package:Capstone/Model/appointment.dart';
 import 'package:Capstone/Model/constant.dart';
@@ -14,6 +13,7 @@ import 'package:Capstone/Screen/dailyquestions_screen.dart';
 import 'package:Capstone/Model/social_activity.dart';
 import 'package:Capstone/Screen/Social%20Activities/socialActivity_screen.dart';
 import 'package:Capstone/Screen/factor_screen.dart';
+import 'package:Capstone/Screen/factor_score_screen.dart';
 import 'package:Capstone/Screen/myMedication_screen.dart';
 import 'package:Capstone/Screen/notificationsettings_screen.dart';
 import 'package:Capstone/Screen/personal_info_screen.dart';
@@ -46,6 +46,7 @@ class _UserHomeState extends State<HomeScreen> {
   int _navIndex = 0;
   List<Question> questionList;
   List<NotificationSettings> settings;
+  int factorScore = 0;
 
   @override
   void initState() {
@@ -87,6 +88,11 @@ class _UserHomeState extends State<HomeScreen> {
                 leading: Icon(Icons.settings),
                 title: Text('Notification Settings'),
                 onTap: con.notificationSettings,
+              ),
+              ListTile(
+                leading: Icon(Icons.format_list_numbered_sharp),
+                title: Text('Factor Scores'),
+                onTap: con.factorScoreRoute,
               ),
             ],
           ),
@@ -363,6 +369,7 @@ class _Controller {
           });
     }
   }
+
   void socialActRoute() async {
     //Request data from database.
     //If Firebase doesn't find the collection then an new version is returned
@@ -417,5 +424,15 @@ class _Controller {
             Constant.ARG_QUESTION_LIST: _state.settings,
           });
     }
+  }
+
+  void factorScoreRoute() async {
+    List<Factor> factorList =
+        await FirebaseController.getAllFactors(_state.user.email);
+    Navigator.pushNamed(_state.context, FactorScoreScreen.routeName,
+        arguments: {
+          Constant.ARG_USER: _state.user,
+          Constant.ARG_FACTORS: factorList,
+        });
   }
 }

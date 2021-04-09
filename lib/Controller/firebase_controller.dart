@@ -153,7 +153,7 @@ class FirebaseController {
       }
     } else if ((query == null || query.size == 0) &&
         type == ContactType.Personal) {
-      result = Contact.getDefaultReachOutList(email);
+      result = await Contact.getDefaultReachOutList(email);
     }
     return result;
   }

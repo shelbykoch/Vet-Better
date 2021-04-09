@@ -1,10 +1,6 @@
 import 'package:Capstone/Controller/firebase_controller.dart';
 import 'package:Capstone/Model/activity.dart';
 import 'package:Capstone/Model/constant.dart';
-import 'package:Capstone/Model/contact.dart';
-import 'package:Capstone/Model/factor.dart';
-import 'package:Capstone/Model/location.dart';
-import 'package:Capstone/Model/social_activity.dart';
 import 'package:Capstone/views/mydialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -20,11 +16,6 @@ class ActivityEditScreen extends StatefulWidget {
 class _ActivityEditState extends State<ActivityEditScreen> {
   _Controller con;
   User user;
-  SocialActivity socialActivity;
-  List<SocialActivity> socialActivities;
-  List<Contact> contacts;
-  List<Activity> activities;
-  List<Location> locations;
   Activity activity;
   var formKey = GlobalKey<FormState>();
 
@@ -40,11 +31,7 @@ class _ActivityEditState extends State<ActivityEditScreen> {
   Widget build(BuildContext context) {
     Map arg = ModalRoute.of(context).settings.arguments;
     user ??= arg[Constant.ARG_USER];
-    socialActivities ??= arg[Constant.ARG_SOCIALACTIVITIES];
-    contacts ??= arg[Constant.ARG_CONTACTS];
-    activities ??= arg[Constant.ARG_ACTIVITIES];
     activity ??= arg[Constant.ARG_ACTIVITY];
-    locations ??= arg[Constant.ARG_LOCATIONS];
 
     return Scaffold(
       appBar: AppBar(

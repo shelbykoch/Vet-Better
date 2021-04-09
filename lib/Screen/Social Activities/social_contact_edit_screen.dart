@@ -1,9 +1,6 @@
 import 'package:Capstone/Controller/firebase_controller.dart';
-import 'package:Capstone/Model/activity.dart';
 import 'package:Capstone/Model/constant.dart';
 import 'package:Capstone/Model/contact.dart';
-import 'package:Capstone/Model/location.dart';
-import 'package:Capstone/Model/social_activity.dart';
 import 'package:Capstone/views/mydialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -16,16 +13,9 @@ class SocialContactEditScreen extends StatefulWidget {
   }
 }
 
-enum SeverityLevel { moderate, severe }
-
 class _SocialContactEditState extends State<SocialContactEditScreen> {
   _Controller con;
   User user;
-  SocialActivity socialActivity;
-  List<SocialActivity> socialActivities;
-  List<Contact> contacts;
-  List<Activity> activities;
-  List<Location> locations;
   Contact contact;
   int index;
   var formKey = GlobalKey<FormState>();
@@ -42,11 +32,7 @@ class _SocialContactEditState extends State<SocialContactEditScreen> {
   Widget build(BuildContext context) {
     Map arg = ModalRoute.of(context).settings.arguments;
     user ??= arg[Constant.ARG_USER];
-    socialActivities ??= arg[Constant.ARG_SOCIALACTIVITIES];
-    contacts ??= arg[Constant.ARG_CONTACTS];
     contact ??= arg[Constant.ARG_CONTACT];
-    activities ??= arg[Constant.ARG_ACTIVITIES];
-    locations ??= arg[Constant.ARG_LOCATIONS];
 
     return Scaffold(
       appBar: AppBar(
@@ -88,7 +74,7 @@ class _SocialContactEditState extends State<SocialContactEditScreen> {
                   decoration: InputDecoration(
                     hintText: 'Address',
                   ),
-                  initialValue: contact.phoneNumber,
+                  initialValue: contact.address,
                   keyboardType: TextInputType.streetAddress,
                   autocorrect: true,
                   onSaved: con.onSavedAddress,
@@ -140,7 +126,7 @@ class _Controller {
       MyDialog.info(
         context: _state.context,
         title: 'Error',
-        content: e.message ?? e.toString(),
+        content: e.toString(),
       );
     }
     Navigator.pop(_state.context);

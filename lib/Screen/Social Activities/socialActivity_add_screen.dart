@@ -254,9 +254,9 @@ class _Controller {
   _SocialActivityAddState _state;
   _Controller(this._state);
   String name;
-  Contact contact;
-  Activity activity;
-  Location location;
+  // Contact contact;
+  // Activity activity;
+  // Location location;
   Contact dropdownValueContacts;
   Activity dropdownValueActivities;
   Location dropdownValueLocations;
@@ -292,6 +292,7 @@ class _Controller {
         break;
       default:
         {
+          print('ERROR!<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
           return null;
         }
         break;
@@ -302,10 +303,7 @@ class _Controller {
     await Navigator.pushNamed(_state.context, SocialContactAddScreen.routeName,
         arguments: {
           Constant.ARG_USER: _state.user,
-          Constant.ARG_SOCIALACTIVITIES: _state.socialActivities,
           Constant.ARG_CONTACTS: _state.contacts,
-          Constant.ARG_ACTIVITIES: _state.activities,
-          Constant.ARG_LOCATIONS: _state.locations,
         });
     _state.render(() {});
   }
@@ -314,11 +312,7 @@ class _Controller {
     await Navigator.pushNamed(_state.context, SocialContactEditScreen.routeName,
         arguments: {
           Constant.ARG_USER: _state.user,
-          Constant.ARG_SOCIALACTIVITIES: _state.socialActivities,
-          Constant.ARG_CONTACTS: _state.contacts,
           Constant.ARG_CONTACT: _state.contacts[contactIndex],
-          Constant.ARG_ACTIVITIES: _state.activities,
-          Constant.ARG_LOCATIONS: _state.locations,
         });
     _state.render(() {});
   }
@@ -347,10 +341,7 @@ class _Controller {
     await Navigator.pushNamed(_state.context, ActivityAddScreen.routeName,
         arguments: {
           Constant.ARG_USER: _state.user,
-          Constant.ARG_SOCIALACTIVITIES: _state.socialActivities,
-          Constant.ARG_CONTACTS: _state.contacts,
           Constant.ARG_ACTIVITIES: _state.activities,
-          Constant.ARG_LOCATIONS: _state.locations,
         });
     _state.render(() {});
   }
@@ -359,11 +350,7 @@ class _Controller {
     await Navigator.pushNamed(_state.context, ActivityEditScreen.routeName,
         arguments: {
           Constant.ARG_USER: _state.user,
-          Constant.ARG_SOCIALACTIVITIES: _state.socialActivities,
-          Constant.ARG_CONTACTS: _state.contacts,
-          Constant.ARG_ACTIVITIES: _state.activities,
           Constant.ARG_ACTIVITY: _state.activities[activityIndex],
-          Constant.ARG_LOCATIONS: _state.locations,
         });
     _state.render(() {});
   }
@@ -391,9 +378,6 @@ class _Controller {
     await Navigator.pushNamed(_state.context, LocationAddScreen.routeName,
         arguments: {
           Constant.ARG_USER: _state.user,
-          Constant.ARG_SOCIALACTIVITIES: _state.socialActivities,
-          Constant.ARG_CONTACTS: _state.contacts,
-          Constant.ARG_ACTIVITIES: _state.activities,
           Constant.ARG_LOCATIONS: _state.locations,
         });
     _state.render(() {});
@@ -403,10 +387,6 @@ class _Controller {
     await Navigator.pushNamed(_state.context, LocationEditScreen.routeName,
         arguments: {
           Constant.ARG_USER: _state.user,
-          Constant.ARG_SOCIALACTIVITIES: _state.socialActivities,
-          Constant.ARG_CONTACTS: _state.contacts,
-          Constant.ARG_ACTIVITIES: _state.activities,
-          Constant.ARG_LOCATIONS: _state.locations,
           Constant.ARG_LOCATION: _state.locations[locationIndex],
         });
     _state.render(() {});
@@ -445,9 +425,9 @@ class _Controller {
 
     var sa = SocialActivity(
       name: name,
-      contact: contact,
-      activity: activity,
-      location: location,
+      contact: dropdownValueContacts,
+      activity: dropdownValueActivities,
+      location: dropdownValueLocations,
       email: _state.user.email,
     );
     _state.socialActivities.add(sa);
@@ -457,7 +437,7 @@ class _Controller {
       MyDialog.info(
         context: _state.context,
         title: 'Error',
-        content: e.message ?? e.toString(),
+        content: e,
       );
     }
     Navigator.pop(_state.context);

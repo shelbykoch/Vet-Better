@@ -27,9 +27,9 @@ class SocialActivity {
     return <String, dynamic>{
       EMAIL: email,
       NAME: name,
-      CONTACT: contact,
-      ACTIVITY: activity,
-      LOCATION: location,
+      CONTACT: contact.serialize(),
+      ACTIVITY: activity.serialize(),
+      LOCATION: location.serialize(),
     };
   }
 

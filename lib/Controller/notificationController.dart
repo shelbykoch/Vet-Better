@@ -17,29 +17,48 @@ class NotificationController {
 
   static Future<void> dailyQuestionsNotification(String email) async {
     // sends a notification at 10am every day.
-    List<NotificationSettings> settings =
-        await FirebaseController.getNotificationSettings(email);
-    if (settings[0].currentToggle == 1) {
-      // cancel the notification with id value of zero
-      await flutterLocalNotificationsPlugin
-          .cancel(settings[0].notificationIndex);
-      return;
-    }
+    // List<NotificationSettings> settings =
+    //     await FirebaseController.getNotificationSettings(email);
+    // if (settings[0].currentToggle == 1) {
+    //   // cancel the notification with id value of zero
+    //   //   await flutterLocalNotificationsPlugin
+    //   //       .cancel(settings[0].notificationIndex);
+    //   //   return;
+    //   // }
+    // await flutterLocalNotificationsPlugin.zonedSchedule(
+    //     0,
+    //     'Reminder:',
+    //     'Answer your daily questions!',
+    //     _nextInstanceOfTenAM(),
+    //     const NotificationDetails(
+    //       android: AndroidNotificationDetails(
+    //           '0',
+    //           'Daily Questions Notification',
+    //           'Sends a reminder everyday to answer the daily questions',
+    //           ),
+    //     ),
+    //     androidAllowWhileIdle: true,
+    //     uiLocalNotificationDateInterpretation:
+    //         UILocalNotificationDateInterpretation.absoluteTime,
+    //     matchDateTimeComponents: DateTimeComponents.time);
+
+    tz.TZDateTime timeDelayed = _nextInstanceOfTenAM();
+    //tz.TZDateTime.now(tz.local).add(Duration(seconds: 5));
+    //var timeDelayed = DateTime.now().add(Duration(seconds: 5));
+    AndroidNotificationDetails androidNotificationDetails =
+        AndroidNotificationDetails(
+            'second channel ID', 'second Channel title', 'second channel body',
+            priority: Priority.high,
+            importance: Importance.max,
+            ticker: 'test');
+
+    NotificationDetails notificationDetails =
+        NotificationDetails(android: androidNotificationDetails);
     await flutterLocalNotificationsPlugin.zonedSchedule(
-        0,
-        'Reminder:',
-        'Answer your daily questions!',
-        _nextInstanceOfTenAM(),
-        const NotificationDetails(
-          android: AndroidNotificationDetails(
-              '0',
-              'Daily Questions Notification',
-              'Sends a reminder everyday to answer the daily questions'),
-        ),
+        0, 'Reminder', 'daily questions', timeDelayed, notificationDetails,
         androidAllowWhileIdle: true,
         uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
-        matchDateTimeComponents: DateTimeComponents.time);
+            UILocalNotificationDateInterpretation.absoluteTime);
   }
 
   static Future<void> medicationNotification(String email) async {
@@ -108,7 +127,7 @@ class NotificationController {
     }
   }
 
-  // Notifies user 1 week before a prescriptionrefill 
+  // Notifies user 1 week before a prescriptionrefill
   // reaches zero to call doctor to **renew** prescription
   static Future<void> renewalNotifications(String email) async {
     List<NotificationSettings> settings =
@@ -138,6 +157,7 @@ class NotificationController {
           matchDateTimeComponents: DateTimeComponents.time);
     }
   }
+
   // Reminder to **refill** a prescription.
   static Future<void> refillNotifications(String email) async {
     List<NotificationSettings> settings =
@@ -174,7 +194,7 @@ class NotificationController {
     List<NotificationSettings> settings =
         await FirebaseController.getNotificationSettings(email);
     if (settings[2].currentToggle == 1) {
-      // cancel the notification 
+      // cancel the notification
       await flutterLocalNotificationsPlugin
           .cancel(settings[2].notificationIndex);
       return;
@@ -188,9 +208,7 @@ class NotificationController {
           'Appointment:  ${appointments[i - 4].title} \n Location: ${appointments[i - 4].location} /n When: ${appointments[i - 4].dateTime}',
           _nextInstanceOfEightAM(),
           const NotificationDetails(
-            android: AndroidNotificationDetails(
-                'i',
-                'Appointment Reminder',
+            android: AndroidNotificationDetails('i', 'Appointment Reminder',
                 'Sends a reminder about upcoming appointments'),
           ),
           androidAllowWhileIdle: true,

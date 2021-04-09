@@ -36,13 +36,13 @@ Future<void> main() async {
   await Firebase.initializeApp();
   await NotificationController.configureLocalTimeZone();
 
-  // final NotificationAppLaunchDetails notificationAppLaunchDetails =
-  //     await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
-  // String initialRoute = HomePage.routeName;
-  // if (notificationAppLaunchDetails?.didNotificationLaunchApp ?? false) {
-  //   selectedNotificationPayload = notificationAppLaunchDetails.payload;
-  //   initialRoute = SecondPage.routeName;
-  // }
+  final NotificationAppLaunchDetails notificationAppLaunchDetails =
+      await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+  String initialRoute = HomePage.routeName;
+  if (notificationAppLaunchDetails?.didNotificationLaunchApp ?? false) {
+    selectedNotificationPayload = notificationAppLaunchDetails.payload;
+    initialRoute = SecondPage.routeName;
+  }
 
   const AndroidInitializationSettings initializationSettingsAndroid =
       AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -64,7 +64,7 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
-  // NotificationAppLaunchDetails notificationAppLaunchDetails;
+  //NotificationAppLaunchDetails notificationAppLaunchDetails;
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +79,7 @@ class MyApp extends StatelessWidget {
       title: 'Login',
       initialRoute: LoginScreen.routeName,
       routes: {
-        // HomePage.routeName: (_) => HomePage(notificationAppLaunchDetails),
+        //HomePage.routeName: (_) => HomePage(notificationAppLaunchDetails),
         // SecondPage.routeName: (_) => SecondPage(selectedNotificationPayload),
         LoginScreen.routeName: (context) => LoginScreen(),
         HomeScreen.routeName: (context) => HomeScreen(),

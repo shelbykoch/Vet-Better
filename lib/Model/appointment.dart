@@ -7,6 +7,7 @@ class Appointment {
   String title; //appointment title
   String location; //appointment location
   DateTime dateTime; //Appointment dateTime
+  DateTime apptReminderDate; //When the reminder for appointment fires
 
   Appointment({
     this.docID,
@@ -14,6 +15,7 @@ class Appointment {
     this.title,
     this.location,
     this.dateTime,
+    this.apptReminderDate,
   });
 
   Appointment.withEmail(String email) {
@@ -26,6 +28,7 @@ class Appointment {
       TITLE: title,
       LOCATION: location,
       DATE_TIME: dateTime,
+      APPT_REMINDER_DATE: apptReminderDate,
     };
   }
 
@@ -51,7 +54,8 @@ class Appointment {
         email: data[Appointment.EMAIL],
         title: data[Appointment.TITLE],
         location: data[Appointment.LOCATION],
-        dateTime: date);
+        dateTime: date,
+        apptReminderDate: date);
   }
 
   String getTimeandLocation() {
@@ -67,9 +71,15 @@ class Appointment {
         7, 0, 0, 0, 0);
   }
 
+  DateTime apptReminderTime(dateTime) {
+    DateTime apptReminderTime = dateTime.subtract(Duration(days: 7));
+    return apptReminderTime;
+  }
+
   static const EMAIL = 'email';
   static const TITLE = 'title';
   static const LOCATION = 'location';
   static const DATE_TIME = 'dateTime';
   static const COLLECTION = 'appointment';
+  static const APPT_REMINDER_DATE = 'apptReminderDate';
 }

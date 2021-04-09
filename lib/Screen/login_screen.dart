@@ -1,4 +1,5 @@
 import 'package:Capstone/Controller/notificationController.dart';
+import 'package:Capstone/Model/appointment.dart';
 import 'package:Capstone/Model/constant.dart';
 import 'package:Capstone/Model/medication.dart';
 import 'package:Capstone/Model/notification_settings.dart';
@@ -173,20 +174,41 @@ class _Controller {
       return; //cease login process
     }
 
-    // Notifications fire upon login
-    
-    var testNow = DateTime.utc(2021, 4, 26);
-    //var now = DateTime.now();
+    //-------------------Notifications-----------------------------//
+    // Fire upon log in.
+
+    // var testNow = DateTime.utc(2021, 4, 26);
+    var now = DateTime.now();
     List<Medication> medication =
         await FirebaseController.getMedicationList(email);
     for (Medication med in medication) {
-      if (testNow.isAfter(med.refillDate) == true) {
-        print(" refillDate: ${med.refillDate}");
+      // Reminder to call your doctor when renewal is needed.
+      if (now.isAfter(med.renewalDate) == true) {
+        print(" renewalDate: ${med.renewalDate}");
+        await NotificationController.renewalNotifications(email);
+      }
+      // Reminder to refill a prescription.
+      if (now.isAfter(med.refillDate) == true) {
+        print("refillDate: ${med.refillDate}");
         await NotificationController.refillNotifications(email);
       }
-      
     }
+    // Appointment reminders
+    List<Appointment> appointments =
+        await FirebaseController.getAppointmentList(email);
+    for (Appointment appt in appointments) {
+      if (now.isAfter(appt.apptReminderDate) == true) {
+        print("apptReminderDate: ${appt.apptReminderDate}");
+        await NotificationController.apptNotifications(email);
+      }
+    }
+
+    // Feel Good Vault reminders
+    
+
+    // Daily Questions reminder
     await NotificationController.dailyQuestionsNotification(user.email);
+    // Medication reminders
     await NotificationController.medicationNotification(user.email);
 
     Navigator.pop(state.context); //dispose dialog

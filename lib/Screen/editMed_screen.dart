@@ -161,7 +161,7 @@ class _EditMedState extends State<EditMedScreen> {
                       TextFormField(
                         //initialValue: record.title,
                         decoration: InputDecoration(
-                          labelText: 'Renewal Date',
+                          labelText: 'Current Medication Refill Date',
                         ),
                         //controller: _dateController,
                         autocorrect: false,
@@ -170,7 +170,7 @@ class _EditMedState extends State<EditMedScreen> {
                         onTap: () {
                           DatePicker.showDateTimePicker(context,
                               showTitleActions: true, onConfirm: (date) {
-                            medicationInfo.renewalDate = date;
+                            medicationInfo.refillDate = date;
                             dateTimeController.text =
                                 DateFormat.yMd().add_jm().format(date);
                           }, currentTime: DateTime(2021, 03, 12, 09, 00, 00));
@@ -212,7 +212,10 @@ class _Controller {
       } else {
         await FirebaseController.updateMedicationInfo(_state.medicationInfo);
       }
-      _state.medicationInfo.refillDate = _state.medicationInfo.refillTime(_state.medicationInfo.refillsLeft);
+      _state.medicationInfo.renewalDate =
+          _state.medicationInfo.renewalTime(_state.medicationInfo.refillsLeft);
+      _state.medicationInfo.refillDate =
+          _state.medicationInfo.refillTime(_state.medicationInfo.refillDate);
       //if(_state.medicationInfo.timesDaily != null) NotificationController.medicationNotification(_state.user.email);
       List<Medication> medication =
           await FirebaseController.getMedicationList(_state.user.email);

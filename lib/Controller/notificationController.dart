@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:Capstone/Controller/firebase_controller.dart';
+import 'package:Capstone/Model/appointment.dart';
 import 'package:Capstone/Model/medication.dart';
 import 'package:Capstone/Model/notification_settings.dart';
 import 'package:Capstone/views/testNotifications.dart';
@@ -107,7 +108,37 @@ class NotificationController {
     }
   }
 
-  // Notifies user 1 week before refills reach zero refill their prescriptions
+  // Notifies user 1 week before a prescriptionrefill 
+  // reaches zero to call doctor to **renew** prescription
+  static Future<void> renewalNotifications(String email) async {
+    List<NotificationSettings> settings =
+        await FirebaseController.getNotificationSettings(email);
+    if (settings[3].currentToggle == 1) {
+      await flutterLocalNotificationsPlugin
+          .cancel(settings[3].notificationIndex);
+      return;
+    }
+    List<Medication> medication =
+        await FirebaseController.getMedicationList(email);
+    for (int i = 5; i < medication.length + 5; i++) {
+      await flutterLocalNotificationsPlugin.zonedSchedule(
+          i,
+          'Reminder:',
+          'Call your doctor to renew medication ${medication[i - 5].medName}',
+          _nextInstanceOfNoon(),
+          const NotificationDetails(
+            android: AndroidNotificationDetails(
+                'i',
+                'Daily Evening Medication Reminder',
+                'Sends a reminder to take evening meds each day'),
+          ),
+          androidAllowWhileIdle: true,
+          uiLocalNotificationDateInterpretation:
+              UILocalNotificationDateInterpretation.absoluteTime,
+          matchDateTimeComponents: DateTimeComponents.time);
+    }
+  }
+  // Reminder to **refill** a prescription.
   static Future<void> refillNotifications(String email) async {
     List<NotificationSettings> settings =
         await FirebaseController.getNotificationSettings(email);
@@ -124,12 +155,43 @@ class NotificationController {
           i,
           'Reminder:',
           'Time to refill medication ${medication[i - 6].medName}',
-          _nextInstanceOfNoon(),
+          _nextInstanceOfTenAM(),
           const NotificationDetails(
             android: AndroidNotificationDetails(
                 'i',
                 'Daily Evening Medication Reminder',
                 'Sends a reminder to take evening meds each day'),
+          ),
+          androidAllowWhileIdle: true,
+          uiLocalNotificationDateInterpretation:
+              UILocalNotificationDateInterpretation.absoluteTime,
+          matchDateTimeComponents: DateTimeComponents.time);
+    }
+  }
+
+  // Appointment Notifications
+  static Future<void> apptNotifications(String email) async {
+    List<NotificationSettings> settings =
+        await FirebaseController.getNotificationSettings(email);
+    if (settings[2].currentToggle == 1) {
+      // cancel the notification 
+      await flutterLocalNotificationsPlugin
+          .cancel(settings[2].notificationIndex);
+      return;
+    }
+    List<Appointment> appointments =
+        await FirebaseController.getAppointmentList(email);
+    for (int i = 4; i < appointments.length + 4; i++) {
+      await flutterLocalNotificationsPlugin.zonedSchedule(
+          i,
+          'Reminder:',
+          'Appointment:  ${appointments[i - 4].title} \n Location: ${appointments[i - 4].location} /n When: ${appointments[i - 4].dateTime}',
+          _nextInstanceOfEightAM(),
+          const NotificationDetails(
+            android: AndroidNotificationDetails(
+                'i',
+                'Appointment Reminder',
+                'Sends a reminder about upcoming appointments'),
           ),
           androidAllowWhileIdle: true,
           uiLocalNotificationDateInterpretation:

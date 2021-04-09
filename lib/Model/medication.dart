@@ -49,8 +49,8 @@ class Medication {
 
   static Medication deserialize(Map<String, dynamic> data, String docId) {
     DateTime date;
-    if (data[Medication.RENEWALDATE] != null) {
-      Timestamp ts = data[Medication.RENEWALDATE];
+    if (data[Medication.REFILLDATE] != null) {
+      Timestamp ts = data[Medication.REFILLDATE];
       date = ts.toDate();
     } else
       date = null;
@@ -75,11 +75,16 @@ class Medication {
     return 'Medication: {medName: ${medName}}';
   }
 
-  DateTime refillTime(refillsLeft) {
+  DateTime renewalTime(refillsLeft) {
     var now = DateTime.now();
     int numberOfDays = 30 * refillsLeft - 7;
-    DateTime refillDate = now.add(Duration(days: numberOfDays));
-    print("refillDate: ${refillDate}");
-    return refillDate;
+    DateTime renewalDate = now.add(Duration(days: numberOfDays));
+    print("renewalDate: ${renewalDate}");
+    return renewalDate;
+  }
+
+  DateTime refillTime(refillDate) {
+    DateTime refillReminderDate = refillDate.subtract(Duration(days: 3));
+    return refillReminderDate;
   }
 }

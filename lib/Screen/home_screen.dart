@@ -82,8 +82,8 @@ class _UserHomeState extends State<HomeScreen> {
             children: [
               UserAccountsDrawerHeader(
                 accountName: Text('Placeholder'),
-                //accountEmail: Text(user.email),
-                accountEmail: Text(''),
+                accountEmail: Text(user.email),
+                //accountEmail: Text(''),
               ),
               ListTile(
                 leading: Icon(Icons.person),

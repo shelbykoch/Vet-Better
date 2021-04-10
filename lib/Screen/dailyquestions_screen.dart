@@ -7,8 +7,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class DailyQuestionsScreen extends StatefulWidget {
+  const DailyQuestionsScreen(
+    this.payload, {
+    Key key,
+  }) : super(key: key);
+  final String payload;
   static const routeName = '/dailyQuestionsScreen';
-
   @override
   State<StatefulWidget> createState() {
     return _DailyQuestionsState();
@@ -18,14 +22,15 @@ class DailyQuestionsScreen extends StatefulWidget {
 class _DailyQuestionsState extends State<DailyQuestionsScreen> {
   _Controller con;
   User user;
-  //int randomNumber;
-  // Question questionInfo;
+  String _payload;
+
   List<Question> questionList;
   var formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
+    _payload = widget.payload;
     con = _Controller(this);
   }
 
@@ -41,10 +46,12 @@ class _DailyQuestionsState extends State<DailyQuestionsScreen> {
       appBar: AppBar(
         title: Text("Daily Questions"),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pushNamed(context, HomeScreen.routeName,
-              arguments: {Constant.ARG_USER: user}),
-        ),
+            icon: Icon(Icons.arrow_back),
+            onPressed: () => {
+                  Navigator.pushNamed(context, HomeScreen.routeName,
+                      arguments: {Constant.ARG_USER: user}),
+            },
+      ),
       ),
       body: Padding(
         padding: const EdgeInsets.only(left: 20.0, right: 20.0),

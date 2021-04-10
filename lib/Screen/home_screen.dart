@@ -1,4 +1,3 @@
-import 'package:Capstone/Controller/notificationController.dart';
 import 'package:Capstone/Model/activity.dart';
 import 'package:Capstone/Model/appointment.dart';
 import 'package:Capstone/Model/constant.dart';
@@ -18,6 +17,7 @@ import 'package:Capstone/Screen/login_screen.dart';
 import 'package:Capstone/Screen/myMedication_screen.dart';
 import 'package:Capstone/Screen/notificationsettings_screen.dart';
 import 'package:Capstone/Screen/personal_info_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -29,6 +29,12 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen(
+    this.payload, {
+    Key key,
+  }) : super(key: key);
+
+  final String payload;
   static const routeName = '/homeScreen';
   @override
   State<StatefulWidget> createState() {
@@ -38,15 +44,24 @@ class HomeScreen extends StatefulWidget {
 
 class _UserHomeState extends State<HomeScreen> {
   _Controller con;
+  final FirebaseAuth auth = FirebaseAuth.instance;
   User user;
+  String _payload;
   int _navIndex = 0;
   List<Question> questionList;
   List<NotificationSettings> settings;
 
+
   @override
   void initState() {
     super.initState();
+    user = auth.currentUser;
+    print("user homeScreen: ${user}");
     con = _Controller(this);
+    con._buildButtonList();
+    print('initState payload: ${_payload}');
+    _payload = widget.payload;
+    con.notificationRoute(_payload, user);
     con._buildButtonList();
   }
 
@@ -67,7 +82,8 @@ class _UserHomeState extends State<HomeScreen> {
             children: [
               UserAccountsDrawerHeader(
                 accountName: Text('Placeholder'),
-                accountEmail: Text(user.email),
+                //accountEmail: Text(user.email),
+                accountEmail: Text(''),
               ),
               ListTile(
                 leading: Icon(Icons.person),
@@ -75,10 +91,13 @@ class _UserHomeState extends State<HomeScreen> {
                 onTap: con.personalInfoRoute,
               ),
               ListTile(
-                leading: Icon(Icons.exit_to_app),
-                title: Text('Sign Out'),
-                onTap: con.signOut,
-              ),
+                  leading: Icon(Icons.exit_to_app),
+                  title: Text('Sign Out'),
+                  onTap: () => {
+                        print("pressing signOut"),
+                        con.signOut(),
+                        print("button pressed")
+                      }),
               ListTile(
                 leading: Icon(Icons.settings),
                 title: Text('Notification Settings'),
@@ -124,6 +143,7 @@ class _UserHomeState extends State<HomeScreen> {
 class _Controller {
   _UserHomeState _state;
   _Controller(this._state);
+
 //--------------------------Nav Bar----------------------------------//
 
   void _onTabTapped(index) {
@@ -268,13 +288,17 @@ class _Controller {
     //First we will load the medication info associated with the account to pass to the screen
     //if it doesn't exist in the database we will created a new one and append
     //the email then pass to the screen
-    List<Medication> medication =
-        await FirebaseController.getMedicationList(_state.user.email);
-    Navigator.pushNamed(_state.context, MyMedicationScreen.routeName,
-        arguments: {
-          Constant.ARG_USER: _state.user,
-          Constant.ARG_MEDICATION_LIST: medication,
-        });
+    final user = _state.auth.currentUser;
+    if (user != null) {
+      List<Medication> medication =
+          await FirebaseController.getMedicationList(user.email);
+
+      Navigator.pushNamed(_state.context, MyMedicationScreen.routeName,
+          arguments: {
+            Constant.ARG_USER: user,
+            Constant.ARG_MEDICATION_LIST: medication,
+          });
+    }
   }
 
   void reachOutRoute() async {
@@ -304,14 +328,24 @@ class _Controller {
   }
 
   void dailyQuestionsRoute() async {
+    _state._payload = null;
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    User user = auth.currentUser;
+    if (user != null)
+      print("user: ${user.email}");
+    else {
+      print("user is null");
+      print("_state.user: ${_state.user}");
+    }
+    _state.questionList = await FirebaseController.getQuestionList(user.email);
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
     tz.TZDateTime newDay = tz.TZDateTime(
-        tz.local, now.year, now.month, now.day, now.hour, now.minute, 00);
-    if (newDay.isBefore(now)) {
-      newDay = newDay.add(const Duration(minutes: 1));
+        tz.local, now.year, now.month, now.day, now.hour, now.minute, 30);
+    if (newDay.isAfter(now)) {
+      for (Question q in _state.questionList)
+        FirebaseController.deleteQuestion(q.docId);
     }
-    _state.questionList =
-        await FirebaseController.getQuestionList(_state.user.email);
+
     if (_state.questionList == null) {
       List<Question> questionList = new List<Question>();
       questionList = Question.getDailyQuestions(_state.user.email);
@@ -331,6 +365,20 @@ class _Controller {
             Constant.ARG_QUESTION_LIST: _state.questionList,
           });
     }
+  }
+
+  void notificationRoute(payload, user) {
+    if (user == null) {
+      payload = null;
+    }
+    print('payload notificationRoute: ${payload}');
+    if (payload == 'daily questions') dailyQuestionsRoute();
+    if (payload == 'medication') {
+      //count++;
+      medicationInfoRoute();
+    }
+    if (payload == 'appointment') calendarRoute();
+    if (payload == 'new payload') return;
   }
 
   void socialActRoute() async {
@@ -357,6 +405,12 @@ class _Controller {
   //------------------------APP TRAY ROUTING--------------------------//
 
   void signOut() async {
+    print("signing out");
+    final user = _state.auth.currentUser;
+    if (user != null)
+      print("user sighnOut: ${user}");
+    else
+      print("user is null");
     try {
       await FirebaseController.signOut();
     } catch (e) {
@@ -364,7 +418,7 @@ class _Controller {
     }
     // Navigator.of(_state.context).pop(); //Close app drawer
     // Navigator.of(_state.context).pop(); //Close home screen
-    Navigator.pushReplacementNamed(_state.context, LoginScreen.routeName);
+    Navigator.pushNamed(_state.context, LoginScreen.routeName);
   }
 
   void notificationSettings() async {

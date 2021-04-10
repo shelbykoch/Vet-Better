@@ -8,6 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 class NotificationSettingsScreen extends StatefulWidget {
+  const NotificationSettingsScreen(
+    this.payload, {
+    Key key,
+  }) : super(key: key);
+  final String payload;
   static const routeName = '/notificationSettingsScreen';
 
   @override
@@ -22,11 +27,13 @@ class _NotificationSettingsState extends State<NotificationSettingsScreen> {
   List<NotificationSettings> settings;
   int notificationIndex;
   var formKey = GlobalKey<FormState>();
+  String _payload;
 
   @override
   void initState() {
     super.initState();
     con = _Controller(this);
+    _payload = widget.payload;
   }
 
   void render(fn) => setState(fn);
@@ -127,11 +134,16 @@ class _Controller {
     }
     List<NotificationSettings> settings =
         await FirebaseController.getNotificationSettings(_state.user.email);
+    if (_state._payload == null) {
+      Navigator.pushNamed(_state.context, HomeScreen.routeName, arguments: {
+        Constant.ARG_USER: _state.user,
+        Constant.ARG_NOTIFICATION_SETTINGS: settings,
+      });
+    } else {
+      Navigator.pop(_state.context);
+      Navigator.pop(_state.context);
 
-    Navigator.pushNamed(_state.context, HomeScreen.routeName, arguments: {
-      Constant.ARG_USER: _state.user,
-      Constant.ARG_NOTIFICATION_SETTINGS: settings,
-    });
+    }
   }
 
   void onSavedSetting(int notificationIndex, int toggleValue) {

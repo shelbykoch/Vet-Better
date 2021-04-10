@@ -2,18 +2,25 @@ import 'package:Capstone/Controller/notificationController.dart';
 import 'package:Capstone/Model/appointment.dart';
 import 'package:Capstone/Model/constant.dart';
 import 'package:Capstone/Model/medication.dart';
-import 'package:Capstone/Model/notification_settings.dart';
+
 import 'package:Capstone/Screen/forgot_password_screen.dart';
 import 'package:Capstone/views/testNotifications.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../Controller/firebase_controller.dart';
 import 'sign_up_screen.dart';
 import 'home_screen.dart';
 import 'app_dialog.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen(
+    this.notificationAppLaunchDetails, {
+    Key key,
+  }) : super(key: key);
   static const routeName = '/loginScreen';
+  final NotificationAppLaunchDetails notificationAppLaunchDetails;
   @override
   State<StatefulWidget> createState() {
     return _LoginScreenState();
@@ -25,10 +32,16 @@ class _LoginScreenState extends State<LoginScreen> {
   BuildContext context;
   var formKey = GlobalKey<FormState>();
   TextEditingController _textContoller;
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  User user;
 
   _LoginScreenState() {
     con = _Controller(this);
+    user = auth.currentUser;
+    print("user: ${user}");
     _textContoller = new TextEditingController();
+    con._configureDidReceiveLocalNotificationSubject();
+    con._configureSelectNotificationSubject();
   }
 
   void render(fn) => setState(fn);
@@ -121,6 +134,7 @@ class _Controller {
   _Controller(this.state);
   String email;
   String password;
+  User user;
 
   void createAccount() {
     Navigator.push(
@@ -158,7 +172,6 @@ class _Controller {
     state.formKey.currentState.save();
     AppDialog.showProgressBar(state.context);
 
-    User user;
     try {
       user = await FirebaseController.login(email: email, password: password);
     } catch (e) {
@@ -204,7 +217,6 @@ class _Controller {
     }
 
     // Feel Good Vault reminders
-    
 
     // Daily Questions reminder
     await NotificationController.dailyQuestionsNotification(user.email);
@@ -218,5 +230,48 @@ class _Controller {
 
   void resetPassword() async {
     Navigator.pushNamed(state.context, ForgotPasswordScreen.routeName);
+  }
+
+  void _configureDidReceiveLocalNotificationSubject() {
+    didReceiveLocalNotificationSubject.stream
+        .listen((ReceivedNotification receivedNotification) async {
+      await showDialog(
+        context: state.context,
+        builder: (BuildContext context) => CupertinoAlertDialog(
+          title: receivedNotification.title != null
+              ? Text(receivedNotification.title)
+              : null,
+          content: receivedNotification.body != null
+              ? Text(receivedNotification.body)
+              : null,
+          actions: <Widget>[
+            CupertinoDialogAction(
+              isDefaultAction: true,
+              onPressed: () async {
+                Navigator.of(context, rootNavigator: true).pop();
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (BuildContext context) =>
+                        HomeScreen(receivedNotification.payload),
+                  ),
+                );
+              },
+              child: const Text('Ok'),
+            )
+          ],
+        ),
+      );
+    });
+  }
+
+  void _configureSelectNotificationSubject() async {
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final User user = auth.currentUser;
+    if (user != null) print("user: ${user.email}");
+    selectNotificationSubject.stream.listen((String payload) async {
+      await Navigator.pushNamed(state.context, HomeScreen.routeName,
+          arguments: {Constant.ARG_USER: user});
+    });
   }
 }

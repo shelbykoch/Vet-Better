@@ -29,6 +29,9 @@ class Constant {
 
   //Notifications
   static const ARG_NOTIFICATION_SETTINGS = 'notificationSettings';
+  static const ARG_PAYLOAD = 'payload';
+  static const ARG_CAMEFROMSCREEN = 'cameFromeScreen';
+
   //Social Activities screens
   static const ARG_CONTACTS = 'contacts';
   static const ARG_ACTIVITIES = 'activities';

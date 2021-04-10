@@ -64,7 +64,7 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
-  //NotificationAppLaunchDetails notificationAppLaunchDetails;
+  NotificationAppLaunchDetails notificationAppLaunchDetails;
 
   @override
   Widget build(BuildContext context) {
@@ -81,21 +81,21 @@ class MyApp extends StatelessWidget {
       routes: {
         //HomePage.routeName: (_) => HomePage(notificationAppLaunchDetails),
         // SecondPage.routeName: (_) => SecondPage(selectedNotificationPayload),
-        LoginScreen.routeName: (context) => LoginScreen(),
-        HomeScreen.routeName: (context) => HomeScreen(),
+        LoginScreen.routeName: (context) => LoginScreen(notificationAppLaunchDetails),
+        HomeScreen.routeName: (context) => HomeScreen(selectedNotificationPayload),
         ForgotPasswordScreen.routeName: (context) => ForgotPasswordScreen(),
         FactorScreen.routeName: (context) => FactorScreen(),
         PersonalInfoScreen.routeName: (context) => PersonalInfoScreen(),
         CalendarScreen.routeName: (conext) => CalendarScreen(),
         AppointmentScreen.routeName: (context) => AppointmentScreen(),
-        MyMedicationScreen.routeName: (context) => MyMedicationScreen(),
+        MyMedicationScreen.routeName: (context) => MyMedicationScreen(selectedNotificationPayload),
         EditMedScreen.routeName: (context) => EditMedScreen(),
         FactorAddScreen.routeName: (context) => FactorAddScreen(),
         FactorEditScreen.routeName: (context) => FactorEditScreen(),
-        DailyQuestionsScreen.routeName: (context) => DailyQuestionsScreen(),
+        DailyQuestionsScreen.routeName: (context) => DailyQuestionsScreen(selectedNotificationPayload),
         AnswerScreen.routeName: (context) => AnswerScreen(),
         NotificationSettingsScreen.routeName: (context) =>
-            NotificationSettingsScreen(),
+            NotificationSettingsScreen(selectedNotificationPayload),
         ContactEditScreen.routeName: (context) => ContactEditScreen(),
         ContactListScreen.routeName: (context) => ContactListScreen(),
         ActivityAddScreen.routeName: (context) => ActivityAddScreen(),

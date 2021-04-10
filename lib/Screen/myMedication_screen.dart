@@ -8,6 +8,11 @@ import 'package:flutter/material.dart';
 import 'editMed_screen.dart';
 
 class MyMedicationScreen extends StatefulWidget {
+  const MyMedicationScreen(
+    this.payload, {
+    Key key,
+  }) : super(key: key);
+  final String payload;
   static const routeName = '/myMedicationScreen';
 
   @override
@@ -20,11 +25,14 @@ class _MyMedicationState extends State<MyMedicationScreen> {
   _Controller con;
   List<Medication> medication;
   User user;
+  String _payload;
 
   @override
   void initState() {
     super.initState();
     con = _Controller(this);
+    _payload = widget.payload;
+    print("payload myMedScreen: ${_payload}");
   }
 
   void render(fn) => setState(fn);
@@ -39,13 +47,19 @@ class _MyMedicationState extends State<MyMedicationScreen> {
       appBar: AppBar(
         title: Text("My Medication"),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pushNamed(context, HomeScreen.routeName, arguments: {
-            Constant.ARG_USER: user
-          }),
-        ),
-         
-        ),
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              if (_payload == null) {
+                print("push");
+                Navigator.pushNamed(context, HomeScreen.routeName, arguments: {
+                  Constant.ARG_USER: user,
+                });
+              } else {
+                print("pop");
+                Navigator.pop(context);
+              }
+            }),
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[

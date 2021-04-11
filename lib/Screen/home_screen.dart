@@ -274,13 +274,16 @@ class _Controller {
 
   void calendarRoute() async {
     //Map<DateTime, List<dynamic>> function call made here to Firebase to get appointments
-    List<Appointment> appointments =
-        await FirebaseController.getAppointmentList(_state.user.email);
+    final user = _state.auth.currentUser;
+    if (user != null) {
+      List<Appointment> appointments =
+          await FirebaseController.getAppointmentList(user.email);
 
     Navigator.pushNamed(_state.context, CalendarScreen.routeName, arguments: {
-      Constant.ARG_USER: _state.user,
+      Constant.ARG_USER: user,
       Constant.ARG_APPOINTMENTS: appointments,
     });
+    }
   }
 
   void medicationInfoRoute() async {

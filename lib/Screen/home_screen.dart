@@ -46,6 +46,8 @@ class _UserHomeState extends State<HomeScreen> {
   int _navIndex = 0;
   List<Question> questionList;
   List<NotificationSettings> settings;
+  List<TextContent> textContentList;
+  List<Picture> pictureList;
   int factorScore = 0;
 
   @override
@@ -63,10 +65,12 @@ class _UserHomeState extends State<HomeScreen> {
     user ??= args[Constant.ARG_USER];
     questionList ??= args[Constant.ARG_QUESTION_LIST];
     settings ??= args[Constant.ARG_NOTIFICATION_SETTINGS];
+    pictureList ??= args[Constant.ARG_PICTURE_LIST];
+    textContentList ??= args[Constant.ARG_TEXT_CONTENT_LIST];
     return WillPopScope(
       onWillPop: () => Future.value(false), //Disable android system back button
       child: Scaffold(
-        appBar: AppBar(title: Text('Vet Better')),
+        appBar: con._buildAppBar(),
         drawer: Drawer(
           child: ListView(
             children: [
@@ -166,10 +170,47 @@ class _Controller {
     );
   }
 
+  Widget _textContentButton(Function route, TextContent content) {
+    return ClipRRect(
+      borderRadius: BorderRadius.all(Radius.circular(25.0)),
+      //width: double.infinity,
+      child: RaisedButton(
+        onPressed: route,
+        child: Column(
+          // Replace with a Row for horizontal icon + text
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(top: 15.0),
+              child: FaIcon(FontAwesomeIcons.pencilAlt),
+            ),
+            Expanded(
+              child: Padding(
+                  padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
+                  child: Text(content.title, overflow: TextOverflow.fade)),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _pictureButton(Function route, Picture picture) {
+    return ClipRRect(
+      borderRadius: BorderRadius.all(Radius.circular(25.0)),
+      child: Expanded(
+        child: InkWell(
+          onTap: route,
+          child: Image.network(picture.photoURL, fit: BoxFit.cover),
+        ),
+      ),
+    );
+  }
+
   //This will build a button list based on the navbar index
   List<Widget> _buildButtonList() {
     List<Widget> buttons = new List<Widget>();
     buttons.clear();
+    _buildAppBar();
     switch (_state._navIndex) {
       case 0:
         buttons.add(_screenButton(
@@ -214,40 +255,93 @@ class _Controller {
             FaIcon(FontAwesomeIcons.question), "Daily Questions"));
         break;
       case 3:
-        buttons.add(Padding(
-          padding: const EdgeInsets.only(top: 20.0, left: 40.0, right: 40.0),
-          child: ListView(children: <Widget>[Text('Feel good vault')]),
-        ));
+        _state.pictureList.forEach((p) {
+          buttons.add(_pictureButton(() => vaultPictureRoute(p), p));
+        });
+        _state.textContentList.forEach((t) {
+          buttons.add(_textContentButton(() => vaultContentRoute(t), t));
+        });
+      /*
         buttons.add(_screenButton(() => vaultContentRoute(),
             FaIcon(FontAwesomeIcons.notesMedical), "Add Text Content"));
         buttons.add(_screenButton(() => vaultPictureRoute(),
             FaIcon(FontAwesomeIcons.photoVideo), "Add Picture"));
+          */
     }
     return buttons;
   }
 
+  AppBar _buildAppBar() {
+    switch (_state._navIndex) {
+      case 0:
+      case 1:
+      case 2:
+        return AppBar(title: Text('Vet Better'));
+      case 3:
+        return AppBar(
+          title: Text('Vet Better'),
+          actions: <Widget>[
+            PopupMenuButton<String>(
+              onSelected: addToVault,
+              itemBuilder: (context) => <PopupMenuEntry<String>>[
+                PopupMenuItem(
+                  value: 'picture',
+                  child: Row(
+                    children: <Widget>[
+                      Icon(Icons.photo),
+                      Text('Picture'),
+                    ],
+                  ),
+                ),
+                PopupMenuItem(
+                  value: 'text',
+                  child: Row(
+                    children: <Widget>[
+                      Icon(Icons.edit),
+                      Text('Text'),
+                    ],
+                  ),
+                )
+              ],
+            )
+          ],
+        );
+    }
+  }
+
 //------------------------HOME SCREEN ROUTING---------------------------//
-  void vaultContentRoute() async {
+  void vaultContentRoute(TextContent textContent) async {
     //Request content from database.
     //If Firebase doesn't find the collection then an new version is returned
-    List<TextContent> textContent =
-        await FirebaseController.getTextContentList(_state.user.email);
+    //List<TextContent> textContent =
+    //  await FirebaseController.getTextContentList(_state.user.email);
     Navigator.pushNamed(_state.context, TextContentAddScreen.routeName,
         arguments: {
           Constant.ARG_USER: _state.user,
-          Constant.ARG_TEXT_CONTENT_LIST: textContent,
+          Constant.ARG_TEXT_CONTENT: textContent,
         });
   }
 
-  void vaultPictureRoute() async {
+  void vaultPictureRoute(Picture p) async {
     //Request pics from database.
     //If Firebase doesn't find the collection then an new version is returned
-    List<Picture> pictures =
-        await FirebaseController.getPictures(_state.user.email);
+
+    //List<Picture> pictures =
+    //  await FirebaseController.getPictures(_state.user.email);
     Navigator.pushNamed(_state.context, PictureAddScreen.routeName, arguments: {
       Constant.ARG_USER: _state.user,
-      Constant.ARG_PICTURE_LIST: pictures,
+      Constant.ARG_PICTURE: p,
     });
+  }
+
+  void addToVault(String src) {
+    if (src == 'picture') {
+      Picture p = Picture.withEmail(_state.user.email);
+      vaultPictureRoute(p);
+    } else {
+      TextContent t = TextContent.withEmail(_state.user.email);
+      vaultContentRoute(t);
+    }
   }
 
   void factorRoute(ListType listType, String title) async {

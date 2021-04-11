@@ -1,5 +1,7 @@
 import 'package:Capstone/Controller/notificationController.dart';
 import 'package:Capstone/Model/constant.dart';
+import 'package:Capstone/Model/picture.dart';
+import 'package:Capstone/Model/text_content.dart';
 import 'package:Capstone/Screen/forgot_password_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -171,8 +173,17 @@ class _Controller {
     await NotificationController.dailyQuestionsNotification();
     await NotificationController.medicationNotification(user.email);
     Navigator.pop(state.context); //dispose dialog
-    Navigator.pushNamed(state.context, HomeScreen.routeName,
-        arguments: {Constant.ARG_USER: user});
+
+    //Load text content
+    //Load feel good vault pictures
+    List<TextContent> textContent =
+        await FirebaseController.getTextContentList(user.email);
+    List<Picture> pictures = await FirebaseController.getPictures(user.email);
+    Navigator.pushNamed(state.context, HomeScreen.routeName, arguments: {
+      Constant.ARG_USER: user,
+      Constant.ARG_PICTURE_LIST: pictures,
+      Constant.ARG_TEXT_CONTENT_LIST: textContent
+    });
   }
 
   void resetPassword() async {

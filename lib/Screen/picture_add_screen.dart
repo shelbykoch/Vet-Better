@@ -1,8 +1,6 @@
 import 'dart:io';
-
 import 'package:Capstone/Controller/firebase_controller.dart';
 import 'package:Capstone/Model/constant.dart';
-import 'package:Capstone/Model/picture.dart';
 import 'package:Capstone/Model/picture.dart';
 import 'package:Capstone/views/mydialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -39,12 +37,13 @@ class _PictureAddState extends State<PictureAddScreen> {
     Map arg = ModalRoute.of(context).settings.arguments;
     user ??= arg[Constant.ARG_USER];
     picture ??= arg[Constant.ARG_PICTURE];
-    pictures ??= arg[Constant.ARG_PICTURE_LIST];
+    //pictures ??= arg[Constant.ARG_PICTURE_LIST];
     index ??= arg['index'];
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Picture'),
+        title:
+            picture.docId == null ? Text('Add Picture') : Text("Edit Picture"),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.check),
@@ -63,9 +62,11 @@ class _PictureAddState extends State<PictureAddScreen> {
                   children: <Widget>[
                     Container(
                       width: MediaQuery.of(context).size.width,
-                      child: image == null
-                          ? Icon(Icons.photo_library, size: 300.0)
-                          : Image.file(image, fit: BoxFit.fill),
+                      child: image != null
+                          ? Image.file(image, fit: BoxFit.fill)
+                          : picture.docId != null
+                              ? Image.network(picture.photoURL)
+                              : Icon(Icons.photo_library, size: 300.0),
                     ),
                     Positioned(
                       right: 0.0,
@@ -108,7 +109,7 @@ class _PictureAddState extends State<PictureAddScreen> {
                   decoration: InputDecoration(
                     hintText: 'Title',
                   ),
-                  initialValue: picture != null ? picture.title : "",
+                  initialValue: picture.docId != null ? picture.title : "",
                   autocorrect: true,
                   validator: con.validatorTitle,
                   onSaved: con.onSavedTitle,
@@ -134,7 +135,7 @@ class _Controller {
     }
 
     _state.formKey.currentState.save();
-    if (_state.image == null) {
+    if (_state.image == null && _state.picture.docId == null) {
       MyDialog.info(
         context: _state.context,
         title: 'Picture Required',
@@ -146,26 +147,32 @@ class _Controller {
     try {
       MyDialog.circularProgressStart(_state.context);
       // 1. Upload pic to firebase storage
-      Map<String, String> picture = await FirebaseController.uploadStorage(
-          image: _state.image,
-          uid: _state.user.uid,
-          listener: (double progressPercentage) {
-            _state.render(() {
-              uploadProgressMessage =
-                  'Uploading: ${progressPercentage.toStringAsFixed(1)}';
+      if (_state.picture.docId == null) {
+        Map<String, String> picture = await FirebaseController.uploadStorage(
+            image: _state.image,
+            uid: _state.user.uid,
+            listener: (double progressPercentage) {
+              _state.render(() {
+                uploadProgressMessage =
+                    'Uploading: ${progressPercentage.toStringAsFixed(1)}';
+              });
             });
-          });
 
-      // 3. save plantData do to Firestore
-      var p = Picture(
-        title: title,
-        photoPath: picture['path'],
-        photoURL: picture['url'],
-        email: _state.user.email,
-      );
+        // 3. save plantData do to Firestore
+        var p = Picture(
+          docId: _state.picture.docId,
+          title: title,
+          photoPath: picture['path'],
+          photoURL: picture['url'],
+          email: _state.user.email,
+        );
 
-      p.docId = await FirebaseController.addPicture(p);
-      _state.pictures.insert(0, p);
+        p.docId = await FirebaseController.addPicture(p);
+        _state.pictures.insert(0, p);
+      } else {
+        _state.picture.title = title;
+        FirebaseController.updatePicture(_state.picture);
+      }
 
       MyDialog.circularProgressEnd(_state.context);
       Navigator.pop(_state.context);

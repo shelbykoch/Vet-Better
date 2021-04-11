@@ -34,12 +34,13 @@ class _TextContentAddState extends State<TextContentAddScreen> {
     Map arg = ModalRoute.of(context).settings.arguments;
     user ??= arg[Constant.ARG_USER];
     textContent ??= arg[Constant.ARG_TEXT_CONTENT];
-    textContentList ??= arg[Constant.ARG_TEXT_CONTENT_LIST];
     index ??= arg['index'];
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Content'),
+        title: textContent.docID == null
+            ? Text('Add Content')
+            : Text("Edit Content"),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.check),

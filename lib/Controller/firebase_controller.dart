@@ -342,9 +342,9 @@ class FirebaseController {
   static Future<List<Picture>> getPictures(String email) async {
     print(email);
     QuerySnapshot query = await FirebaseFirestore.instance
-        .collection(TextContent.COLLECTION)
-        .where(TextContent.EMAIL, isEqualTo: email)
-        .orderBy(TextContent.TITLE)
+        .collection(Picture.COLLECTION)
+        .where(Picture.EMAIL, isEqualTo: email)
+        .orderBy(Picture.TITLE)
         .get();
 
     List<Picture> result = new List<Picture>();

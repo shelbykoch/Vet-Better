@@ -32,8 +32,6 @@ import 'Screen/personal_info_screen.dart';
 import 'Screen/contact_list_screen.dart';
 import 'Screen/contact_edit_screen.dart';
 import 'Screen/picture_add_screen.dart';
-import 'Screen/picture_add_screen.dart';
-import 'Screen/text_content_add_screen.dart';
 import 'Screen/text_content_add_screen.dart';
 
 Future<void> main() async {

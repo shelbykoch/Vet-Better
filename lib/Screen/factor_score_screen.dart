@@ -15,16 +15,16 @@ class FactorScoreScreen extends StatefulWidget {
 class _FactorScoreState extends State<FactorScoreScreen> {
   _Controller con;
   User user;
-  List<Factor> _factorList;
   Map<ListType, int> _scoreMap;
-  int _totalScore = 0;
+  Map<ListType, String> _labelMap;
+  int _totalScore;
   var formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
     con = _Controller(this);
-    _scoreMap = new Map<ListType, int>();
+    con._buildLabelMap();
   }
 
   void render(fn) => setState(fn);
@@ -32,9 +32,9 @@ class _FactorScoreState extends State<FactorScoreScreen> {
   @override
   Widget build(BuildContext context) {
     Map arg = ModalRoute.of(context).settings.arguments;
-    _factorList ??= arg[Constant.ARG_FACTORS];
+    _scoreMap ??= arg[Constant.ARG_FACTOR_SCORE_MAP];
+    _totalScore ??= arg[Constant.ARG_FACTOR_SCORE_TOTAL];
     user ??= arg[Constant.ARG_USER];
-    con._buildScoreMap();
     return Scaffold(
       appBar: AppBar(title: Text('Factor Scores')),
       body: SingleChildScrollView(
@@ -49,9 +49,10 @@ class _FactorScoreState extends State<FactorScoreScreen> {
                   itemCount: _scoreMap.length,
                   itemBuilder: (BuildContext context, index) => Container(
                     child: ListTile(
-                      title: Text(_scoreMap.keys.elementAt(index).toString()),
+                      title:
+                          Text("${_labelMap[_scoreMap.keys.elementAt(index)]}"),
                       subtitle: Text(
-                          "Score: ${_scoreMap[_scoreMap.keys.elementAt(index)]}"),
+                          "Score: ${_scoreMap[_scoreMap.keys.elementAt(index)].toString()}"),
                     ),
                   ),
                 ),
@@ -72,12 +73,13 @@ class _Controller {
   _FactorScoreState _state;
   _Controller(this._state);
 
-  void _buildScoreMap() {
-    _state._factorList.forEach((factor) {
-      if (!_state._scoreMap.keys.contains(factor.listType))
-        _state._scoreMap[factor.listType] = 0;
-      _state._scoreMap[factor.listType] += factor.score;
-      _state._totalScore += factor.score;
-    });
+  void _buildLabelMap() {
+    _state._labelMap = Map<ListType, String>();
+    _state._labelMap[ListType.MedicalHistory] = "Medical History";
+    _state._labelMap[ListType.PsychHistory] = "Psychiatric History";
+    _state._labelMap[ListType.RiskFactors] = "Risk Factors";
+    _state._labelMap[ListType.MitigationFactors] = "Mitigation Factors";
+    _state._labelMap[ListType.CopingStrategies] = "Coping Strategies";
+    _state._labelMap[ListType.WarningSigns] = "Warning Signs";
   }
 }

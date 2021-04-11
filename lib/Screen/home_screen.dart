@@ -3,6 +3,7 @@ import 'package:Capstone/Model/appointment.dart';
 import 'package:Capstone/Model/constant.dart';
 import 'package:Capstone/Model/contact.dart';
 import 'package:Capstone/Model/factor.dart';
+import 'package:Capstone/Model/factor_score_calculator.dart';
 import 'package:Capstone/Model/location.dart';
 import 'package:Capstone/Model/medication.dart';
 import 'package:Capstone/Model/notification_settings.dart';
@@ -261,6 +262,10 @@ class _Controller {
         _state.textContentList.forEach((t) {
           buttons.add(_textContentButton(() => vaultContentRoute(t), t));
         });
+        if (buttons.length == 0)
+          buttons.add(Text(
+              "Use the button in the app bar to add items to your vault!"));
+        break;
       /*
         buttons.add(_screenButton(() => vaultContentRoute(),
             FaIcon(FontAwesomeIcons.notesMedical), "Add Text Content"));
@@ -521,12 +526,15 @@ class _Controller {
   }
 
   void factorScoreRoute() async {
-    List<Factor> factorList =
-        await FirebaseController.getAllFactors(_state.user.email);
+    FactorScoreCalculator calculator = FactorScoreCalculator();
+    Map<ListType, int> scoreMap =
+        await calculator.getScoreMap(_state.user.email);
+    int totalScore = await calculator.getTotalScore(_state.user.email);
     Navigator.pushNamed(_state.context, FactorScoreScreen.routeName,
         arguments: {
           Constant.ARG_USER: _state.user,
-          Constant.ARG_FACTORS: factorList,
+          Constant.ARG_FACTOR_SCORE_MAP: scoreMap,
+          Constant.ARG_FACTOR_SCORE_TOTAL: totalScore,
         });
   }
 }

@@ -100,13 +100,13 @@ class _Controller {
       return; //If invalid, return
     }
     _state.formKey.currentState.save();
-    if (_state.textContent == null) {
+    if (_state.textContent.docID == null) {
       var c = TextContent(
         title: title,
         content: content,
         email: _state.user.email,
       );
-      _state.textContentList.add(c);
+      //_state.textContentList.add(c);
       try {
         await FirebaseController.addTextContent(c);
       } catch (e) {

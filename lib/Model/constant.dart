@@ -9,6 +9,8 @@ class Constant {
   static const ARG_FACTORS = 'factors';
   static const ARG_FACTOR = 'factor';
   static const ARG_FACTOR_TITLE = 'factorTitle';
+  static const ARG_FACTOR_SCORE_MAP = 'factorScoreMap';
+  static const ARG_FACTOR_SCORE_TOTAL = 'factorScoreTotal';
 
   //Calendar and Appointment screens
   static const ARG_APPOINTMENT = 'appointment'; //Single appt to view or edit

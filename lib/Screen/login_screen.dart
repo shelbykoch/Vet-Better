@@ -33,15 +33,15 @@ class _LoginScreenState extends State<LoginScreen> {
   var formKey = GlobalKey<FormState>();
   TextEditingController _textContoller;
   final FirebaseAuth auth = FirebaseAuth.instance;
-  User user;
 
   _LoginScreenState() {
     con = _Controller(this);
-    user = auth.currentUser;
-    print("user: ${user}");
-    _textContoller = new TextEditingController();
-    con._configureDidReceiveLocalNotificationSubject();
-    con._configureSelectNotificationSubject();
+    final User user = auth.currentUser;
+    if (user != null) {
+      con._configureDidReceiveLocalNotificationSubject();
+      con._configureSelectNotificationSubject();
+    }
+    
   }
 
   void render(fn) => setState(fn);
@@ -197,12 +197,10 @@ class _Controller {
     for (Medication med in medication) {
       // Reminder to call your doctor when renewal is needed.
       if (now.isAfter(med.renewalDate) == true) {
-        print(" renewalDate: ${med.renewalDate}");
         await NotificationController.renewalNotifications(email);
       }
       // Reminder to refill a prescription.
       if (now.isAfter(med.refillDate) == true) {
-        print("refillDate: ${med.refillDate}");
         await NotificationController.refillNotifications(email);
       }
     }
@@ -211,7 +209,6 @@ class _Controller {
         await FirebaseController.getAppointmentList(email);
     for (Appointment appt in appointments) {
       if (now.isAfter(appt.apptReminderDate) == true) {
-        print("apptReminderDate: ${appt.apptReminderDate}");
         await NotificationController.apptNotifications(email);
       }
     }
@@ -268,7 +265,7 @@ class _Controller {
   void _configureSelectNotificationSubject() async {
     final FirebaseAuth auth = FirebaseAuth.instance;
     final User user = auth.currentUser;
-    if (user != null) print("user: ${user.email}");
+
     selectNotificationSubject.stream.listen((String payload) async {
       await Navigator.pushNamed(state.context, HomeScreen.routeName,
           arguments: {Constant.ARG_USER: user});

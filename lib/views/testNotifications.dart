@@ -39,7 +39,7 @@ class ReceivedNotification {
   final int id;
   final String title;
   final String body;
-  final String payload;
+  String payload;
 }
 
 String selectedNotificationPayload;

@@ -48,8 +48,15 @@ class _DailyQuestionsState extends State<DailyQuestionsScreen> {
         leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () => {
-                  Navigator.pushNamed(context, HomeScreen.routeName,
-                      arguments: {Constant.ARG_USER: user}),
+                if (_payload == null) {
+                print("push"),
+                Navigator.pushNamed(context, HomeScreen.routeName, arguments: {
+                  Constant.ARG_USER: user,
+                })
+              } else {
+                print("pop"),
+                Navigator.pop(context)
+              }
             },
       ),
       ),
@@ -106,25 +113,5 @@ class _Controller {
   }
 }
 
-//  PaddedRaisedButton(
-//   buttonText:
-//       'Schedule notification to appear in 5 seconds based '
-//       'on local time zone',
-//   onPressed: () async {
-//     await con._zonedScheduleNotification();
-//   },
-// ),
 
-// Future<void> _zonedScheduleNotification() async {
-//   await flutterLocalNotificationsPlugin.zonedSchedule(
-//       0,
-//       'Reminder',
-//       'Take your pillz!',
-//       tz.TZDateTime.now(tz.local).add(const Duration(seconds: 1)),
-//       const NotificationDetails(
-//           android: AndroidNotificationDetails('your channel id',
-//               'your channel name', 'your channel description')),
-//       androidAllowWhileIdle: true,
-//       uiLocalNotificationDateInterpretation:
-//           UILocalNotificationDateInterpretation.absoluteTime);
-// }
+

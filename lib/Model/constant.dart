@@ -17,6 +17,7 @@ class Constant {
   //Medication screen
   static const ARG_MEDICATION_LIST = 'medicationList';
   static const ARG_MEDICATION_INFO = 'medicationInfo';
+  static const ARG_ADD_OR_EDIT = 'addOrEdit';
   //Contacts
   static const ARG_CONTACT = 'contact';
   static const ARG_CONTACT_LIST = 'contacts';
@@ -30,7 +31,6 @@ class Constant {
   //Notifications
   static const ARG_NOTIFICATION_SETTINGS = 'notificationSettings';
   static const ARG_PAYLOAD = 'payload';
-  static const ARG_CAMEFROMSCREEN = 'cameFromeScreen';
 
   //Social Activities screens
   static const ARG_CONTACTS = 'contacts';

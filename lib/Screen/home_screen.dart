@@ -14,6 +14,7 @@ import 'package:Capstone/Model/social_activity.dart';
 import 'package:Capstone/Screen/Social%20Activities/socialActivity_screen.dart';
 import 'package:Capstone/Screen/factor_screen.dart';
 import 'package:Capstone/Screen/login_screen.dart';
+
 import 'package:Capstone/Screen/myMedication_screen.dart';
 import 'package:Capstone/Screen/notificationsettings_screen.dart';
 import 'package:Capstone/Screen/personal_info_screen.dart';
@@ -51,18 +52,17 @@ class _UserHomeState extends State<HomeScreen> {
   List<Question> questionList;
   List<NotificationSettings> settings;
 
-
   @override
   void initState() {
     super.initState();
-    user = auth.currentUser;
-    print("user homeScreen: ${user}");
+    //final User user = auth.currentUser;
     con = _Controller(this);
     con._buildButtonList();
-    print('initState payload: ${_payload}');
     _payload = widget.payload;
-    con.notificationRoute(_payload, user);
-    con._buildButtonList();
+    if (_payload != 'new payload') {
+      print('new payload');
+      con.notificationRoute(_payload);
+    }
   }
 
   void render(fn) => setState(fn);
@@ -94,9 +94,8 @@ class _UserHomeState extends State<HomeScreen> {
                   leading: Icon(Icons.exit_to_app),
                   title: Text('Sign Out'),
                   onTap: () => {
-                        print("pressing signOut"),
+                        Navigator.of(context).pop(),
                         con.signOut(),
-                        print("button pressed")
                       }),
               ListTile(
                 leading: Icon(Icons.settings),
@@ -330,7 +329,7 @@ class _Controller {
   void dailyQuestionsRoute() async {
     _state._payload = null;
     final FirebaseAuth auth = FirebaseAuth.instance;
-    User user = auth.currentUser;
+    final User user = auth.currentUser;
     if (user != null)
       print("user: ${user.email}");
     else {
@@ -341,11 +340,13 @@ class _Controller {
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
     tz.TZDateTime newDay = tz.TZDateTime(
         tz.local, now.year, now.month, now.day, now.hour, now.minute, 30);
-    if (newDay.isAfter(now)) {
-      for (Question q in _state.questionList)
-        FirebaseController.deleteQuestion(q.docId);
-    }
 
+    if (newDay.isAfter(now)) {
+      if (_state.questionList != null) {
+        for (Question q in _state.questionList)
+          FirebaseController.deleteQuestion(q.docId);
+      }
+    }
     if (_state.questionList == null) {
       List<Question> questionList = new List<Question>();
       questionList = Question.getDailyQuestions(_state.user.email);
@@ -367,10 +368,7 @@ class _Controller {
     }
   }
 
-  void notificationRoute(payload, user) {
-    if (user == null) {
-      payload = null;
-    }
+  void notificationRoute(payload) {
     print('payload notificationRoute: ${payload}');
     if (payload == 'daily questions') dailyQuestionsRoute();
     if (payload == 'medication') {
@@ -405,12 +403,6 @@ class _Controller {
   //------------------------APP TRAY ROUTING--------------------------//
 
   void signOut() async {
-    print("signing out");
-    final user = _state.auth.currentUser;
-    if (user != null)
-      print("user sighnOut: ${user}");
-    else
-      print("user is null");
     try {
       await FirebaseController.signOut();
     } catch (e) {
@@ -418,6 +410,8 @@ class _Controller {
     }
     // Navigator.of(_state.context).pop(); //Close app drawer
     // Navigator.of(_state.context).pop(); //Close home screen
+    print('${_state.widget.payload}');
+    Navigator.pop(_state.context);
     Navigator.pushNamed(_state.context, LoginScreen.routeName);
   }
 

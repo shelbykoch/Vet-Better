@@ -99,17 +99,20 @@ class _MyMedicationState extends State<MyMedicationScreen> {
 class _Controller {
   _MyMedicationState _state;
   _Controller(this._state);
+  String addOrEdit;
 
   void editMedicationInfoRoute(int index) async {
     // First we will load the medication info associated with the account to pass to the screen
     // if it doesn't exist in the database we will created a new one and append
     // the email then pass to the screen
+    addOrEdit = 'edit';
     List<Medication> medicationList =
         await FirebaseController.getMedicationList(_state.user.email);
 
     Navigator.pushNamed(_state.context, EditMedScreen.routeName, arguments: {
       Constant.ARG_USER: _state.user,
       Constant.ARG_MEDICATION_INFO: medicationList[index],
+      Constant.ARG_ADD_OR_EDIT: addOrEdit,
     });
   }
 
@@ -118,8 +121,11 @@ class _Controller {
     // if it doesn't exist in the database we will created a new one and append
     // the email then pass to the screen
     // await FirebaseController.getMedicationList(_state.user.email);
+    addOrEdit = 'add';
     Navigator.pushNamed(_state.context, EditMedScreen.routeName, arguments: {
       Constant.ARG_USER: _state.user,
+      Constant.ARG_ADD_OR_EDIT: addOrEdit,
+      
     });
   }
 

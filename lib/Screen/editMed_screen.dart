@@ -25,6 +25,7 @@ class _EditMedState extends State<EditMedScreen> {
   DatePicker picker;
   int chosenTimesDaily;
   int chosenRefillsLeft;
+  String addOrEdit;
 
   var formKey = GlobalKey<FormState>();
 
@@ -40,6 +41,7 @@ class _EditMedState extends State<EditMedScreen> {
     Map args = ModalRoute.of(context).settings.arguments;
     user ??= args[Constant.ARG_USER];
     medicationInfo ??= args[Constant.ARG_MEDICATION_INFO];
+    addOrEdit ??= args[Constant.ARG_ADD_OR_EDIT];
     medicationInfo != null
         ? dateTimeController = TextEditingController(
             text: medicationInfo.refillDate != null
@@ -49,7 +51,7 @@ class _EditMedState extends State<EditMedScreen> {
     if (medicationInfo == null) medicationInfo = new Medication();
     return Scaffold(
       appBar: AppBar(
-        title: Text("Add Medication"),
+        title: addOrEdit == 'add' ? Text("Add Medication") : Text("Edit Mediction"),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.delete),

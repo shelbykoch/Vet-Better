@@ -34,7 +34,7 @@ class TextContent {
       docID: docID,
       email: data[TextContent.EMAIL],
       content: data[TextContent.CONTENT],
-      title: data[TextContent.CONTENT],
+      title: data[TextContent.TITLE],
     );
   }
 

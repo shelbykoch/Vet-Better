@@ -117,6 +117,23 @@ class FirebaseController {
         .delete();
   }
 
+  //Returns all factors to tabulate score
+  static Future<List<Factor>> getAllFactors(String email) async {
+    QuerySnapshot query = await FirebaseFirestore.instance
+        .collection(Factor.COLLECTION)
+        .where(Factor.EMAIL, isEqualTo: email)
+        .orderBy(Factor.NAME)
+        .get();
+
+    List<Factor> result = List<Factor>();
+    if (query != null && query.size != 0) {
+      for (var doc in query.docs) {
+        result.add(Factor.deserialize(doc.data(), doc.id));
+      }
+    }
+    return result;
+  }
+
   //-----------------------CONTACTS-----------------------------//
   static Future<List<Contact>> getContactList(
       String email, ContactType type) async {
@@ -136,7 +153,7 @@ class FirebaseController {
       }
     } else if ((query == null || query.size == 0) &&
         type == ContactType.Personal) {
-      result = Contact.getDefaultReachOutList(email);
+      result = await Contact.getDefaultReachOutList(email);
     }
     return result;
   }
@@ -325,9 +342,9 @@ class FirebaseController {
   static Future<List<Picture>> getPictures(String email) async {
     print(email);
     QuerySnapshot query = await FirebaseFirestore.instance
-        .collection(TextContent.COLLECTION)
-        .where(TextContent.EMAIL, isEqualTo: email)
-        .orderBy(TextContent.TITLE)
+        .collection(Picture.COLLECTION)
+        .where(Picture.EMAIL, isEqualTo: email)
+        .orderBy(Picture.TITLE)
         .get();
 
     List<Picture> result = new List<Picture>();

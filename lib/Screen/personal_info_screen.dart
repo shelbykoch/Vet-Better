@@ -1,6 +1,7 @@
 import 'package:Capstone/Controller/firebase_controller.dart';
 import 'package:Capstone/Model/constant.dart';
 import 'package:Capstone/Model/personal_Info.dart';
+import 'package:Capstone/Model/personal_info_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -53,33 +54,22 @@ class _PersonalInfoState extends State<PersonalInfoScreen> {
                   keyboardType: TextInputType.emailAddress,
                   onSaved: con.saveName,
                   validator: con.validatorName,
-                  initialValue: personalInfo == null
-                          ? null
-                          : personalInfo.name,
+                  initialValue: personalInfo == null ? null : personalInfo.name,
                 ),
                 TextFormField(
                   decoration: InputDecoration(
                     hintText: 'Age',
                   ),
                   onSaved: con.saveAge,
-                  initialValue: personalInfo == null
-                          ? null
-                          : personalInfo.age,
+                  initialValue: personalInfo == null ? null : personalInfo.age,
                 ),
                 DropdownButton<String>(
                   focusColor: Colors.white,
                   value: chosenGender,
                   //elevation: 5,
                   iconEnabledColor: Colors.white,
-                  items: <String>[
-                    'Male',
-                    'Female',
-                    'Transgender',
-                    'Gender Neutral',
-                    'Non-binary',
-                    'Pangender',
-                    'Other',
-                  ].map<DropdownMenuItem<String>>((String value) {
+                  items: PersonalInfoOptions.genderMap.values
+                      .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
                       child: SizedBox(
@@ -92,8 +82,7 @@ class _PersonalInfoState extends State<PersonalInfoScreen> {
                     );
                   }).toList(),
                   hint: personalInfo.gender == null
-                      ?
-                       Text(
+                      ? Text(
                           "Gender",
                         )
                       : Text(personalInfo.gender,
@@ -112,14 +101,8 @@ class _PersonalInfoState extends State<PersonalInfoScreen> {
                   value: chosenOrientaion,
                   //elevation: 5,
                   iconEnabledColor: Colors.white,
-                  items: <String>[
-                    'Heterosexual',
-                    'Gay/Lesbian',
-                    'Bisexual',
-                    'Pansexual',
-                    'Asexual',
-                    'Other',
-                  ].map<DropdownMenuItem<String>>((String value) {
+                  items: PersonalInfoOptions.sexualPreferenceMap.values
+                      .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
                       child: SizedBox(
@@ -151,15 +134,8 @@ class _PersonalInfoState extends State<PersonalInfoScreen> {
                   value: chosenReligion,
                   //elevation: 5,
                   iconEnabledColor: Colors.white,
-                  items: <String>[
-                    'Christianity',
-                    'Islam',
-                    'Judaism',
-                    'Hinduism',
-                    'Buddism',
-                    'Secular/Nonreligious/Agnostic/Athiest',
-                    'Other',
-                  ].map<DropdownMenuItem<String>>((String value) {
+                  items: PersonalInfoOptions.religiousAffiliationMap.values
+                      .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
                       child: SizedBox(
@@ -172,8 +148,7 @@ class _PersonalInfoState extends State<PersonalInfoScreen> {
                     );
                   }).toList(),
                   hint: personalInfo.religiousAffiliation == null
-                      ? 
-                      Text(
+                      ? Text(
                           "Religious Affiliation",
                         )
                       : Text(personalInfo.religiousAffiliation,
@@ -192,11 +167,8 @@ class _PersonalInfoState extends State<PersonalInfoScreen> {
                   value: chosenMilitary,
                   //elevation: 5,
                   iconEnabledColor: Colors.white,
-                  items: <String>[
-                    '1-5 years',
-                    '6-10 years',
-                    '10+ years',
-                  ].map<DropdownMenuItem<String>>((String value) {
+                  items: PersonalInfoOptions.militaryHistoryMap.values
+                      .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
                       child: SizedBox(
@@ -209,8 +181,7 @@ class _PersonalInfoState extends State<PersonalInfoScreen> {
                     );
                   }).toList(),
                   hint: personalInfo.veteranStatus == null
-                      ? 
-                      Text(
+                      ? Text(
                           "Military History",
                         )
                       : Text(personalInfo.veteranStatus,

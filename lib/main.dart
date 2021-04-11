@@ -26,13 +26,12 @@ import 'Screen/factor_edit_screen.dart';
 import 'Screen/login_screen.dart';
 import 'Screen/home_screen.dart';
 import 'Screen/factor_screen.dart';
+import 'Screen/factor_score_screen.dart';
 import 'Screen/myMedication_screen.dart';
 import 'Screen/personal_info_screen.dart';
 import 'Screen/contact_list_screen.dart';
 import 'Screen/contact_edit_screen.dart';
 import 'Screen/picture_add_screen.dart';
-import 'Screen/picture_add_screen.dart';
-import 'Screen/text_content_add_screen.dart';
 import 'Screen/text_content_add_screen.dart';
 
 Future<void> main() async {
@@ -116,6 +115,7 @@ class MyApp extends StatelessWidget {
         SocialActivityScreen.routeName: (context) => SocialActivityScreen(),
         TextContentAddScreen.routeName: (context) => TextContentAddScreen(),
         PictureAddScreen.routeName: (context) => PictureAddScreen(),
+        FactorScoreScreen.routeName: (context) => FactorScoreScreen(),
       },
     );
   }

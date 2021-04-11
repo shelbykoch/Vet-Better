@@ -363,6 +363,7 @@ class _Controller {
           });
     }
   }
+
   void socialActRoute() async {
     //Request data from database.
     //If Firebase doesn't find the collection then an new version is returned

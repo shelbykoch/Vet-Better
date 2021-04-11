@@ -1,3 +1,4 @@
+import '../Controller/firebase_controller.dart';
 import 'activity.dart';
 import 'contact.dart';
 import 'location.dart';
@@ -27,20 +28,24 @@ class SocialActivity {
     return <String, dynamic>{
       EMAIL: email,
       NAME: name,
-      CONTACT: contact.serialize(),
-      ACTIVITY: activity.serialize(),
-      LOCATION: location.serialize(),
+      CONTACT: contact.docID,
+      ACTIVITY: activity.docID,
+      LOCATION: location.docID,
     };
   }
 
-  static SocialActivity deserialize(Map<String, dynamic> data, String docId) {
+  static SocialActivity deserialize(
+      Map<String, dynamic> data, String docId) async {
     return SocialActivity(
       docID: docId,
       email: data[SocialActivity.EMAIL],
       name: data[SocialActivity.NAME],
-      contact: data[SocialActivity.CONTACT],
-      activity: data[SocialActivity.ACTIVITY],
-      location: data[SocialActivity.LOCATION],
+      contact:
+          await FirebaseController.getContact(data[SocialActivity.CONTACT]),
+      activity:
+          await FirebaseController.getActivity(data[SocialActivity.ACTIVITY]),
+      location:
+          await FirebaseController.getLocation(data[SocialActivity.LOCATION]),
     );
   }
 

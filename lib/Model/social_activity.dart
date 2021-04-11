@@ -34,18 +34,17 @@ class SocialActivity {
     };
   }
 
-  static SocialActivity deserialize(
-      Map<String, dynamic> data, String docId) async {
+  static SocialActivity deserialize(Map<String, dynamic> data, String docId) {
     return SocialActivity(
       docID: docId,
       email: data[SocialActivity.EMAIL],
       name: data[SocialActivity.NAME],
-      contact:
-          await FirebaseController.getContact(data[SocialActivity.CONTACT]),
-      activity:
-          await FirebaseController.getActivity(data[SocialActivity.ACTIVITY]),
-      location:
-          await FirebaseController.getLocation(data[SocialActivity.LOCATION]),
+      contact: null,
+      //await FirebaseController.getContact(data[SocialActivity.CONTACT]),
+      activity: null,
+      //await FirebaseController.getActivity(data[SocialActivity.ACTIVITY]),
+      location: null,
+      //await FirebaseController.getLocation(data[SocialActivity.LOCATION]),
     );
   }
 

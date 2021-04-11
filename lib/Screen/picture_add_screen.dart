@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:Capstone/Controller/firebase_controller.dart';
 import 'package:Capstone/Model/constant.dart';
 import 'package:Capstone/Model/picture.dart';
-import 'package:Capstone/Model/picture.dart';
 import 'package:Capstone/views/mydialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -59,6 +58,11 @@ class _PictureAddState extends State<PictureAddScreen> {
           child: SingleChildScrollView(
             child: Column(
               children: <Widget>[
+                SizedBox(
+                  height: 20.0,
+                ),
+                Text(
+                    'Add your favorite pictures, inspiring content, or whatever makes you happy!'),
                 Stack(
                   children: <Widget>[
                     Container(

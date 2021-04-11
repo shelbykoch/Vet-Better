@@ -53,6 +53,15 @@ class _SocialActivityEditState extends State<SocialActivityEditScreen> {
     activities ??= arg[Constant.ARG_ACTIVITIES];
     locations ??= arg[Constant.ARG_LOCATIONS];
 
+    if (con.dropdownValueContacts == null) {
+      con.dropdownValueContacts = socialActivity.contact;
+    }
+    if (con.dropdownValueActivities == null) {
+      con.dropdownValueActivities = socialActivity.activity;
+    }
+    if (con.dropdownValueLocations == null) {
+      con.dropdownValueLocations = socialActivity.location;
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit ${socialActivity.name}'),

@@ -23,8 +23,6 @@ class SocialActivityAddScreen extends StatefulWidget {
   }
 }
 
-enum SeverityLevel { moderate, severe }
-
 class _SocialActivityAddState extends State<SocialActivityAddScreen> {
   _Controller con;
   User user;
@@ -254,9 +252,6 @@ class _Controller {
   _SocialActivityAddState _state;
   _Controller(this._state);
   String name;
-  // Contact contact;
-  // Activity activity;
-  // Location location;
   Contact dropdownValueContacts;
   Activity dropdownValueActivities;
   Location dropdownValueLocations;
@@ -437,8 +432,9 @@ class _Controller {
       MyDialog.info(
         context: _state.context,
         title: 'Error',
-        content: e,
+        content: e.toString(),
       );
+      return;
     }
     Navigator.pop(_state.context);
   }

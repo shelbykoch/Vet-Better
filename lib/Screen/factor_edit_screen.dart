@@ -22,7 +22,7 @@ class _FactorEditState extends State<FactorEditScreen> {
   List<Factor> factors;
   int index;
   String title;
-  SeverityLevel _character = SeverityLevel.moderate;
+  SeverityLevel _character;
   var formKey = GlobalKey<FormState>();
 
   @override
@@ -41,6 +41,12 @@ class _FactorEditState extends State<FactorEditScreen> {
     factors ??= arg[Constant.ARG_FACTORS];
     index ??= arg['index'];
     title ??= arg[Constant.ARG_FACTOR_TITLE];
+
+    if (_character == null) {
+      factor.score == 1
+          ? _character = SeverityLevel.moderate
+          : _character = SeverityLevel.severe;
+    }
 
     return Scaffold(
       appBar: AppBar(

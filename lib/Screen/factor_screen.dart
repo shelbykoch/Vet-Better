@@ -163,7 +163,7 @@ class _Controller {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text('${factor.description}'),
-                FlatButton(
+                ElevatedButton(
                   child: Text('Edit'),
                   onPressed: () => edit(index),
                 ),
@@ -194,7 +194,7 @@ class _Controller {
           ? Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                FlatButton(
+                ElevatedButton(
                   child: Text('Edit'),
                   onPressed: () => edit(index),
                 ),

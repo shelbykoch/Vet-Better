@@ -54,6 +54,9 @@ class _TextContentAddState extends State<TextContentAddScreen> {
           child: SingleChildScrollView(
             child: Column(
               children: <Widget>[
+                SizedBox(height: 20.0),
+                Text(
+                    'Add things like words of affirmation, words of encouragement, web links, or quotes.'),
                 TextFormField(
                   decoration: InputDecoration(
                     hintText: 'Title',

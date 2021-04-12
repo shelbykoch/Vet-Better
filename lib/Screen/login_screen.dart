@@ -196,22 +196,26 @@ class _Controller {
     var now = DateTime.now();
     List<Medication> medication =
         await FirebaseController.getMedicationList(email);
-    for (Medication med in medication) {
-      // Reminder to call your doctor when renewal is needed.
-      if (now.isAfter(med.renewalDate) == true) {
-        await NotificationController.renewalNotifications(email);
-      }
-      // Reminder to refill a prescription.
-      if (now.isAfter(med.refillDate) == true) {
-        await NotificationController.refillNotifications(email);
+    if (medication != null) {
+      for (Medication med in medication) {
+        // Reminder to call your doctor when renewal is needed.
+        if (now.isAfter(med.renewalDate) == true) {
+          await NotificationController.renewalNotifications(email);
+        }
+        // Reminder to refill a prescription.
+        if (now.isAfter(med.refillDate) == true) {
+          await NotificationController.refillNotifications(email);
+        }
       }
     }
     // Appointment reminders
     List<Appointment> appointments =
         await FirebaseController.getAppointmentList(email);
-    for (Appointment appt in appointments) {
-      if (now.isAfter(appt.apptReminderDate) == true) {
-        await NotificationController.apptNotifications(email);
+    if (appointments != null) {
+      for (Appointment appt in appointments) {
+        if (now.isAfter(appt.apptReminderDate) == true) {
+          await NotificationController.apptNotifications(email);
+        }
       }
     }
 
@@ -275,10 +279,15 @@ class _Controller {
 
   void getNotificationSettings(_user) async {
     print("get notification settings");
-    List<NotificationSettings> settings = new List<NotificationSettings>();
-      settings =
-          NotificationSettings.getNotificationSettings(_user.email);
-      for (NotificationSettings setting in settings)
-        await FirebaseController.addNotificationSetting(setting);
+    if (_user != null) {
+      List<NotificationSettings> settings =
+          await FirebaseController.getNotificationSettings(_user.email);
+      if (settings == null) {
+        List<NotificationSettings> settings = new List<NotificationSettings>();
+        settings = NotificationSettings.getNotificationSettings(_user.email);
+        for (NotificationSettings setting in settings)
+          await FirebaseController.addNotificationSetting(setting);
+      }
+    }
   }
 }

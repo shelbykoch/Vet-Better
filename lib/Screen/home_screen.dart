@@ -499,7 +499,6 @@ class _Controller {
     }
   }
 
-
   void notificationRoute(payload) {
     print('payload notificationRoute: ${payload}');
     if (payload == 'daily questions') dailyQuestionsRoute();
@@ -541,8 +540,10 @@ class _Controller {
     } catch (e) {
       //do nothing
     }
-    Navigator.of(_state.context).pop(); //Close app drawer
-    Navigator.of(_state.context).pop(); //Close home screen
+    // Navigator.of(_state.context).pop(); //Close app drawer
+    // Navigator.of(_state.context).pop(); //Close home screen
+    Navigator.pop(_state.context);
+    Navigator.pushNamed(_state.context, LoginScreen.routeName);
   }
 
   void notificationSettings() async {

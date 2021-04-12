@@ -65,7 +65,6 @@ class NotificationSettings {
         new NotificationSettings.standard(email, "Refill Notifications", 6, 0));
     settings.add(new NotificationSettings.standard(
         email, "Feel Good Vault Notifications", 7, 0));
-    print(" settings.length: $settings.length");
     return settings;
   }
 }

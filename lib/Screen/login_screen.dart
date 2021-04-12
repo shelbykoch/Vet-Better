@@ -191,51 +191,80 @@ class _Controller {
     }
     //-------------------Notifications-----------------------------//
     // Fire upon log in.
-    List<NotificationSettings> settings =
-        await FirebaseController.getNotificationSettings(email);
-    if (settings == null) {
-      List<NotificationSettings> settings = new List<NotificationSettings>();
-      for (NotificationSettings setting in settings)
-        await FirebaseController.addNotificationSetting(setting);
-      settings = await FirebaseController.getNotificationSettings(email);
-    }
     var testNow = DateTime.utc(2021, 5, 26);
-    //var now = DateTime.now();
-    List<Medication> medication =
-        await FirebaseController.getMedicationList(email);
-    if (medication != null) {
-      for (Medication med in medication) {
-        // Reminder to call your doctor when renewal is needed.
-        if (testNow.isAfter(med.renewalDate) == true) {
-          await NotificationController.renewalNotifications(email);
+    var now = DateTime.now();
+
+    List<NotificationSettings> settings =
+        await FirebaseController.getNotificationSettings(user.email);
+    try {
+      if (settings == null) {
+        print("settings are null");
+        List<NotificationSettings> settings = new List<NotificationSettings>();
+        settings = NotificationSettings.getNotificationSettings(user.email);
+        print("got settings, entering for loop...");
+        for (NotificationSettings setting in settings) {
+          await FirebaseController.addNotificationSetting(setting);
+          print("setting added");
         }
-        // Reminder to refill a prescription.
-        if (testNow.isAfter(med.refillDate) == true) {
-          await NotificationController.refillNotifications(email);
-        }
-      }
-    }
-    // Appointment reminders
-    List<Appointment> appointments =
-        await FirebaseController.getAppointmentList(email);
-    if (appointments != null) {
-      for (Appointment appt in appointments) {
-        if (testNow.isAfter(appt.apptReminderDate) == true) {
-          await NotificationController.apptNotifications(email);
+
+        settings = await FirebaseController.getNotificationSettings(user.email);
+        for (NotificationSettings setting in settings) {
+          print('setting: ${setting.notificationTitle}');
         }
       }
+    } catch (e) {
+      print("login error: $e");
     }
-    if (settings != null) {
-      // Feel Good Vault reminders
-      await NotificationController.vaultNotifications(user.email);
-      // Daily Questions reminder
-      await NotificationController.dailyQuestionsNotification(user.email);
-      // Medication reminders
-      await NotificationController.medicationNotification(user.email);
-      Navigator.pop(state.context); //dispose dialog
-      Navigator.pushNamed(state.context, HomeScreen.routeName,
-          arguments: {Constant.ARG_USER: user});
+    try {
+      List<Medication> medication =
+          await FirebaseController.getMedicationList(user.email);
+      if (medication != null) {
+        for (Medication med in medication) {
+          // Reminder to call your doctor when renewal is needed.
+          if (testNow.isAfter(med.renewalDate) == true) {
+            await NotificationController.renewalNotifications(user.email);
+          }
+          // Reminder to refill a prescription.
+          if (testNow.isAfter(med.refillDate) == true) {
+            await NotificationController.refillNotifications(user.email);
+          }
+        }
+      }
+    } catch (e) {
+      print("login error: $e");
     }
+
+    // try {
+    //   print("medication try");
+    //   // Appointment reminders
+    //   List<Appointment> appointments =
+    //       await FirebaseController.getAppointmentList(user.email);
+    //   print("${user.email}");
+    //   if (appointments.length != 0) {
+    //     print("appointment != null");
+    //     for (Appointment appt in appointments) {
+    //       print("appt: ${appt.title}");
+    //       if (testNow.isAfter(appt.apptReminderDate) == true) {
+    //         print("isAfter == true");
+    //         await NotificationController.apptNotifications(user.email);
+    //       }
+    //     }
+    //   }
+      if (settings != null) {
+        print("settings != null");
+        // Feel Good Vault reminders
+        await NotificationController.vaultNotifications(user.email);
+        // Daily Questions reminder
+        await NotificationController.dailyQuestionsNotification(user.email);
+        // Medication reminders
+        await NotificationController.medicationNotification(user.email);
+        Navigator.pop(state.context); //dispose dialog
+        Navigator.pushNamed(state.context, HomeScreen.routeName,
+            arguments: {Constant.ARG_USER: user});
+      }
+    // } catch (e) {
+    //   print("login error: $e");
+    // }
   }
 
   void resetPassword() async {

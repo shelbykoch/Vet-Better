@@ -196,9 +196,8 @@ class _Controller {
     if (settings == null) {
       List<NotificationSettings> settings = new List<NotificationSettings>();
       for (NotificationSettings setting in settings)
-          await FirebaseController.addNotificationSetting(setting);
-      settings =
-          await FirebaseController.getNotificationSettings(email);
+        await FirebaseController.addNotificationSetting(setting);
+      settings = await FirebaseController.getNotificationSettings(email);
     }
     var testNow = DateTime.utc(2021, 5, 26);
     //var now = DateTime.now();
@@ -226,16 +225,17 @@ class _Controller {
         }
       }
     }
-
-    // Feel Good Vault reminders
-    //await NotificationController.vaultNotifications(user.email);
-    // Daily Questions reminder
-    await NotificationController.dailyQuestionsNotification(user.email);
-    // Medication reminders
-    await NotificationController.medicationNotification(user.email);
-    Navigator.pop(state.context); //dispose dialog
-    Navigator.pushNamed(state.context, HomeScreen.routeName,
-        arguments: {Constant.ARG_USER: user});
+    if (settings != null) {
+      // Feel Good Vault reminders
+      await NotificationController.vaultNotifications(user.email);
+      // Daily Questions reminder
+      await NotificationController.dailyQuestionsNotification(user.email);
+      // Medication reminders
+      await NotificationController.medicationNotification(user.email);
+      Navigator.pop(state.context); //dispose dialog
+      Navigator.pushNamed(state.context, HomeScreen.routeName,
+          arguments: {Constant.ARG_USER: user});
+    }
   }
 
   void resetPassword() async {

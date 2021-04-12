@@ -283,11 +283,6 @@ class _Controller {
           buttons.add(Text(
               "Use the button in the app bar to add items to your vault!"));
         break;
-      /*
-        buttons.add(_screenButton(() => vaultContentRoute(),
-            FaIcon(FontAwesomeIcons.notesMedical), "Add Text Content"));
-        buttons.add(_screenButton(() => vaultPictureRoute(),
-            FaIcon(FontAwesomeIcons.photoVideo), "Add Picture"));
     }
     return buttons;
   }
@@ -347,7 +342,7 @@ class _Controller {
     //Request pics from database.
     //If Firebase doesn't find the collection then an new version is returned
     //List<Picture> pictures =
-       // await FirebaseController.getPictures(_state.user.email);
+    // await FirebaseController.getPictures(_state.user.email);
     Navigator.pushNamed(_state.context, PictureAddScreen.routeName, arguments: {
       Constant.ARG_USER: _state.user,
       Constant.ARG_PICTURE: p,
@@ -410,10 +405,10 @@ class _Controller {
       List<Appointment> appointments =
           await FirebaseController.getAppointmentList(user.email);
 
-    Navigator.pushNamed(_state.context, CalendarScreen.routeName, arguments: {
-      Constant.ARG_USER: user,
-      Constant.ARG_APPOINTMENTS: appointments,
-    });
+      Navigator.pushNamed(_state.context, CalendarScreen.routeName, arguments: {
+        Constant.ARG_USER: user,
+        Constant.ARG_APPOINTMENTS: appointments,
+      });
     }
   }
 
@@ -503,6 +498,7 @@ class _Controller {
           });
     }
   }
+
   void notificationRoute(payload) {
     print('payload notificationRoute: ${payload}');
     if (payload == 'daily questions') dailyQuestionsRoute();
@@ -513,6 +509,7 @@ class _Controller {
     if (payload == 'appointment') calendarRoute();
     if (payload == 'new payload') return;
   }
+
   void socialActRoute() async {
     //Request data from database.
     //If Firebase doesn't find the collection then an new version is returned

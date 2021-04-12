@@ -1,9 +1,6 @@
 import 'package:Capstone/Controller/firebase_controller.dart';
-import 'package:Capstone/Model/activity.dart';
 import 'package:Capstone/Model/constant.dart';
-import 'package:Capstone/Model/contact.dart';
 import 'package:Capstone/Model/location.dart';
-import 'package:Capstone/Model/social_activity.dart';
 import 'package:Capstone/views/mydialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -19,11 +16,6 @@ class LocationEditScreen extends StatefulWidget {
 class _LocationEditState extends State<LocationEditScreen> {
   _Controller con;
   User user;
-  SocialActivity socialActivity;
-  List<SocialActivity> socialActivities;
-  List<Contact> contacts;
-  List<Activity> activities;
-  List<Location> locations;
   Location location;
   var formKey = GlobalKey<FormState>();
 
@@ -39,10 +31,6 @@ class _LocationEditState extends State<LocationEditScreen> {
   Widget build(BuildContext context) {
     Map arg = ModalRoute.of(context).settings.arguments;
     user ??= arg[Constant.ARG_USER];
-    socialActivities ??= arg[Constant.ARG_SOCIALACTIVITIES];
-    contacts ??= arg[Constant.ARG_CONTACTS];
-    activities ??= arg[Constant.ARG_ACTIVITIES];
-    locations ??= arg[Constant.ARG_LOCATIONS];
     location ??= arg[Constant.ARG_LOCATION];
 
     return Scaffold(

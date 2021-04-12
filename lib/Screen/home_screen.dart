@@ -288,7 +288,6 @@ class _Controller {
             FaIcon(FontAwesomeIcons.notesMedical), "Add Text Content"));
         buttons.add(_screenButton(() => vaultPictureRoute(),
             FaIcon(FontAwesomeIcons.photoVideo), "Add Picture"));
-          */
     }
     return buttons;
   }
@@ -347,9 +346,8 @@ class _Controller {
   void vaultPictureRoute(Picture p) async {
     //Request pics from database.
     //If Firebase doesn't find the collection then an new version is returned
-
     //List<Picture> pictures =
-    //  await FirebaseController.getPictures(_state.user.email);
+       // await FirebaseController.getPictures(_state.user.email);
     Navigator.pushNamed(_state.context, PictureAddScreen.routeName, arguments: {
       Constant.ARG_USER: _state.user,
       Constant.ARG_PICTURE: p,

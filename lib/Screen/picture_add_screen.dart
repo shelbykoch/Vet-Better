@@ -58,6 +58,11 @@ class _PictureAddState extends State<PictureAddScreen> {
           child: SingleChildScrollView(
             child: Column(
               children: <Widget>[
+                SizedBox(
+                  height: 20.0,
+                ),
+                Text(
+                    'Add your favorite pictures, inspiring content, or whatever makes you happy!'),
                 Stack(
                   children: <Widget>[
                     Container(

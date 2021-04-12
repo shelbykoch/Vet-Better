@@ -152,12 +152,6 @@ class _Controller {
       );
     }
     Navigator.pop(_state.context);
-    Navigator.pushReplacementNamed(_state.context, FactorScreen.routeName,
-        arguments: {
-          Constant.ARG_USER: _state.user,
-          Constant.ARG_FACTORS: _state.factors,
-          Constant.ARG_FACTOR_TITLE: _state.title,
-        });
   }
 
   String validatorName(String value) {

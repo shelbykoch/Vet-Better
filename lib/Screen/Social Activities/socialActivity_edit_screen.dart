@@ -53,6 +53,15 @@ class _SocialActivityEditState extends State<SocialActivityEditScreen> {
     activities ??= arg[Constant.ARG_ACTIVITIES];
     locations ??= arg[Constant.ARG_LOCATIONS];
 
+    if (con.dropdownValueContacts == null) {
+      con.dropdownValueContacts = socialActivity.contact;
+    }
+    if (con.dropdownValueActivities == null) {
+      con.dropdownValueActivities = socialActivity.activity;
+    }
+    if (con.dropdownValueLocations == null) {
+      con.dropdownValueLocations = socialActivity.location;
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit ${socialActivity.name}'),
@@ -253,9 +262,9 @@ class _Controller {
   _SocialActivityEditState _state;
   _Controller(this._state);
   String name;
-  Contact contact;
-  Activity activity;
-  Location location;
+  // Contact contact;
+  // Activity activity;
+  // Location location;
   Contact dropdownValueContacts;
   Activity dropdownValueActivities;
   Location dropdownValueLocations;
@@ -443,9 +452,9 @@ class _Controller {
     _state.formKey.currentState.save();
 
     _state.socialActivity.name = name;
-    _state.socialActivity.contact = contact;
-    _state.socialActivity.activity = activity;
-    _state.socialActivity.location = location;
+    _state.socialActivity.contact = dropdownValueContacts;
+    _state.socialActivity.activity = dropdownValueActivities;
+    _state.socialActivity.location = dropdownValueLocations;
 
     try {
       await FirebaseController.updateSocialActivity(_state.socialActivity);
@@ -453,8 +462,9 @@ class _Controller {
       MyDialog.info(
         context: _state.context,
         title: 'Error',
-        content: e.message ?? e.toString(),
+        content: e.toString(),
       );
+      return;
     }
     Navigator.pop(_state.context);
   }

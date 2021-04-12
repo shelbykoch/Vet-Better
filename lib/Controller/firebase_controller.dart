@@ -135,6 +135,15 @@ class FirebaseController {
   }
 
   //-----------------------CONTACTS-----------------------------//
+  static Future<Contact> getContact(String docid) async {
+    DocumentSnapshot doc = await FirebaseFirestore.instance
+        .collection(Contact.COLLECTION)
+        .doc(docid)
+        .get();
+
+    return Contact.deserialize(doc.data(), docid);
+  }
+
   static Future<List<Contact>> getContactList(
       String email, ContactType type) async {
     print(email);
@@ -180,6 +189,15 @@ class FirebaseController {
   }
 
   //-----------------------ACTIVITIES-----------------------------//
+  static Future<Activity> getActivity(String docid) async {
+    DocumentSnapshot doc = await FirebaseFirestore.instance
+        .collection(Activity.COLLECTION)
+        .doc(docid)
+        .get();
+
+    return Activity.deserialize(doc.data(), docid);
+  }
+
   static Future<List<Activity>> getActivityList(String email) async {
     print(email);
     QuerySnapshot query = await FirebaseFirestore.instance
@@ -219,6 +237,15 @@ class FirebaseController {
   }
 
   //-----------------------LOCATIONS-----------------------------//
+  static Future<Location> getLocation(String docid) async {
+    DocumentSnapshot doc = await FirebaseFirestore.instance
+        .collection(Location.COLLECTION)
+        .doc(docid)
+        .get();
+
+    return Location.deserialize(doc.data(), docid);
+  }
+
   static Future<List<Location>> getLocationList(String email) async {
     print(email);
     QuerySnapshot query = await FirebaseFirestore.instance

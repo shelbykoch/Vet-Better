@@ -1,3 +1,4 @@
+import '../Controller/firebase_controller.dart';
 import 'activity.dart';
 import 'contact.dart';
 import 'location.dart';
@@ -27,9 +28,9 @@ class SocialActivity {
     return <String, dynamic>{
       EMAIL: email,
       NAME: name,
-      CONTACT: contact,
-      ACTIVITY: activity,
-      LOCATION: location,
+      CONTACT: contact.docID,
+      ACTIVITY: activity.docID,
+      LOCATION: location.docID,
     };
   }
 
@@ -38,9 +39,12 @@ class SocialActivity {
       docID: docId,
       email: data[SocialActivity.EMAIL],
       name: data[SocialActivity.NAME],
-      contact: data[SocialActivity.CONTACT],
-      activity: data[SocialActivity.ACTIVITY],
-      location: data[SocialActivity.LOCATION],
+      contact: null,
+      //await FirebaseController.getContact(data[SocialActivity.CONTACT]),
+      activity: null,
+      //await FirebaseController.getActivity(data[SocialActivity.ACTIVITY]),
+      location: null,
+      //await FirebaseController.getLocation(data[SocialActivity.LOCATION]),
     );
   }
 

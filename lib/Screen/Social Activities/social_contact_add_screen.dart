@@ -1,15 +1,9 @@
 import 'package:Capstone/Controller/firebase_controller.dart';
-import 'package:Capstone/Model/activity.dart';
 import 'package:Capstone/Model/constant.dart';
 import 'package:Capstone/Model/contact.dart';
-import 'package:Capstone/Model/factor.dart';
-import 'package:Capstone/Model/location.dart';
-import 'package:Capstone/Model/social_activity.dart';
 import 'package:Capstone/views/mydialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
-import '../factor_screen.dart';
 
 class SocialContactAddScreen extends StatefulWidget {
   static const routeName = '/socialContactAddScreen';
@@ -19,17 +13,10 @@ class SocialContactAddScreen extends StatefulWidget {
   }
 }
 
-enum SeverityLevel { moderate, severe }
-
 class _SocialContactAddState extends State<SocialContactAddScreen> {
   _Controller con;
   User user;
-  SocialActivity socialActivity;
-  List<SocialActivity> socialActivities;
   List<Contact> contacts;
-  List<Activity> activities;
-  List<Location> locations;
-  int index;
   var formKey = GlobalKey<FormState>();
 
   @override
@@ -44,10 +31,7 @@ class _SocialContactAddState extends State<SocialContactAddScreen> {
   Widget build(BuildContext context) {
     Map arg = ModalRoute.of(context).settings.arguments;
     user ??= arg[Constant.ARG_USER];
-    socialActivities ??= arg[Constant.ARG_SOCIALACTIVITIES];
     contacts ??= arg[Constant.ARG_CONTACTS];
-    activities ??= arg[Constant.ARG_ACTIVITIES];
-    locations ??= arg[Constant.ARG_LOCATIONS];
 
     return Scaffold(
       appBar: AppBar(
@@ -129,8 +113,8 @@ class _Controller {
     var c = Contact(
       email: _state.user.email,
       name: name,
-      address: address,
       phoneNumber: phoneNumber,
+      address: address,
       notes: notes,
       type: ContactType.Social,
     );

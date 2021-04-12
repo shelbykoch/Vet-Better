@@ -211,6 +211,7 @@ class _Controller {
         for (NotificationSettings setting in settings) {
           print('setting: ${setting.notificationTitle}');
         }
+        print("exited the loop");
       }
     } catch (e) {
       print("login error: $e");
@@ -233,38 +234,37 @@ class _Controller {
     } catch (e) {
       print("login error: $e");
     }
-
-    // try {
-    //   print("medication try");
-    //   // Appointment reminders
-    //   List<Appointment> appointments =
-    //       await FirebaseController.getAppointmentList(user.email);
-    //   print("${user.email}");
-    //   if (appointments.length != 0) {
-    //     print("appointment != null");
-    //     for (Appointment appt in appointments) {
-    //       print("appt: ${appt.title}");
-    //       if (testNow.isAfter(appt.apptReminderDate) == true) {
-    //         print("isAfter == true");
-    //         await NotificationController.apptNotifications(user.email);
-    //       }
-    //     }
-    //   }
-      if (settings != null) {
-        print("settings != null");
-        // Feel Good Vault reminders
-        await NotificationController.vaultNotifications(user.email);
-        // Daily Questions reminder
-        await NotificationController.dailyQuestionsNotification(user.email);
-        // Medication reminders
-        await NotificationController.medicationNotification(user.email);
-        Navigator.pop(state.context); //dispose dialog
-        Navigator.pushNamed(state.context, HomeScreen.routeName,
-            arguments: {Constant.ARG_USER: user});
+      print("medication try");
+      // Appointment reminders
+      List<Appointment> appointments =
+          await FirebaseController.getAppointmentList(user.email);
+      print("${user.email}");
+      if (appointments.length != 0) {
+        print("appointment != null");
+        for (Appointment appt in appointments) {
+          print("appt: ${appt.title}");
+          if (testNow.isAfter(appt.apptReminderDate) == true) {
+            print("isAfter == true");
+            await NotificationController.apptNotifications(user.email);
+          }
+        }
       }
-    // } catch (e) {
-    //   print("login error: $e");
-    // }
+    if (settings != null) {
+      print("settings != null");
+      // Feel Good Vault reminders
+      await NotificationController.vaultNotifications(user.email);
+      print("feel good vault");
+      // Daily Questions reminder
+      await NotificationController.dailyQuestionsNotification(user.email);
+      print("daily questions");
+      // Medication reminders
+      await NotificationController.medicationNotification(user.email);
+      print("medication");
+    }
+    Navigator.pop(state.context); //dispose dialog
+    Navigator.pushNamed(state.context, HomeScreen.routeName,
+        arguments: {Constant.ARG_USER: user});
+    print("exiting the function");
   }
 
   void resetPassword() async {

@@ -25,6 +25,7 @@ class _EditMedState extends State<EditMedScreen> {
   DatePicker picker;
   int chosenTimesDaily;
   int chosenRefillsLeft;
+  String addOrEdit;
 
   var formKey = GlobalKey<FormState>();
 
@@ -40,6 +41,7 @@ class _EditMedState extends State<EditMedScreen> {
     Map args = ModalRoute.of(context).settings.arguments;
     user ??= args[Constant.ARG_USER];
     medicationInfo ??= args[Constant.ARG_MEDICATION_INFO];
+    addOrEdit ??= args[Constant.ARG_ADD_OR_EDIT];
     medicationInfo != null
         ? dateTimeController = TextEditingController(
             text: medicationInfo.refillDate != null
@@ -49,7 +51,7 @@ class _EditMedState extends State<EditMedScreen> {
     if (medicationInfo == null) medicationInfo = new Medication();
     return Scaffold(
       appBar: AppBar(
-        title: Text("Add Medication"),
+        title: addOrEdit == 'add' ? Text("Add Medication") : Text("Edit Mediction"),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.delete),
@@ -59,138 +61,139 @@ class _EditMedState extends State<EditMedScreen> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-            padding: const EdgeInsets.only(top: 20.0, left: 50.0, right: 50.0),
-        child: Column(
-          children: <Widget>[
-            Form(
-              key: formKey,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: <Widget>[
-                    TextFormField(
-                      initialValue: medicationInfo == null
-                          ? null
-                          : medicationInfo.medName,
-                      decoration: InputDecoration(
-                        hintText: 'Medication Name',
+          padding: const EdgeInsets.only(top: 20.0, left: 50.0, right: 50.0),
+          child: Column(
+            children: <Widget>[
+              Form(
+                key: formKey,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: <Widget>[
+                      TextFormField(
+                        initialValue: medicationInfo == null
+                            ? null
+                            : medicationInfo.medName,
+                        decoration: InputDecoration(
+                          hintText: 'Medication Name',
+                        ),
+                        autocorrect: true,
+                        onSaved: con.saveMedName,
                       ),
-                      autocorrect: true,
-                      onSaved: con.saveMedName,
-                    ),
-                    TextFormField(
-                      decoration: InputDecoration(
-                        hintText: 'Dosage Amount (in mg)',
+                      TextFormField(
+                        decoration: InputDecoration(
+                          hintText: 'Dosage Amount (in mg)',
+                        ),
+                        initialValue: medicationInfo == null
+                            ? null
+                            : medicationInfo.doseAmt,
+                        autocorrect: true,
+                        onSaved: con.saveDoseAmt,
                       ),
-                      initialValue: medicationInfo == null
-                          ? null
-                          : medicationInfo.doseAmt,
-                      autocorrect: true,
-                      onSaved: con.saveDoseAmt,
-                    ),
-                    Container(
-                      alignment: Alignment.bottomLeft,
-                      child: DropdownButton<int>(
-                        focusColor: Colors.white,
-                        value: chosenTimesDaily,
-                        //elevation: 5,
-                        iconEnabledColor: Colors.white,
-                        items: <int>[1, 2, 3]
-                            .map<DropdownMenuItem<int>>((int value) {
-                          return DropdownMenuItem<int>(
-                            value: value,
-                            child: SizedBox(
-                              width: 280.0,
-                              child: Text(
-                                value.toString(),
-                                textAlign: TextAlign.start,
+                      Container(
+                        alignment: Alignment.bottomLeft,
+                        child: DropdownButton<int>(
+                          focusColor: Colors.white,
+                          value: chosenTimesDaily,
+                          //elevation: 5,
+                          iconEnabledColor: Colors.white,
+                          items: <int>[1, 2, 3]
+                              .map<DropdownMenuItem<int>>((int value) {
+                            return DropdownMenuItem<int>(
+                              value: value,
+                              child: SizedBox(
+                                width: 280.0,
+                                child: Text(
+                                  value.toString(),
+                                  textAlign: TextAlign.start,
+                                ),
                               ),
-                            ),
-                          );
-                        }).toList(),
-                        hint: medicationInfo.timesDaily == null
-                            ? Text(
-                                "Number of Times Taken Daily",
-                              )
-                            : Text(medicationInfo.timesDaily.toString(),
-                                style: TextStyle(
-                                    color: Colors.white70,
-                                    fontWeight: FontWeight.bold)),
-                        onChanged: (int value) {
-                          setState(() {
-                            chosenTimesDaily = value;
-                            medicationInfo.timesDaily = value;
-                          });
-                        },
+                            );
+                          }).toList(),
+                          hint: medicationInfo.timesDaily == null
+                              ? Text(
+                                  "Number of Times Taken Daily",
+                                )
+                              : Text(medicationInfo.timesDaily.toString(),
+                                  style: TextStyle(
+                                      color: Colors.white70,
+                                      fontWeight: FontWeight.bold)),
+                          onChanged: (int value) {
+                            setState(() {
+                              chosenTimesDaily = value;
+                              medicationInfo.timesDaily = value;
+                            });
+                          },
+                        ),
                       ),
-                    ),
-                    Container(
-                      alignment: Alignment.bottomLeft,
-                      child: DropdownButton<int>(
-                        focusColor: Colors.white,
-                        value: chosenRefillsLeft,
-                        iconEnabledColor: Colors.white,
-                        items: <int>[1, 2, 3, 4, 5].map<DropdownMenuItem<int>>((int value) {
-                          return DropdownMenuItem<int>(
-                            value: value,
-                            child: SizedBox(
-                              width: 280.0,
-                              child: Text(
-                                value.toString(),
-                                textAlign: TextAlign.start,
+                      Container(
+                        alignment: Alignment.bottomLeft,
+                        child: DropdownButton<int>(
+                          focusColor: Colors.white,
+                          value: chosenRefillsLeft,
+                          iconEnabledColor: Colors.white,
+                          items: <int>[1, 2, 3, 4, 5]
+                              .map<DropdownMenuItem<int>>((int value) {
+                            return DropdownMenuItem<int>(
+                              value: value,
+                              child: SizedBox(
+                                width: 280.0,
+                                child: Text(
+                                  value.toString(),
+                                  textAlign: TextAlign.start,
+                                ),
                               ),
-                            ),
-                          );
-                        }).toList(),
-                        hint: medicationInfo.refillsLeft == null
-                            ? Text(
-                                "Number of refills left",
-                              )
-                            : Text(medicationInfo.refillsLeft.toString(),
-                                style: TextStyle(
-                                    color: Colors.white70,
-                                    fontWeight: FontWeight.bold)),
-                        onChanged: (int value) {
-                          setState(() {
-                            chosenRefillsLeft = value;
-                            medicationInfo.refillsLeft = value;
-                          });
+                            );
+                          }).toList(),
+                          hint: medicationInfo.refillsLeft == null
+                              ? Text(
+                                  "Number of refills left",
+                                )
+                              : Text(medicationInfo.refillsLeft.toString(),
+                                  style: TextStyle(
+                                      color: Colors.white70,
+                                      fontWeight: FontWeight.bold)),
+                          onChanged: (int value) {
+                            setState(() {
+                              chosenRefillsLeft = value;
+                              medicationInfo.refillsLeft = value;
+                            });
+                          },
+                        ),
+                      ),
+                      TextFormField(
+                        //initialValue: record.title,
+                        decoration: InputDecoration(
+                          labelText: 'Current Medication Refill Date',
+                        ),
+                        //controller: _dateController,
+                        autocorrect: false,
+                        controller: dateTimeController,
+                        readOnly: true,
+                        onTap: () {
+                          DatePicker.showDateTimePicker(context,
+                              showTitleActions: true, onConfirm: (date) {
+                            medicationInfo.refillDate = date;
+                            dateTimeController.text =
+                                DateFormat.yMd().add_jm().format(date);
+                          }, currentTime: DateTime(2021, 03, 12, 09, 00, 00));
                         },
                       ),
-                    ),
-                    TextFormField(
-                      //initialValue: record.title,
-                      decoration: InputDecoration(
-                        labelText: 'Refill Date',
+                      SizedBox(
+                        width: double.infinity,
+                        child: RaisedButton(
+                          child: Text("Save"),
+                          onPressed: () {
+                            con.save();
+                          },
+                        ),
                       ),
-                      //controller: _dateController,
-                      autocorrect: false,
-                      controller: dateTimeController,
-                      readOnly: true,
-                      onTap: () {
-                        DatePicker.showDateTimePicker(context,
-                            showTitleActions: true, onConfirm: (date) {
-                          medicationInfo.refillDate = date;
-                          dateTimeController.text =
-                              DateFormat.yMd().add_jm().format(date);
-                        }, currentTime: DateTime(2021, 03, 12, 09, 00, 00));
-                      },
-                    ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: RaisedButton(
-                        child: Text("Save"),
-                        onPressed: () {
-                          con.save();
-                        },
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
       ),
     );
   }
@@ -211,7 +214,11 @@ class _Controller {
       } else {
         await FirebaseController.updateMedicationInfo(_state.medicationInfo);
       }
-       //if(_state.medicationInfo.timesDaily != null) NotificationController.medicationNotification(_state.user.email);
+      _state.medicationInfo.renewalDate =
+          _state.medicationInfo.renewalTime(_state.medicationInfo.refillsLeft);
+      _state.medicationInfo.refillDate =
+          _state.medicationInfo.refillTime(_state.medicationInfo.refillDate);
+      //if(_state.medicationInfo.timesDaily != null) NotificationController.medicationNotification(_state.user.email);
       List<Medication> medication =
           await FirebaseController.getMedicationList(_state.user.email);
 
@@ -245,6 +252,4 @@ class _Controller {
   void saveDoseAmt(String value) {
     _state.medicationInfo.doseAmt = value;
   }
-
-
 }

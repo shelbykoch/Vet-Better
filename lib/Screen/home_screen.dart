@@ -1,3 +1,4 @@
+import 'package:Capstone/Controller/notificationController.dart';
 import 'package:Capstone/Model/activity.dart';
 import 'package:Capstone/Model/appointment.dart';
 import 'package:Capstone/Model/constant.dart';
@@ -15,9 +16,11 @@ import 'package:Capstone/Model/social_activity.dart';
 import 'package:Capstone/Screen/Social%20Activities/socialActivity_screen.dart';
 import 'package:Capstone/Screen/factor_screen.dart';
 import 'package:Capstone/Screen/factor_score_screen.dart';
+import 'package:Capstone/Screen/login_screen.dart';
 import 'package:Capstone/Screen/myMedication_screen.dart';
 import 'package:Capstone/Screen/notificationsettings_screen.dart';
 import 'package:Capstone/Screen/personal_info_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -34,6 +37,12 @@ import 'picture_add_screen.dart';
 import 'text_content_add_screen.dart';
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen(
+    this.payload, {
+    Key key,
+  }) : super(key: key);
+
+  final String payload;
   static const routeName = '/homeScreen';
   @override
   State<StatefulWidget> createState() {
@@ -43,7 +52,9 @@ class HomeScreen extends StatefulWidget {
 
 class _UserHomeState extends State<HomeScreen> {
   _Controller con;
+  final FirebaseAuth auth = FirebaseAuth.instance;
   User user;
+  String _payload;
   int _navIndex = 0;
   List<Question> questionList;
   List<NotificationSettings> settings;
@@ -54,8 +65,14 @@ class _UserHomeState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    //final User user = auth.currentUser;
     con = _Controller(this);
     con._buildButtonList();
+    _payload = widget.payload;
+    if (_payload != 'new payload') {
+      print('new payload');
+      con.notificationRoute(_payload);
+    }
   }
 
   void render(fn) => setState(fn);
@@ -390,26 +407,33 @@ class _Controller {
 
   void calendarRoute() async {
     //Map<DateTime, List<dynamic>> function call made here to Firebase to get appointments
-    List<Appointment> appointments =
-        await FirebaseController.getAppointmentList(_state.user.email);
+    final user = _state.auth.currentUser;
+    if (user != null) {
+      List<Appointment> appointments =
+          await FirebaseController.getAppointmentList(user.email);
 
     Navigator.pushNamed(_state.context, CalendarScreen.routeName, arguments: {
-      Constant.ARG_USER: _state.user,
+      Constant.ARG_USER: user,
       Constant.ARG_APPOINTMENTS: appointments,
     });
+    }
   }
 
   void medicationInfoRoute() async {
     //First we will load the medication info associated with the account to pass to the screen
     //if it doesn't exist in the database we will created a new one and append
     //the email then pass to the screen
-    List<Medication> medication =
-        await FirebaseController.getMedicationList(_state.user.email);
-    Navigator.pushNamed(_state.context, MyMedicationScreen.routeName,
-        arguments: {
-          Constant.ARG_USER: _state.user,
-          Constant.ARG_MEDICATION_LIST: medication,
-        });
+    final user = _state.auth.currentUser;
+    if (user != null) {
+      List<Medication> medication =
+          await FirebaseController.getMedicationList(user.email);
+
+      Navigator.pushNamed(_state.context, MyMedicationScreen.routeName,
+          arguments: {
+            Constant.ARG_USER: user,
+            Constant.ARG_MEDICATION_LIST: medication,
+          });
+    }
   }
 
   void reachOutRoute() async {
@@ -439,12 +463,25 @@ class _Controller {
   }
 
   void dailyQuestionsRoute() async {
+    _state._payload = null;
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final User user = auth.currentUser;
+    if (user != null)
+      print("user: ${user.email}");
+    else {
+      print("user is null");
+      print("_state.user: ${_state.user}");
+    }
+    _state.questionList = await FirebaseController.getQuestionList(user.email);
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
     tz.TZDateTime newDay = tz.TZDateTime(
-        tz.local, now.year, now.month, now.day, now.hour, now.minute, 00);
-    print(newDay);
-    if (newDay.isBefore(now)) {
-      newDay = newDay.add(const Duration(minutes: 1));
+        tz.local, now.year, now.month, now.day, now.hour, now.minute, 30);
+
+    if (newDay.isAfter(now)) {
+      if (_state.questionList != null) {
+        for (Question q in _state.questionList)
+          FirebaseController.deleteQuestion(q.docId);
+      }
     }
     _state.questionList =
         await FirebaseController.getQuestionList(_state.user.email);
@@ -468,7 +505,16 @@ class _Controller {
           });
     }
   }
-
+  void notificationRoute(payload) {
+    print('payload notificationRoute: ${payload}');
+    if (payload == 'daily questions') dailyQuestionsRoute();
+    if (payload == 'medication') {
+      //count++;
+      medicationInfoRoute();
+    }
+    if (payload == 'appointment') calendarRoute();
+    if (payload == 'new payload') return;
+  }
   void socialActRoute() async {
     //Request data from database.
     //If Firebase doesn't find the collection then an new version is returned
@@ -503,6 +549,8 @@ class _Controller {
   }
 
   void notificationSettings() async {
+    _state.settings =
+        await FirebaseController.getNotificationSettings(_state.user.email);
     if (_state.settings == null) {
       List<NotificationSettings> settings = new List<NotificationSettings>();
       settings =
@@ -514,13 +562,17 @@ class _Controller {
       Navigator.pushNamed(_state.context, NotificationSettingsScreen.routeName,
           arguments: {
             Constant.ARG_USER: _state.user,
-            Constant.ARG_QUESTION_LIST: settings,
+            Constant.ARG_NOTIFICATION_SETTINGS: settings,
           });
     } else {
+      for (int i = 0; i < _state.settings.length; i++) {
+        print(
+            "settings: ${_state.settings[i].notificationIndex} ${_state.settings[i].notificationTitle}, ${_state.settings[i].currentToggle}");
+      }
       Navigator.pushNamed(_state.context, NotificationSettingsScreen.routeName,
           arguments: {
             Constant.ARG_USER: _state.user,
-            Constant.ARG_QUESTION_LIST: _state.settings,
+            Constant.ARG_NOTIFICATION_SETTINGS: _state.settings,
           });
     }
   }

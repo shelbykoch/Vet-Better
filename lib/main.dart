@@ -41,10 +41,10 @@ Future<void> main() async {
 
   final NotificationAppLaunchDetails notificationAppLaunchDetails =
       await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
-  String initialRoute = HomePage.routeName;
+  String initialRoute = LoginScreen.routeName;
   if (notificationAppLaunchDetails?.didNotificationLaunchApp ?? false) {
     selectedNotificationPayload = notificationAppLaunchDetails.payload;
-    initialRoute = SecondPage.routeName;
+    initialRoute = HomeScreen.routeName;
   }
 
   const AndroidInitializationSettings initializationSettingsAndroid =
@@ -55,9 +55,12 @@ Future<void> main() async {
   );
   await flutterLocalNotificationsPlugin.initialize(initializationSettings,
       onSelectNotification: (String payload) async {
-    if (payload != null) {
+    if (payload == null) {
       debugPrint('notification payload: $payload');
+      selectedNotificationPayload = 'new payload';
+      selectNotificationSubject.add('new payload');
     }
+    if (payload != null) print('main payload: $payload');
     selectedNotificationPayload = payload;
     selectNotificationSubject.add(payload);
   });
@@ -82,23 +85,27 @@ class MyApp extends StatelessWidget {
       title: 'Login',
       initialRoute: LoginScreen.routeName,
       routes: {
-        HomePage.routeName: (_) => HomePage(notificationAppLaunchDetails),
-        SecondPage.routeName: (_) => SecondPage(selectedNotificationPayload),
-        LoginScreen.routeName: (context) => LoginScreen(),
-        HomeScreen.routeName: (context) => HomeScreen(),
+        //HomePage.routeName: (_) => HomePage(notificationAppLaunchDetails),
+        // SecondPage.routeName: (_) => SecondPage(selectedNotificationPayload),
+        LoginScreen.routeName: (context) =>
+            LoginScreen(notificationAppLaunchDetails),
+        HomeScreen.routeName: (context) =>
+            HomeScreen(selectedNotificationPayload),
         ForgotPasswordScreen.routeName: (context) => ForgotPasswordScreen(),
         FactorScreen.routeName: (context) => FactorScreen(),
         PersonalInfoScreen.routeName: (context) => PersonalInfoScreen(),
         CalendarScreen.routeName: (conext) => CalendarScreen(),
         AppointmentScreen.routeName: (context) => AppointmentScreen(),
-        MyMedicationScreen.routeName: (context) => MyMedicationScreen(),
+        MyMedicationScreen.routeName: (context) =>
+            MyMedicationScreen(selectedNotificationPayload),
         EditMedScreen.routeName: (context) => EditMedScreen(),
         FactorAddScreen.routeName: (context) => FactorAddScreen(),
         FactorEditScreen.routeName: (context) => FactorEditScreen(),
-        DailyQuestionsScreen.routeName: (context) => DailyQuestionsScreen(),
+        DailyQuestionsScreen.routeName: (context) =>
+            DailyQuestionsScreen(selectedNotificationPayload),
         AnswerScreen.routeName: (context) => AnswerScreen(),
         NotificationSettingsScreen.routeName: (context) =>
-            NotificationSettingsScreen(),
+            NotificationSettingsScreen(selectedNotificationPayload),
         ContactEditScreen.routeName: (context) => ContactEditScreen(),
         ContactListScreen.routeName: (context) => ContactListScreen(),
         ActivityAddScreen.routeName: (context) => ActivityAddScreen(),

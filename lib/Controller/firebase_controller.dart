@@ -475,19 +475,14 @@ class FirebaseController {
         .collection(Medication.COLLECTION)
         .where(Medication.EMAIL, isEqualTo: email)
         .get();
-    print('got query');
     List<Medication> result;
     if (query != null && query.size != 0) {
-      print("${query.size}");
       result = new List<Medication>();
       for (var doc in query.docs) {
-        print('in for loop');
         result.add(Medication.deserialize(doc.data(), doc.id));
       }
-      print('got result');
       return result;
     } else {
-      print('didn' 't get result');
       return null;
     }
   }
@@ -579,6 +574,7 @@ class FirebaseController {
     QuerySnapshot query = await FirebaseFirestore.instance
         .collection(NotificationSettings.COLLECTION)
         .where(NotificationSettings.EMAIL, isEqualTo: email)
+        .orderBy(NotificationSettings.NOTIFICTAION_INDEX, descending: false)
         .get();
 
     List<NotificationSettings> result;

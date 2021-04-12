@@ -499,6 +499,7 @@ class _Controller {
     }
   }
 
+
   void notificationRoute(payload) {
     print('payload notificationRoute: ${payload}');
     if (payload == 'daily questions') dailyQuestionsRoute();
@@ -507,6 +508,7 @@ class _Controller {
       medicationInfoRoute();
     }
     if (payload == 'appointment') calendarRoute();
+    //if (payload == 'vault')
     if (payload == 'new payload') return;
   }
 
@@ -544,14 +546,14 @@ class _Controller {
   }
 
   void notificationSettings() async {
-    _state.settings =
-        await FirebaseController.getNotificationSettings(_state.user.email);
+    // _state.settings =
+    //     await FirebaseController.getNotificationSettings(_state.user.email);
     if (_state.settings == null) {
       List<NotificationSettings> settings = new List<NotificationSettings>();
-      settings =
-          NotificationSettings.getNotificationSettings(_state.user.email);
-      for (NotificationSettings setting in settings)
-        await FirebaseController.addNotificationSetting(setting);
+      // settings =
+      //     NotificationSettings.getNotificationSettings(_state.user.email);
+      // for (NotificationSettings setting in settings)
+      //   await FirebaseController.addNotificationSetting(setting);
       settings =
           await FirebaseController.getNotificationSettings(_state.user.email);
       Navigator.pushNamed(_state.context, NotificationSettingsScreen.routeName,

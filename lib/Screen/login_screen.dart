@@ -1,6 +1,7 @@
 import 'package:Capstone/Controller/notificationController.dart';
 import 'package:Capstone/Model/appointment.dart';
 import 'package:Capstone/Model/constant.dart';
+import 'package:Capstone/Model/notification_settings.dart';
 import 'package:Capstone/Model/picture.dart';
 import 'package:Capstone/Model/text_content.dart';
 import 'package:Capstone/Model/medication.dart';
@@ -42,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
       con._configureDidReceiveLocalNotificationSubject();
       con._configureSelectNotificationSubject();
     }
-    
+    con.getNotificationSettings(user);
   }
 
   void render(fn) => setState(fn);
@@ -188,7 +189,7 @@ class _Controller {
               });
       return; //cease login process
     }
-        //-------------------Notifications-----------------------------//
+    //-------------------Notifications-----------------------------//
     // Fire upon log in.
 
     // var testNow = DateTime.utc(2021, 4, 26);
@@ -215,7 +216,7 @@ class _Controller {
     }
 
     // Feel Good Vault reminders
-
+    await NotificationController.vaultNotifications(user.email);
     // Daily Questions reminder
     await NotificationController.dailyQuestionsNotification(user.email);
     // Medication reminders
@@ -270,5 +271,14 @@ class _Controller {
       await Navigator.pushNamed(state.context, HomeScreen.routeName,
           arguments: {Constant.ARG_USER: user});
     });
+  }
+
+  void getNotificationSettings(_user) async {
+    print("get notification settings");
+    List<NotificationSettings> settings = new List<NotificationSettings>();
+      settings =
+          NotificationSettings.getNotificationSettings(_user.email);
+      for (NotificationSettings setting in settings)
+        await FirebaseController.addNotificationSetting(setting);
   }
 }

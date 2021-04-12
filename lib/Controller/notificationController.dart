@@ -157,23 +157,6 @@ class NotificationController {
     List<Medication> medication =
         await FirebaseController.getMedicationList(email);
     for (int i = 6; i < medication.length + 6; i++) {
-      // await flutterLocalNotificationsPlugin.zonedSchedule(
-      //     i,
-      //     'Reminder:',
-      //     'Time to refill medication ${medication[i - 6].medName}',
-      //     _nextInstanceOfTenAM(),
-      //     const NotificationDetails(
-      //       android: AndroidNotificationDetails(
-      //           'i',
-      //           'Daily Evening Medication Reminder',
-      //           'Sends a reminder to take evening meds each day'),
-      //     ),
-      //     androidAllowWhileIdle: true,
-      //     uiLocalNotificationDateInterpretation:
-      //         UILocalNotificationDateInterpretation.absoluteTime,
-      //     matchDateTimeComponents: DateTimeComponents.time,
-      //     payload: 'medication'
-      //     );
       tz.TZDateTime notificationTime = _nextInstanceOfTenAM();
     AndroidNotificationDetails androidNotificationDetails =
         AndroidNotificationDetails(
@@ -206,19 +189,6 @@ class NotificationController {
     List<Appointment> appointments =
         await FirebaseController.getAppointmentList(email);
     for (int i = 4; i < appointments.length + 4; i++) {
-    //   await flutterLocalNotificationsPlugin.zonedSchedule(
-    //       i,
-    //       'Reminder:',
-    //       'Appointment:  ${appointments[i - 4].title} \n Location: ${appointments[i - 4].location} /n When: ${appointments[i - 4].dateTime}',
-    //       _nextInstanceOfEightAM(),
-    //       const NotificationDetails(
-    //         android: AndroidNotificationDetails('i', 'Appointment Reminder',
-    //             'Sends a reminder about upcoming appointments'),
-    //       ),
-    //       androidAllowWhileIdle: true,
-    //       uiLocalNotificationDateInterpretation:
-    //           UILocalNotificationDateInterpretation.absoluteTime,
-    //       matchDateTimeComponents: DateTimeComponents.time);
         tz.TZDateTime notificationTime = _nextInstanceOfEightAM();
         AndroidNotificationDetails androidNotificationDetails =
             AndroidNotificationDetails(
@@ -229,13 +199,41 @@ class NotificationController {
         NotificationDetails notificationDetails =
             NotificationDetails(android: androidNotificationDetails);
         await flutterLocalNotificationsPlugin.zonedSchedule(
-            i, 'Reminder', 'Appointment:  ${appointments[i - 4].title} \n Location: ${appointments[i - 4].location} /n When: ${appointments[i - 4].dateTime}', notificationTime, notificationDetails,
+            i, 'Reminder', 'Appointment:  ${appointments[i - 4].title} \n Location: ${appointments[i - 4].location} \n When: ${appointments[i - 4].dateTime}', notificationTime, notificationDetails,
             androidAllowWhileIdle: true,
             uiLocalNotificationDateInterpretation:
                 UILocalNotificationDateInterpretation.absoluteTime, 
             payload: 'appointment'  
             );
     }
+  }
+
+  // Feel good Vault Notifications
+   static Future<void> vaultNotifications(String email) async {
+    List<NotificationSettings> settings =
+        await FirebaseController.getNotificationSettings(email);
+    if (settings[5].currentToggle == 1) {
+     // cancel the notification with id value of zero
+        await flutterLocalNotificationsPlugin
+            .cancel(settings[5].notificationIndex);
+        return;
+      }
+    tz.TZDateTime notificationTime = _nextInstanceOfEightPM();
+    AndroidNotificationDetails androidNotificationDetails =
+        AndroidNotificationDetails(
+            'second channel ID', 'second Channel title', 'second channel body',
+            priority: Priority.high,
+            importance: Importance.max,
+            ticker: 'test');
+    NotificationDetails notificationDetails =
+        NotificationDetails(android: androidNotificationDetails);
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+        7, 'Need a pick me up?', 'Go check out your Feel Good Vault!', notificationTime, notificationDetails,
+        androidAllowWhileIdle: true,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime, 
+        payload: 'vault'  
+        );
   }
 
   // Date Times

@@ -63,6 +63,8 @@ class NotificationSettings {
         email, "Call Your Doctor Notifications", 5, 0));
     settings.add(new NotificationSettings.standard(
         email, "Refill Notifications", 6, 0));
+    settings.add(new NotificationSettings.standard(
+        email, "Feel Good Vault Notifications", 7, 0));
     return settings;
   }
 }

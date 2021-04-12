@@ -191,19 +191,27 @@ class _Controller {
     }
     //-------------------Notifications-----------------------------//
     // Fire upon log in.
-
-    // var testNow = DateTime.utc(2021, 4, 26);
-    var now = DateTime.now();
+    List<NotificationSettings> settings =
+        await FirebaseController.getNotificationSettings(email);
+    if (settings == null) {
+      List<NotificationSettings> settings = new List<NotificationSettings>();
+      for (NotificationSettings setting in settings)
+          await FirebaseController.addNotificationSetting(setting);
+      settings =
+          await FirebaseController.getNotificationSettings(email);
+    }
+    var testNow = DateTime.utc(2021, 5, 26);
+    //var now = DateTime.now();
     List<Medication> medication =
         await FirebaseController.getMedicationList(email);
     if (medication != null) {
       for (Medication med in medication) {
         // Reminder to call your doctor when renewal is needed.
-        if (now.isAfter(med.renewalDate) == true) {
+        if (testNow.isAfter(med.renewalDate) == true) {
           await NotificationController.renewalNotifications(email);
         }
         // Reminder to refill a prescription.
-        if (now.isAfter(med.refillDate) == true) {
+        if (testNow.isAfter(med.refillDate) == true) {
           await NotificationController.refillNotifications(email);
         }
       }
@@ -213,14 +221,14 @@ class _Controller {
         await FirebaseController.getAppointmentList(email);
     if (appointments != null) {
       for (Appointment appt in appointments) {
-        if (now.isAfter(appt.apptReminderDate) == true) {
+        if (testNow.isAfter(appt.apptReminderDate) == true) {
           await NotificationController.apptNotifications(email);
         }
       }
     }
 
     // Feel Good Vault reminders
-    await NotificationController.vaultNotifications(user.email);
+    //await NotificationController.vaultNotifications(user.email);
     // Daily Questions reminder
     await NotificationController.dailyQuestionsNotification(user.email);
     // Medication reminders

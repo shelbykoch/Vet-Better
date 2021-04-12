@@ -19,8 +19,8 @@ class NotificationSettings {
     this.currentToggle,
   });
 
-  NotificationSettings.standard(
-      String email, String notificationTitle, int notificationIndex, int currentToggle) {
+  NotificationSettings.standard(String email, String notificationTitle,
+      int notificationIndex, int currentToggle) {
     this.email = email;
     this.notificationTitle = notificationTitle;
     this.notificationIndex = notificationIndex;
@@ -61,10 +61,11 @@ class NotificationSettings {
         email, "Appointment Notifications", 4, 0));
     settings.add(new NotificationSettings.standard(
         email, "Call Your Doctor Notifications", 5, 0));
-    settings.add(new NotificationSettings.standard(
-        email, "Refill Notifications", 6, 0));
+    settings.add(
+        new NotificationSettings.standard(email, "Refill Notifications", 6, 0));
     settings.add(new NotificationSettings.standard(
         email, "Feel Good Vault Notifications", 7, 0));
+    print(" settings.length: $settings.length");
     return settings;
   }
 }

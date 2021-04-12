@@ -98,7 +98,7 @@ class _NotificationSettingsState extends State<NotificationSettingsScreen> {
                                 labels: ['On', 'Off'],
                                 onToggle: (index) async {
                                   con.onSavedSetting(
-                                      settings[i].notificationIndex, index);
+                                      index, i);
                                 },
                               ),
                               SizedBox(
@@ -126,11 +126,11 @@ class _Controller {
       _state.formKey.currentState.save();
       setting.email = _state.user.email;
       await FirebaseController.updateNotificationSetting(setting);
-      print('${setting.currentToggle}');
-      if (setting.currentToggle == 1) {
-        // cancel the notification with id value of zero
-        await flutterLocalNotificationsPlugin.cancel(setting.notificationIndex);
-      }
+      // print('${setting.currentToggle}');
+      // if (setting.currentToggle == 1) {
+      //   // cancel the notification with id value of zero
+      //   await flutterLocalNotificationsPlugin.cancel(setting.notificationIndex);
+      // }
     }
     List<NotificationSettings> settings =
         await FirebaseController.getNotificationSettings(_state.user.email);
@@ -146,9 +146,9 @@ class _Controller {
     }
   }
 
-  void onSavedSetting(int notificationIndex, int toggleValue) {
-    _state.settings[notificationIndex].currentToggle = toggleValue;
+  void onSavedSetting(int toggleValue, i) {
+    _state.settings[i].currentToggle = toggleValue;
     print(
-        "${_state.settings[notificationIndex].notificationTitle} value: ${_state.settings[notificationIndex].currentToggle}");
+        "${_state.settings[i].notificationTitle} value: ${_state.settings[i].currentToggle}");
   }
 }

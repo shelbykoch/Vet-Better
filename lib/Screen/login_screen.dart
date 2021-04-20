@@ -234,21 +234,21 @@ class _Controller {
     } catch (e) {
       print("login error: $e");
     }
-      print("medication try");
-      // Appointment reminders
-      List<Appointment> appointments =
-          await FirebaseController.getAppointmentList(user.email);
-      print("${user.email}");
-      if (appointments.length != 0) {
-        print("appointment != null");
-        for (Appointment appt in appointments) {
-          print("appt: ${appt.title}");
-          if (testNow.isAfter(appt.apptReminderDate) == true) {
-            print("isAfter == true");
-            await NotificationController.apptNotifications(user.email);
-          }
+    print("medication try");
+    // Appointment reminders
+    List<Appointment> appointments =
+        await FirebaseController.getAppointmentList(user.email);
+    print("${user.email}");
+    if (appointments.length != 0) {
+      print("appointment != null");
+      for (Appointment appt in appointments) {
+        print("appt: ${appt.title}");
+        if (testNow.isAfter(appt.apptReminderDate) == true) {
+          print("isAfter == true");
+          await NotificationController.apptNotifications(user.email);
         }
       }
+    }
     if (settings != null) {
       print("settings != null");
       // Feel Good Vault reminders
@@ -261,9 +261,17 @@ class _Controller {
       await NotificationController.medicationNotification(user.email);
       print("medication");
     }
+    //Load text content
+    //Load feel good vault pictures
+    List<TextContent> textContent =
+        await FirebaseController.getTextContentList(user.email);
+    List<Picture> pictures = await FirebaseController.getPictures(user.email);
     Navigator.pop(state.context); //dispose dialog
-    Navigator.pushNamed(state.context, HomeScreen.routeName,
-        arguments: {Constant.ARG_USER: user});
+    Navigator.pushNamed(state.context, HomeScreen.routeName, arguments: {
+      Constant.ARG_USER: user,
+      Constant.ARG_PICTURE_LIST: pictures,
+      Constant.ARG_TEXT_CONTENT_LIST: textContent
+    });
     print("exiting the function");
   }
 

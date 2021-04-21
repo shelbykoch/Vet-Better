@@ -52,32 +52,23 @@ class _FactorState extends State<FactorScreen> {
           : AppBar(title: Text(title.toString())),
       body: Padding(
         padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-        child: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              SizedBox(height: 20.0),
-              Text("Please select all that apply"),
-              SizedBox(height: 20.0),
-              factors.length == 0
-                  ? Text(
-                      '\n Tap the + button above to add $title.',
-                      style: TextStyle(fontSize: 30.0),
-                      textAlign: TextAlign.center,
-                    )
-                  : ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      itemCount: factors.length,
-                      itemBuilder: (BuildContext context, index) => Container(
-                        color: con.getColor(index),
-                        child: factors[index].description == ""
-                            ? con.noDescription(factors[index], index)
-                            : con.withDescription(factors[index], index),
-                      ),
-                    ),
-            ],
-          ),
-        ),
+        child: factors.length == 0
+            ? Text(
+                '\n Tap the + button above to add $title.',
+                style: TextStyle(fontSize: 30.0),
+                textAlign: TextAlign.center,
+              )
+            : ListView.builder(
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                itemCount: factors.length,
+                itemBuilder: (BuildContext context, index) => Container(
+                  color: con.getColor(index),
+                  child: factors[index].description == ""
+                      ? con.noDescription(factors[index], index)
+                      : con.withDescription(factors[index], index),
+                ),
+              ),
       ),
     );
   }

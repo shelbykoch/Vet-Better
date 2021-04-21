@@ -68,9 +68,8 @@ class _UserHomeState extends State<HomeScreen> {
     con = _Controller(this);
     con._buildButtonList();
     _payload = widget.payload;
-    if (_payload != 'new payload') {
-      con.notificationRoute(_payload);
-    }
+    con.notificationRoute(_payload);
+
   }
 
   void render(fn) => setState(fn);
@@ -460,9 +459,9 @@ class _Controller {
 
     _state.questionList = await FirebaseController.getQuestionList(user.email);
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+
     tz.TZDateTime newDay = tz.TZDateTime(
         tz.local, now.year, now.month, now.day, now.hour, now.minute, 30);
-
     if (newDay.isAfter(now)) {
       if (_state.questionList != null) {
         for (Question q in _state.questionList)

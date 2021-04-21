@@ -253,7 +253,7 @@ class _Controller {
     if (settings != null) {
       // Feel Good Vault reminders
       if (randomDay == tz.TZDateTime(tz.local, now.year, now.month, now.day) ||
-          totalScore > 0) {
+          totalScore < 0) {
         print(now);
         print(totalScore);
         await NotificationController.vaultNotifications(user.email);

@@ -73,7 +73,7 @@ class _FactorAddState extends State<FactorAddScreen> {
                   onSaved: con.onSavedDescription,
                 ),
                 ListTile(
-                  title: const Text('Moderate'),
+                  title: const Text('Low Impact'),
                   leading: Radio<SeverityLevel>(
                     value: SeverityLevel.moderate,
                     groupValue: _character,
@@ -85,7 +85,7 @@ class _FactorAddState extends State<FactorAddScreen> {
                   ),
                 ),
                 ListTile(
-                  title: const Text('Severe'),
+                  title: const Text('High Impact'),
                   leading: Radio<SeverityLevel>(
                     value: SeverityLevel.severe,
                     groupValue: _character,

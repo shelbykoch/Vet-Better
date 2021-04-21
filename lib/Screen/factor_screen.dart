@@ -157,6 +157,8 @@ class _Controller {
                 ElevatedButton(
                   child: Text('Edit'),
                   onPressed: () => edit(index),
+                  style: ElevatedButton.styleFrom(
+                      primary: Colors.white, onPrimary: Colors.black),
                 ),
               ],
             )
@@ -186,9 +188,10 @@ class _Controller {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 ElevatedButton(
-                  child: Text('Edit'),
-                  onPressed: () => edit(index),
-                ),
+                    child: Text('Edit'),
+                    onPressed: () => edit(index),
+                    style: ElevatedButton.styleFrom(
+                        primary: Colors.white, onPrimary: Colors.black)),
               ],
             )
           : Column(

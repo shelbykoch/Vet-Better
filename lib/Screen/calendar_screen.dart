@@ -1,4 +1,5 @@
 import 'package:Capstone/Controller/firebase_controller.dart';
+import 'package:Capstone/Controller/notificationController.dart';
 import 'package:Capstone/Model/appointment.dart';
 import 'package:Capstone/Model/constant.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -200,6 +201,7 @@ class _Controller {
       _state._selectedEvents.add(appointment);
       _state.setState(() {});
     }
+    await NotificationController.apptNotifications(_state._user.email);
   }
 
   //This will open the appointment details screen. If an appointment

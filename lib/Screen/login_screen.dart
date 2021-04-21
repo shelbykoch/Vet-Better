@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:Capstone/Controller/notificationController.dart';
 import 'package:Capstone/Model/appointment.dart';
 import 'package:Capstone/Model/constant.dart';
@@ -15,6 +17,9 @@ import '../Controller/firebase_controller.dart';
 import 'sign_up_screen.dart';
 import 'home_screen.dart';
 import 'app_dialog.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
+import 'package:Capstone/Model/factor_score_calculator.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen(
@@ -193,7 +198,12 @@ class _Controller {
     // Fire upon log in.
     var testNow = DateTime.utc(2021, 5, 26);
     var now = DateTime.now();
+    var randomNumber = new Random();
 
+    tz.TZDateTime randomDay =
+        tz.TZDateTime(tz.local, now.year, now.month, randomNumber.nextInt(30));
+    print(randomDay);
+    print(now);
     List<NotificationSettings> settings =
         await FirebaseController.getNotificationSettings(user.email);
     try {
@@ -205,8 +215,7 @@ class _Controller {
         }
 
         settings = await FirebaseController.getNotificationSettings(user.email);
-        for (NotificationSettings setting in settings) {
-        }
+        for (NotificationSettings setting in settings) {}
       }
     } catch (e) {
       print("login error: $e");
@@ -239,9 +248,16 @@ class _Controller {
         }
       }
     }
+    FactorScoreCalculator calculator = FactorScoreCalculator();
+    int totalScore = await calculator.getTotalScore(user.email);
     if (settings != null) {
       // Feel Good Vault reminders
-      await NotificationController.vaultNotifications(user.email);
+      if (randomDay == tz.TZDateTime(tz.local, now.year, now.month, now.day) ||
+          totalScore > 0) {
+        print(now);
+        print(totalScore);
+        await NotificationController.vaultNotifications(user.email);
+      }
       // Daily Questions reminder
       await NotificationController.dailyQuestionsNotification(user.email);
       // Medication reminders

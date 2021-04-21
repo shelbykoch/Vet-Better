@@ -51,7 +51,9 @@ class _EditMedState extends State<EditMedScreen> {
     if (medicationInfo == null) medicationInfo = new Medication();
     return Scaffold(
       appBar: AppBar(
-        title: addOrEdit == 'add' ? Text("Add Medication") : Text("Edit Mediction"),
+        title: addOrEdit == 'add'
+            ? Text("Add Medication")
+            : Text("Edit Mediction"),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.delete),
@@ -218,7 +220,7 @@ class _Controller {
           _state.medicationInfo.renewalTime(_state.medicationInfo.refillsLeft);
       _state.medicationInfo.refillDate =
           _state.medicationInfo.refillTime(_state.medicationInfo.refillDate);
-      //if(_state.medicationInfo.timesDaily != null) NotificationController.medicationNotification(_state.user.email);
+      await NotificationController.medicationNotification(_state.user.email);
       List<Medication> medication =
           await FirebaseController.getMedicationList(_state.user.email);
 

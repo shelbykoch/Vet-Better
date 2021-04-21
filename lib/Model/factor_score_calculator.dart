@@ -1,4 +1,5 @@
 import 'package:Capstone/Controller/firebase_controller.dart';
+import 'package:Capstone/Controller/notificationController.dart';
 import 'factor.dart';
 
 class FactorScoreCalculator {

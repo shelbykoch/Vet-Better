@@ -80,9 +80,12 @@ class _SocialActivityState extends State<SocialActivityScreen> {
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              FlatButton(
+                              ElevatedButton(
                                 child: Text('Edit'),
                                 onPressed: () => con.edit(index),
+                                style: ElevatedButton.styleFrom(
+                                    primary: Colors.white,
+                                    onPrimary: Colors.black),
                               ),
                             ],
                           ),
@@ -173,7 +176,7 @@ class _Controller {
     if (delIndex != null && delIndex == index) {
       result = Colors.red[200]; //red is only rendered if long pressed
     } else
-      result = Colors.grey[800];
+      result = Color.fromRGBO(77, 225, 225, 90);
 
     return result;
   }

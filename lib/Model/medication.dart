@@ -79,7 +79,6 @@ class Medication {
     var now = DateTime.now();
     int numberOfDays = 30 * refillsLeft - 7;
     DateTime renewalDate = now.add(Duration(days: numberOfDays));
-    print("renewalDate: ${renewalDate}");
     return renewalDate;
   }
 

@@ -65,12 +65,10 @@ class _UserHomeState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    //final User user = auth.currentUser;
     con = _Controller(this);
     con._buildButtonList();
     _payload = widget.payload;
     if (_payload != 'new payload') {
-      print('new payload');
       con.notificationRoute(_payload);
     }
   }
@@ -459,12 +457,7 @@ class _Controller {
     _state._payload = null;
     final FirebaseAuth auth = FirebaseAuth.instance;
     final User user = auth.currentUser;
-    if (user != null)
-      print("user: ${user.email}");
-    else {
-      print("user is null");
-      print("_state.user: ${_state.user}");
-    }
+
     _state.questionList = await FirebaseController.getQuestionList(user.email);
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
     tz.TZDateTime newDay = tz.TZDateTime(
@@ -500,15 +493,36 @@ class _Controller {
   }
 
   void notificationRoute(payload) {
-    print('payload notificationRoute: ${payload}');
     if (payload == 'daily questions') dailyQuestionsRoute();
-    if (payload == 'medication') {
-      //count++;
-      medicationInfoRoute();
-    }
+    if (payload == 'medication') medicationInfoRoute();
     if (payload == 'appointment') calendarRoute();
-    //if (payload == 'vault')
+    if (payload == 'vault') vaultFromNotificationRoute();
     if (payload == 'new payload') return;
+  }
+
+  void vaultFromNotificationRoute() async {
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final User user = auth.currentUser;
+    List<TextContent> textContentList =
+        await FirebaseController.getTextContentList(user.email);
+        for(TextContent content in textContentList) {
+              Navigator.pushNamed(_state.context, TextContentAddScreen.routeName,
+        arguments: {
+          Constant.ARG_USER: user,
+          Constant.ARG_TEXT_CONTENT: content,
+        });
+        }
+
+    List<Picture> pictureList =
+        await FirebaseController.getPictures(user.email);
+        for (Picture p in pictureList) {
+              Navigator.pushNamed(_state.context, PictureAddScreen.routeName, arguments: {
+      Constant.ARG_USER: user,
+      Constant.ARG_PICTURE: p,
+    });
+
+        }
+
   }
 
   void socialActRoute() async {
@@ -547,14 +561,8 @@ class _Controller {
   }
 
   void notificationSettings() async {
-    // _state.settings =
-    //     await FirebaseController.getNotificationSettings(_state.user.email);
     if (_state.settings == null) {
       List<NotificationSettings> settings = new List<NotificationSettings>();
-      // settings =
-      //     NotificationSettings.getNotificationSettings(_state.user.email);
-      // for (NotificationSettings setting in settings)
-      //   await FirebaseController.addNotificationSetting(setting);
       settings =
           await FirebaseController.getNotificationSettings(_state.user.email);
       Navigator.pushNamed(_state.context, NotificationSettingsScreen.routeName,
@@ -563,10 +571,6 @@ class _Controller {
             Constant.ARG_NOTIFICATION_SETTINGS: settings,
           });
     } else {
-      for (int i = 0; i < _state.settings.length; i++) {
-        print(
-            "settings: ${_state.settings[i].notificationIndex} ${_state.settings[i].notificationTitle}, ${_state.settings[i].currentToggle}");
-      }
       Navigator.pushNamed(_state.context, NotificationSettingsScreen.routeName,
           arguments: {
             Constant.ARG_USER: _state.user,

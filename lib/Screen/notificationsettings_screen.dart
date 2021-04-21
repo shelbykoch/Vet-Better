@@ -126,11 +126,6 @@ class _Controller {
       _state.formKey.currentState.save();
       setting.email = _state.user.email;
       await FirebaseController.updateNotificationSetting(setting);
-      // print('${setting.currentToggle}');
-      // if (setting.currentToggle == 1) {
-      //   // cancel the notification with id value of zero
-      //   await flutterLocalNotificationsPlugin.cancel(setting.notificationIndex);
-      // }
     }
     List<NotificationSettings> settings =
         await FirebaseController.getNotificationSettings(_state.user.email);
@@ -148,7 +143,5 @@ class _Controller {
 
   void onSavedSetting(int toggleValue, i) {
     _state.settings[i].currentToggle = toggleValue;
-    print(
-        "${_state.settings[i].notificationTitle} value: ${_state.settings[i].currentToggle}");
   }
 }

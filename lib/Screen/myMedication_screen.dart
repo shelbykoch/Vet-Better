@@ -32,7 +32,6 @@ class _MyMedicationState extends State<MyMedicationScreen> {
     super.initState();
     con = _Controller(this);
     _payload = widget.payload;
-    print("payload myMedScreen: ${_payload}");
   }
 
   void render(fn) => setState(fn);
@@ -50,12 +49,10 @@ class _MyMedicationState extends State<MyMedicationScreen> {
             icon: Icon(Icons.arrow_back),
             onPressed: () {
               if (_payload == null) {
-                print("push");
                 Navigator.pushNamed(context, HomeScreen.routeName, arguments: {
                   Constant.ARG_USER: user,
                 });
               } else {
-                print("pop");
                 Navigator.pop(context);
               }
             }),

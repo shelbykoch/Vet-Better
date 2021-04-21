@@ -49,12 +49,11 @@ class _DailyQuestionsState extends State<DailyQuestionsScreen> {
             icon: Icon(Icons.arrow_back),
             onPressed: () => {
                 if (_payload == null) {
-                print("push"),
+
                 Navigator.pushNamed(context, HomeScreen.routeName, arguments: {
                   Constant.ARG_USER: user,
                 })
               } else {
-                print("pop"),
                 Navigator.pop(context)
               }
             },

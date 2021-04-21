@@ -198,20 +198,15 @@ class _Controller {
         await FirebaseController.getNotificationSettings(user.email);
     try {
       if (settings == null) {
-        print("settings are null");
         List<NotificationSettings> settings = new List<NotificationSettings>();
         settings = NotificationSettings.getNotificationSettings(user.email);
-        print("got settings, entering for loop...");
         for (NotificationSettings setting in settings) {
           await FirebaseController.addNotificationSetting(setting);
-          print("setting added");
         }
 
         settings = await FirebaseController.getNotificationSettings(user.email);
         for (NotificationSettings setting in settings) {
-          print('setting: ${setting.notificationTitle}');
         }
-        print("exited the loop");
       }
     } catch (e) {
       print("login error: $e");
@@ -234,32 +229,23 @@ class _Controller {
     } catch (e) {
       print("login error: $e");
     }
-    print("medication try");
     // Appointment reminders
     List<Appointment> appointments =
         await FirebaseController.getAppointmentList(user.email);
-    print("${user.email}");
     if (appointments.length != 0) {
-      print("appointment != null");
       for (Appointment appt in appointments) {
-        print("appt: ${appt.title}");
         if (testNow.isAfter(appt.apptReminderDate) == true) {
-          print("isAfter == true");
           await NotificationController.apptNotifications(user.email);
         }
       }
     }
     if (settings != null) {
-      print("settings != null");
       // Feel Good Vault reminders
       await NotificationController.vaultNotifications(user.email);
-      print("feel good vault");
       // Daily Questions reminder
       await NotificationController.dailyQuestionsNotification(user.email);
-      print("daily questions");
       // Medication reminders
       await NotificationController.medicationNotification(user.email);
-      print("medication");
     }
     //Load text content
     //Load feel good vault pictures
@@ -272,7 +258,6 @@ class _Controller {
       Constant.ARG_PICTURE_LIST: pictures,
       Constant.ARG_TEXT_CONTENT_LIST: textContent
     });
-    print("exiting the function");
   }
 
   void resetPassword() async {
@@ -323,7 +308,6 @@ class _Controller {
   }
 
   void getNotificationSettings(_user) async {
-    print("get notification settings");
     if (_user != null) {
       List<NotificationSettings> settings =
           await FirebaseController.getNotificationSettings(_user.email);

@@ -55,14 +55,16 @@ Future<void> main() async {
   );
   await flutterLocalNotificationsPlugin.initialize(initializationSettings,
       onSelectNotification: (String payload) async {
-    // if (payload == null) {
-    //   debugPrint('notification payload: $payload');
+    // if (payload != null) {
+    //   debugPrint('payload != null notification payload: $payload');
     //   selectedNotificationPayload = 'new payload';
     //   selectNotificationSubject.add('new payload');
+    //   debugPrint('payload != null Rnotification payload: $payload');
     // }
-    // if (payload != null) print('main payload: $payload');
-    selectedNotificationPayload = payload;
-    selectNotificationSubject.add(payload);
+    // if (payload == null) {
+      selectedNotificationPayload = payload;
+      selectNotificationSubject.add(payload);
+    // }
   });
 
   runApp(MyApp());
